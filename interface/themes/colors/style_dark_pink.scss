@@ -1,0 +1,29 @@
+$colorname: "Dark Pink";
+
+$darkest: #1e293b;
+$darker: #b30a59;
+$dark: #ae2465;
+$mid: #ae2465;
+$midpale: #c5387a;
+$pale: #d75492;
+$midpalepale: #e687af;
+$palepale: #f7bcd2;
+$palepurple: #e7e6f9;
+$paler: #1e293b;
+$midnightblue: #1e293b;
+$white: #e7e6f9;
+
+@import "utilities/default_variables";
+
+// Import Bootstrap 4 SCSS Files before doing anything
+// This gets replaced in gulp now -- do not touch
+// bs4import
+@import "../color_base";
+
+.form-control:focus {
+    color: $palepurple
+}
+
+body {
+    color: $palepurple
+}
