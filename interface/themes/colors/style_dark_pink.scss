@@ -11,7 +11,7 @@ $palepale: #f7bcd2;
 $palepurple: #e7e6f9;
 $paler: #1e293b;
 $midnightblue: #1e293b;
-$white: #e7e6f9;
+$white: #020817;
 
 @import "utilities/default_variables";
 
@@ -21,9 +21,9 @@ $white: #e7e6f9;
 @import "../color_base";
 
 .form-control:focus {
-    color: $palepurple
+    color: #fff
 }
 
 body {
-    color: $palepurple
+    color: #fff
 }
