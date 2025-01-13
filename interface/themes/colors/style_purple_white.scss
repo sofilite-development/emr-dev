@@ -1,15 +1,15 @@
 $colorname: "Purple White";
 
-$darkest: #42285a;//border
+$darkest: #42285a; //border
 $darker: #8455af; //login button
-$dark: #8455af;//nav bar
-$mid: #8455af9e;//table title
-$midpale: #8355af1a;//main box background
-$pale: #8455af66;//tab container background
+$dark: #8455af; //nav bar
+$mid: #8455af9e; //table title
+$midpale: #8355af1a; //main box background
+$pale: #8455af66; //tab container background
 $midpalepale: #ceb7e3;
-$palepale: #dbcbea;//nav hover
+$palepale: #dbcbea; //nav hover
 $palepurple: #e7e6f9;
-$paler: #d4adf3;
+$paler: #f5effb;
 $midnightblue: #2f2f7d;
 $white: #ffffff;
 
@@ -20,10 +20,21 @@ $white: #ffffff;
 // bs4import
 @import "../color_base";
 
-// .form-control:focus {
-//     color: #fff
-// }
+.menuSection>.menuEntries {
+    background-color: #42285a !important;
+}
 
-// body {
-//     color: #fff
-// }
+.menuEntries.dropdown-menu {
+    background-color: #42285a !important;
+}
+
+.menuEntries.dropdown-menu #user_icon {
+    color: $white !important;
+}
+
+#menu_icon,
+#logout_icon,
+#user_icon,
+.text-muted {
+    color: $white !important;
+}
