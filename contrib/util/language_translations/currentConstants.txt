@@ -11160,7 +11160,7 @@ The miscellaneous billing options for HCFA-1500 form is used to provide addition
 The most common method is called 2-Factor Authorization or 2FA
 The most important issue that needs to be addressed is who you are trying to connect to and what needs to happen at their end. Most major labs will not deal with individuals practices, in such cases a third party vendor will act an an intermediary who will be responsible for setting up a connection between the practice and the lab through their (the intermediary's) interface
 The most popular maker of Security Keys is Yubico it offers regular USB versions as well as those made for devices that require USB-C connections, such as Apple’s newer Mac OS systems
-The most popular open-source Electronic Health Record and Medical Practice Management solution.
+The most popular Electronic Health Record and Medical Practice Management solution.
 The Name cell contains the name, date of birth, patient ID and date of last visit
 The Narrative Block contains information that is rendered as readable text
 The National Uniform Claim Committee (NUCC) is responsible for the maintenance of the 1500 Claim Form

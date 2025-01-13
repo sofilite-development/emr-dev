@@ -69,9 +69,9 @@ if (sqlNumRows($rs)) {
             continue;
         }
 
-        $emr_app [trim($app ['option_id'])] = trim($app ['title']);
-        if ($app ['is_default']) {
-            $emr_app_def = $app ['option_id'];
+        $emr_app[trim($app['option_id'])] = trim($app['title']);
+        if ($app['is_default']) {
+            $emr_app_def = $app['option_id'];
         }
     }
 }
@@ -183,9 +183,11 @@ $t2 = $GLOBALS['tiny_logo_2'];
 $displaySmallLogo = false;
 if ($t1 && !$t2) {
     $displaySmallLogo = 1;
-} if ($t2 && !$t1) {
+}
+if ($t2 && !$t1) {
     $displaySmallLogo = 2;
-} if ($t1 && $t2) {
+}
+if ($t1 && $t2) {
     $displaySmallLogo = 3;
 }
 

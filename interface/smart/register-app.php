@@ -397,8 +397,8 @@ $dsiTypesStringNames = DecisionSupportInterventionService::DSI_TYPES_CLIENT_STRI
                     <div class="col-sm-6"><?php echo $tinylogocode2;?></div>
                 </div>
             <?php } ?>
-            <p class="text-center lead font-weight-normal login-bg-text-color text-white"><?php echo xlt('The most popular open-source Electronic Health Record and Medical Practice Management solution.'); ?></p>
-            <p class="text-center small"><a href="../../acknowledge_license_cert.html" class="login-bg-text-color text-white" target="main"><?php echo xlt('Acknowledgments, Licensing and Certification'); ?></a></p>
+            <p class="text-.enter lead font-weight-normal login-bg-text-color text-white"><?php echo xlt('The most popular Electronic Health Record and Medical Practice Management solution.'); ?></p>
+            <!-- <p class="text-center small"><a href="../../acknowledge_license_cert.html" class="login-bg-text-color text-white" target="main"><?php echo xlt('Acknowledgments, Licensing and Certification'); ?></a></p> -->
         </div>
         <div class="<?php echo $formarea; ?>">
             <h3 class="card-title text-center"><?php echo xlt("App Registration Form"); ?></h3>
