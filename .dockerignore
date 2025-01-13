@@ -1,0 +1,50 @@
+# Logs (same as .gitignore)
+logs
+
+# Environment variables (same as .gitignore)
+.env
+
+# Vendor and assets (same as .gitignore)
+node_modules
+vendor/
+public/assets/
+public/themes/
+!public/assets/modified
+
+# CCDA service build (same as .gitignore)
+ccdaservice/node_modules
+
+# Development editor configs (same as .gitignore)
+.idea/
+.vscode/
+nbproject/
+.DS_Store
+.buildpath
+.project
+.settings
+
+# Testing-related files (same as .gitignore)
+.phpunit.result.cache
+coverage/js-unit
+
+# Additional patterns specific to Docker builds:
+# Ignore git metadata
+.git
+
+# Ignore temporary files and OS-specific files
+Thumbs.db
+*.swp
+*.swo
+
+# Ignore Docker-related files (optional, depending on your needs)
+.dockerignore
+docker-compose.yml
+
+# Exclude build artifacts (if not needed in the image)
+*.log
+build/
+tests/
+
+# Ignore SSL certificates and sensitive files (if not included in the build)
+ssl/
+letsencrypt/

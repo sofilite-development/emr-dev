@@ -19,15 +19,15 @@ services:
   openemr:
     restart: always
     build:
-      context: . # Directory containing your Dockerfile
-      dockerfile: Dockerfile # Ensure this matches your Dockerfile name
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - logvolume01:/var/log
       - sitevolume:/var/www/localhost/htdocs/openemr/sites
-      - sslvolume:/etc/ssl # Persist SSL-related data
+      - sslvolume:/etc/ssl
     environment:
       MYSQL_HOST: mysql
       MYSQL_ROOT_PASS: root
