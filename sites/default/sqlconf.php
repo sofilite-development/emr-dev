@@ -7,9 +7,9 @@ $disable_utf8_flag = false;
 
 $host	= 'localhost';
 $port	= '3306';
-$login	= 'openemruser';
-$pass	= 'securepassword';
-$dbase	= 'openemr';
+$login	= 'emrdev';
+$pass	= 'emrdev123456789';
+$dbase	= 'emrdev';
 $db_encoding	= 'utf8mb4';
 
 $sqlconf = array();
