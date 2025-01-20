@@ -38,3 +38,11 @@ $white: #ffffff;
 .text-muted {
     color: $white !important;
 }
+
+.portal #quickstart_dashboard.btn-outline-primary {
+    color: white !important;
+}
+
+.portal .btn-success {
+    background: $dark !important;
+}

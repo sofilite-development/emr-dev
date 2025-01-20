@@ -454,7 +454,7 @@ if (!(isset($_SESSION['password_update']) || (!empty($GLOBALS['portal_two_pass_r
         }
     </style>
 </head>
-<body class="login">
+<body class="login portal">
     <div id="wrapper" class="login-wrapper mx-auto">
         <?php if (isset($_SESSION['password_update']) || isset($_GET['password_update'])) {
             $_SESSION['password_update'] = 1;
