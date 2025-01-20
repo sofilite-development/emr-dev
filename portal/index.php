@@ -583,7 +583,7 @@ if (!(isset($_SESSION['password_update']) || (!empty($GLOBALS['portal_two_pass_r
                     <?php } ?>
                 <?php } ?>
             <?php } ?>
-            <legend class="text-center bg-light text-dark pt-2 py-1"><h2><?php echo $GLOBALS['openemr_name'] . ' ' . xlt('Portal Login'); ?></h2></legend>
+            <legend class="text-center bg-light text-dark pt-2 py-1"><h2><?php echo xlt('Portal Login'); ?></h2></legend>
             <form class="mx-1" action="get_patient_info.php" method="POST" onsubmit="return process()">
                 <?php if (isset($redirectUrl)) { ?>
                     <input id="redirect" type="hidden" name="redirect" value="<?php echo attr($redirectUrl); ?>" />
