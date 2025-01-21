@@ -312,6 +312,7 @@ if (!(isset($_SESSION['password_update']) || (!empty($GLOBALS['portal_two_pass_r
 ?>
 <!DOCTYPE html>
 <html>
+
 <head>
     <title><?php echo xlt('Patient Portal Login'); ?></title>
     <?php
@@ -334,7 +335,7 @@ if (!(isset($_SESSION['password_update']) || (!empty($GLOBALS['portal_two_pass_r
                 type: 'GET',
                 url: './account/account.php',
                 data: data
-            }).done(function (rtn) {
+            }).done(function(rtn) {
                 if (rtn === '1') {
                     return true;
                 }
@@ -401,10 +402,10 @@ if (!(isset($_SESSION['password_update']) || (!empty($GLOBALS['portal_two_pass_r
             return pass;
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const passInput = document.getElementById('pass');
             const toggle = document.getElementById('password-icon');
-            toggle.addEventListener('click', function () {
+            toggle.addEventListener('click', function() {
                 const isPassword = passInput.getAttribute('type') === 'password';
                 passInput.setAttribute('type', isPassword ? 'text' : 'password');
                 this.classList.toggle('fa-eye');
@@ -452,13 +453,28 @@ if (!(isset($_SESSION['password_update']) || (!empty($GLOBALS['portal_two_pass_r
             margin-bottom: 20px;
             text-align: center;
         }
+
+        .btn-success,
+        .btn-success:target,
+        .btn-success:focus,
+        .btn-primary {
+            background-color: #8455af !important;
+            border-color: #8455af !important;
+            box-shadow: none !important;
+        }
+
+
+        .btn-success:hover {
+            background-color: rgb(88, 59, 116);
+        }
     </style>
 </head>
+
 <body class="login portal">
     <div id="wrapper" class="login-wrapper mx-auto">
         <?php if (isset($_SESSION['password_update']) || isset($_GET['password_update'])) {
             $_SESSION['password_update'] = 1;
-            ?>
+        ?>
             <h2 class="title"><?php echo xlt('Please Enter New Credentials'); ?></h2>
             <form class="form pb-5" action="get_patient_info.php" method="POST" onsubmit="return process_new_pass()">
                 <?php if (isset($redirectUrl)) { ?>
@@ -480,8 +496,8 @@ if (!(isset($_SESSION['password_update']) || (!empty($GLOBALS['portal_two_pass_r
                     <label class="col-md-2 col-form-label" for="pass"><?php echo empty($_SESSION['onetime'] ?? null) ? xlt('Current Password') : ''; ?></label>
                     <div class="col-md">
                         <input class="form-control" name="pass" id="pass" <?php echo ($_SESSION['onetime'] ?? null) ? 'type="hidden" ' : 'type="password" '; ?> autocomplete="none" value="<?php echo attr($_SESSION['onetime'] ?? '');
-                        $_SESSION['password_update'] = ($_SESSION['onetime'] ?? null) ? 2 : 1;
-                        unset($_SESSION['onetime']); ?>" required />
+                                                                                                                                                                                            $_SESSION['password_update'] = ($_SESSION['onetime'] ?? null) ? 2 : 1;
+                                                                                                                                                                                            unset($_SESSION['onetime']); ?>" required />
                     </div>
                 </div>
                 <?php if ($_SESSION['pin'] ?? null) { ?>
@@ -513,7 +529,8 @@ if (!(isset($_SESSION['password_update']) || (!empty($GLOBALS['portal_two_pass_r
                     </div>
                 <?php } ?>
                 <input class="btn btn-secondary" type="button" onclick="document.location.replace('./index.php?woops=1&site=<?php echo attr_url($_SESSION['site_id']); ?><?php if (!empty($redirectUrl)) {
-                    echo "&redirect=" . attr_url($redirectUrl); } ?>');" value="<?php echo xla('Cancel'); ?>" />
+                                                                                                                                                                                echo "&redirect=" . attr_url($redirectUrl);
+                                                                                                                                                                            } ?>');" value="<?php echo xla('Cancel'); ?>" />
                 <input class="btn btn-primary" type="submit" value="<?php echo xla('Log In'); ?>" />
             </form>
         <?php } elseif (!empty($GLOBALS['portal_two_pass_reset']) && !empty($GLOBALS['google_recaptcha_site_key']) && !empty($GLOBALS['google_recaptcha_secret_key']) && isset($_GET['requestNew'])) { ?>
@@ -524,7 +541,9 @@ if (!(isset($_SESSION['password_update']) || (!empty($GLOBALS['portal_two_pass_r
                 <?php } ?>
                 <div class="text-center">
                     <fieldset>
-                        <legend class='bg-primary text-white pt-2 py-1'><h3><?php echo xlt('Patient Credentials Reset') ?></h3></legend>
+                        <legend class='bg-primary text-white pt-2 py-1'>
+                            <h3><?php echo xlt('Patient Credentials Reset') ?></h3>
+                        </legend>
                         <div class="jumbotron jumbotron-fluid px-5 py-3">
                             <div class="form-row my-3">
                                 <label class="col-md-2 col-form-label" for="fname"><?php echo xlt('First Name') ?></label>
@@ -557,41 +576,44 @@ if (!(isset($_SESSION['password_update']) || (!empty($GLOBALS['portal_two_pass_r
                             </div>
                         </div>
                         <input class="btn btn-secondary" type="button" onclick="document.location.replace('./index.php?woops=1&site=<?php echo attr_url($_SESSION['site_id']); ?><?php if (!empty($redirectUrl)) {
-                            echo "&redirect=" . attr_url($redirectUrl); } ?>');" value="<?php echo xla('Cancel'); ?>" />
+                                                                                                                                                                                        echo "&redirect=" . attr_url($redirectUrl);
+                                                                                                                                                                                    } ?>');" value="<?php echo xla('Cancel'); ?>" />
                         <button id="submitRequest" class="btn btn-primary nextBtn" type="submit" disabled="disabled"><?php echo xlt('Verify') ?></button>
                     </fieldset>
                 </div>
             </form>
         <?php } else {
-            ?> <!-- Main logon -->
-        <div class="container-xl p-1">
-            <!-- Optionally show two logos, and in either order -->
-            <?php if (($GLOBALS['secondary_portal_logo_position'] ?? null) == 'second') { ?>
-                <?php if ($GLOBALS['show_portal_primary_logo'] ?? null) { ?>
-                    <div class="img-fluid text-center"><img class="login-logo" src='<?php echo $logoSrc; ?>'></div>
-                <?php } ?>
-                <?php if ($GLOBALS['extra_portal_logo_login'] ?? null) { ?>
-                    <div class="img-fluid text-center"><img class="login-logo" src='<?php echo $logo2ndSrc; ?>'></div>
-                <?php } ?>
-            <?php } else {
-                if (($GLOBALS['secondary_portal_logo_position'] ?? null) == 'first') { ?>
-                    <?php if ($GLOBALS['extra_portal_logo_login']) { ?>
-                        <div class="img-fluid text-center"><img class="login-logo" src='<?php echo $logo2ndSrc; ?>'></div>
-                    <?php } ?>
+        ?> <!-- Main logon -->
+            <div class="container-xl p-1">
+                <!-- Optionally show two logos, and in either order -->
+                <?php if (($GLOBALS['secondary_portal_logo_position'] ?? null) == 'second') { ?>
                     <?php if ($GLOBALS['show_portal_primary_logo'] ?? null) { ?>
                         <div class="img-fluid text-center"><img class="login-logo" src='<?php echo $logoSrc; ?>'></div>
                     <?php } ?>
+                    <?php if ($GLOBALS['extra_portal_logo_login'] ?? null) { ?>
+                        <div class="img-fluid text-center"><img class="login-logo" src='<?php echo $logo2ndSrc; ?>'></div>
+                    <?php } ?>
+                    <?php } else {
+                    if (($GLOBALS['secondary_portal_logo_position'] ?? null) == 'first') { ?>
+                        <?php if ($GLOBALS['extra_portal_logo_login']) { ?>
+                            <div class="img-fluid text-center"><img class="login-logo" src='<?php echo $logo2ndSrc; ?>'></div>
+                        <?php } ?>
+                        <?php if ($GLOBALS['show_portal_primary_logo'] ?? null) { ?>
+                            <div class="img-fluid text-center"><img class="login-logo" src='<?php echo $logoSrc; ?>'></div>
+                        <?php } ?>
+                    <?php } ?>
                 <?php } ?>
-            <?php } ?>
-            <legend class="text-center bg-light text-dark pt-2 py-1"><h2><?php echo xlt('Portal Login'); ?></h2></legend>
-            <form class="mx-1" action="get_patient_info.php" method="POST" onsubmit="return process()">
-                <?php if (isset($redirectUrl)) { ?>
-                    <input id="redirect" type="hidden" name="redirect" value="<?php echo attr($redirectUrl); ?>" />
-                <?php } ?>
-                <div class="form-group">
-                    <label for="uname"><?php echo xlt('Username') ?></label>
-                    <input type="text" class="form-control" name="uname" id="uname" autocomplete="none" required />
-                </div>
+                <legend class="text-center bg-light text-dark pt-2 py-1">
+                    <h2><?php echo xlt('Portal Login'); ?></h2>
+                </legend>
+                <form class="mx-1" action="get_patient_info.php" method="POST" onsubmit="return process()">
+                    <?php if (isset($redirectUrl)) { ?>
+                        <input id="redirect" type="hidden" name="redirect" value="<?php echo attr($redirectUrl); ?>" />
+                    <?php } ?>
+                    <div class="form-group">
+                        <label for="uname"><?php echo xlt('Username') ?></label>
+                        <input type="text" class="form-control" name="uname" id="uname" autocomplete="none" required />
+                    </div>
                     <div id="standard-auth-password" class="form-group">
                         <label for="pass"><?php echo xlt('Password') ?></label>
                         <div class="input-group">
@@ -603,177 +625,179 @@ if (!(isset($_SESSION['password_update']) || (!empty($GLOBALS['portal_two_pass_r
                             </div>
                         </div>
                     </div>
-                <?php if ($GLOBALS['enforce_signin_email']) { ?>
-                    <div class="form-group">
-                        <label for="passaddon"><?php echo xlt('E-Mail Address') ?></label>
-                        <input class="form-control" name="passaddon" id="passaddon" type="email" autocomplete="none" />
-                    </div>
-                <?php } ?>
-                <?php if ($GLOBALS['language_menu_login']) { ?>
-                    <?php if (count($result3) != 1) { ?>
-                <div class="form-group">
-                    <label for="selLanguage"><?php echo xlt('Language'); ?></label>
-                    <select class="form-control" id="selLanguage" name="languageChoice">
-                        <?php
-                        echo "<option selected='selected' value='" . attr($defaultLangID) . "'>" .
-                            text(xl('Default') . " - " . xl($defaultLangName)) . "</option>\n";
-                        foreach ($result3 as $iter) {
-                            if ($GLOBALS['language_menu_showall']) {
-                                if (!$GLOBALS['allow_debug_language'] && $iter['lang_description'] == 'dummy') {
-                                    continue; // skip the dummy language
-                                }
-                                echo "<option value='" . attr($iter['lang_id']) . "'>" .
-                                    text($iter['trans_lang_description']) . "</option>\n";
-                            } else {
-                                if (in_array($iter['lang_description'], $GLOBALS['language_menu_show'])) {
-                                    if (!$GLOBALS['allow_debug_language'] && $iter['lang_description'] == 'dummy') {
-                                        continue; // skip the dummy language
+                    <?php if ($GLOBALS['enforce_signin_email']) { ?>
+                        <div class="form-group">
+                            <label for="passaddon"><?php echo xlt('E-Mail Address') ?></label>
+                            <input class="form-control" name="passaddon" id="passaddon" type="email" autocomplete="none" />
+                        </div>
+                    <?php } ?>
+                    <?php if ($GLOBALS['language_menu_login']) { ?>
+                        <?php if (count($result3) != 1) { ?>
+                            <div class="form-group">
+                                <label for="selLanguage"><?php echo xlt('Language'); ?></label>
+                                <select class="form-control" id="selLanguage" name="languageChoice">
+                                    <?php
+                                    echo "<option selected='selected' value='" . attr($defaultLangID) . "'>" .
+                                        text(xl('Default') . " - " . xl($defaultLangName)) . "</option>\n";
+                                    foreach ($result3 as $iter) {
+                                        if ($GLOBALS['language_menu_showall']) {
+                                            if (!$GLOBALS['allow_debug_language'] && $iter['lang_description'] == 'dummy') {
+                                                continue; // skip the dummy language
+                                            }
+                                            echo "<option value='" . attr($iter['lang_id']) . "'>" .
+                                                text($iter['trans_lang_description']) . "</option>\n";
+                                        } else {
+                                            if (in_array($iter['lang_description'], $GLOBALS['language_menu_show'])) {
+                                                if (!$GLOBALS['allow_debug_language'] && $iter['lang_description'] == 'dummy') {
+                                                    continue; // skip the dummy language
+                                                }
+                                                echo "<option value='" . attr($iter['lang_id']) . "'>" .
+                                                    text($iter['trans_lang_description']) . "</option>\n";
+                                            }
+                                        }
                                     }
-                                    echo "<option value='" . attr($iter['lang_id']) . "'>" .
-                                        text($iter['trans_lang_description']) . "</option>\n";
-                                }
-                            }
-                        }
-                        ?>
-                    </select>
-                    <?php }
-                } ?>
-                </div>
-                <div class="col col-md col-sm">
-                    <button class="btn btn-success btn-block" type="submit"><?php echo xlt('Log In'); ?></button>
-                    <?php if (!empty($GLOBALS['portal_onsite_two_register']) && !empty($GLOBALS['google_recaptcha_site_key']) && !empty($GLOBALS['google_recaptcha_secret_key'])) { ?>
-                        <button class="btn btn-secondary btn-block" onclick="location.replace('./account/verify.php?site=<?php echo attr_url($_SESSION['site_id']); ?>')"><?php echo xlt('Register'); ?></button>
-                    <?php } ?>
-                    <?php if (!empty($GLOBALS['portal_two_pass_reset']) && !empty($GLOBALS['google_recaptcha_site_key']) && !empty($GLOBALS['google_recaptcha_secret_key']) && isset($_GET['w']) && (isset($_GET['u']) || isset($_GET['p']))) { ?>
-                        <button class="btn btn-danger btn-block" onclick="location.replace('./index.php?requestNew=1&site=<?php echo attr_url($_SESSION['site_id']); ?><?php if (!empty($redirectUrl)) {
-                                echo "&redirect=" . attr_url($redirectUrl); } ?>')"><?php echo xlt('Reset Credentials'); ?></button>
-                    <?php } ?>
-                </div>
-                </fieldset>
-                <?php if (!(empty($hiddenLanguageField))) {
-                    echo $hiddenLanguageField;
-                } ?>
-            </form>
-        </div>
+                                    ?>
+                                </select>
+                        <?php }
+                    } ?>
+                            </div>
+                            <div class="col col-md col-sm">
+                                <button class="btn btn-success btn-block" type="submit"><?php echo xlt('Log In'); ?></button>
+                                <?php if (!empty($GLOBALS['portal_onsite_two_register']) && !empty($GLOBALS['google_recaptcha_site_key']) && !empty($GLOBALS['google_recaptcha_secret_key'])) { ?>
+                                    <button class="btn btn-secondary btn-block" onclick="location.replace('./account/verify.php?site=<?php echo attr_url($_SESSION['site_id']); ?>')"><?php echo xlt('Register'); ?></button>
+                                <?php } ?>
+                                <?php if (!empty($GLOBALS['portal_two_pass_reset']) && !empty($GLOBALS['google_recaptcha_site_key']) && !empty($GLOBALS['google_recaptcha_secret_key']) && isset($_GET['w']) && (isset($_GET['u']) || isset($_GET['p']))) { ?>
+                                    <button class="btn btn-danger btn-block" onclick="location.replace('./index.php?requestNew=1&site=<?php echo attr_url($_SESSION['site_id']); ?><?php if (!empty($redirectUrl)) {
+                                                                                                                                                                                        echo "&redirect=" . attr_url($redirectUrl);
+                                                                                                                                                                                    } ?>')"><?php echo xlt('Reset Credentials'); ?></button>
+                                <?php } ?>
+                            </div>
+                            </fieldset>
+                            <?php if (!(empty($hiddenLanguageField))) {
+                                echo $hiddenLanguageField;
+                            } ?>
+                </form>
+            </div>
     </div><!-- div wrapper -->
-    <?php } ?> <!--  logon wrapper -->
+<?php } ?> <!--  logon wrapper -->
 
-    <div id="alertStore" class="d-none">
-        <div class="h6 alert alert-warning alert-dismissible fade show my-1 py-1" role="alert">
-            <button type="button" class="close my-1 py-0" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
+<div id="alertStore" class="d-none">
+    <div class="h6 alert alert-warning alert-dismissible fade show my-1 py-1" role="alert">
+        <button type="button" class="close my-1 py-0" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
     </div>
+</div>
 
-    <script>
-        var tab_mode = true;
-        var webroot_url = <?php echo js_escape($GLOBALS['web_root']) ?>;
+<script>
+    var tab_mode = true;
+    var webroot_url = <?php echo js_escape($GLOBALS['web_root']) ?>;
 
-        function restoreSession() {
-            //dummy functions so the dlgopen function will work in the patient portal
-            return true;
-        }
+    function restoreSession() {
+        //dummy functions so the dlgopen function will work in the patient portal
+        return true;
+    }
 
-        var isPortal = 1;
+    var isPortal = 1;
 
-        $(function () {
-            <?php // if something went wrong
-            if (!empty($GLOBALS['portal_two_pass_reset']) && !empty($GLOBALS['google_recaptcha_site_key']) && !empty($GLOBALS['google_recaptcha_secret_key']) && isset($_GET['requestNew'])) {
-                $_SESSION['register'] = true;
-                $_SESSION['authUser'] = 'portal-user';
-                $_SESSION['pid'] = true;
-                ?>
+    $(function() {
+        <?php // if something went wrong
+        if (!empty($GLOBALS['portal_two_pass_reset']) && !empty($GLOBALS['google_recaptcha_site_key']) && !empty($GLOBALS['google_recaptcha_secret_key']) && isset($_GET['requestNew'])) {
+            $_SESSION['register'] = true;
+            $_SESSION['authUser'] = 'portal-user';
+            $_SESSION['pid'] = true;
+        ?>
             $('.datepicker').datetimepicker({
                 <?php $datetimepicker_timepicker = false; ?>
                 <?php $datetimepicker_showseconds = false; ?>
                 <?php $datetimepicker_formatInput = false; ?>
                 <?php require $GLOBALS['srcdir'] . '/js/xl/jquery-datetimepicker-2-5-4.js.php'; ?>
             });
-            $(document.body).on('hidden.bs.modal', function () {
+            $(document.body).on('hidden.bs.modal', function() {
                 callServer('cleanup');
             });
-            $("#resetPass").on('submit', function (e) {
+            $("#resetPass").on('submit', function(e) {
                 e.preventDefault();
                 callServer('reset_password');
                 return false;
             });
-            <?php } ?>
-            <?php if (isset($_GET['w'])) { ?>
+        <?php } ?>
+        <?php if (isset($_GET['w'])) { ?>
             // mdsupport - Would be good to include some clue about what went wrong!
             bsAlert(<?php echo xlj('Something went wrong. Please try again.'); ?>);
-            <?php } ?>
-            <?php if (isset($_GET['oe'])) { ?>
+        <?php } ?>
+        <?php if (isset($_GET['oe'])) { ?>
             // mdsupport - Would be good to include some clue about what went wrong!
             bsAlert(<?php echo xlj('Something went wrong. Onetime Authentication! Expired.'); ?>);
-            <?php } ?>
-            <?php if (isset($_GET['oi'])) { ?>
+        <?php } ?>
+        <?php if (isset($_GET['oi'])) { ?>
             // mdsupport - Would be good to include some clue about what went wrong!
             bsAlert(<?php echo xlj('Something went wrong. Onetime Authentication! Invalid.'); ?>);
-            <?php } ?>
-            <?php // if successfully logged out
-            if (isset($_GET['logout'])) { ?>
+        <?php } ?>
+        <?php // if successfully logged out
+        if (isset($_GET['logout'])) { ?>
             bsAlert(<?php echo xlj('You have been successfully logged out.'); ?>);
-            <?php } ?>
+        <?php } ?>
 
-            return false;
+        return false;
+    });
+
+    function callServer(action) {
+        var data = {};
+        if (action === 'reset_password') {
+            data = {
+                'action': action,
+                'dob': $("#dob").val(),
+                'last': $("#lname").val(),
+                'first': $("#fname").val(),
+                'email': $("#emailInput").val(),
+                'g-recaptcha-response': grecaptcha.getResponse(),
+                'csrf_token_form': $("#csrf_token_form").val()
+            }
+        }
+        if (action === 'cleanup') {
+            data = {
+                'action': action
+            }
+        }
+        $.ajax({
+            type: 'GET',
+            url: './account/account.php',
+            data: data
+        }).done(function(rtn) {
+            if (action === "cleanup") {
+                let url = "./index.php?site=" + <?php echo js_url($_SESSION['site_id']); ?>; // Goto landing page.
+                let redirectUrl = $("#redirect").val();
+                if (redirectUrl) {
+                    url += "&redirect=" + encodeURIComponent(redirectUrl);
+                }
+                window.location.href = url;
+            } else if (action === "reset_password") {
+                if (JSON.parse(rtn) === 1) {
+                    dialog.alert(<?php echo xlj("Check your email inbox (and possibly your spam folder) for further instructions to reset your password. If you have not received an email, then recommend contacting the clinic.") ?>);
+                    return false;
+                } else {
+                    dialog.alert(<?php echo xlj("Something went wrong. Recommend contacting the clinic.") ?>);
+                    return false;
+                }
+            }
+        }).fail(function(err) {
+            var message = <?php echo xlj('Something went wrong.') ?>;
+            alert(message);
         });
+    }
 
-        function callServer(action) {
-            var data = {};
-            if (action === 'reset_password') {
-                data = {
-                    'action': action,
-                    'dob': $("#dob").val(),
-                    'last': $("#lname").val(),
-                    'first': $("#fname").val(),
-                    'email': $("#emailInput").val(),
-                    'g-recaptcha-response': grecaptcha.getResponse(),
-                    'csrf_token_form': $("#csrf_token_form").val()
-                }
-            }
-            if (action === 'cleanup') {
-                data = {
-                    'action': action
-                }
-            }
-            $.ajax({
-                type: 'GET',
-                url: './account/account.php',
-                data: data
-            }).done(function (rtn) {
-                if (action === "cleanup") {
-                    let url = "./index.php?site=" + <?php echo js_url($_SESSION['site_id']); ?>; // Goto landing page.
-                    let redirectUrl = $("#redirect").val();
-                    if (redirectUrl) {
-                        url += "&redirect=" + encodeURIComponent(redirectUrl);
-                    }
-                    window.location.href = url;
-                } else if (action === "reset_password") {
-                    if (JSON.parse(rtn) === 1) {
-                        dialog.alert(<?php echo xlj("Check your email inbox (and possibly your spam folder) for further instructions to reset your password. If you have not received an email, then recommend contacting the clinic.") ?>);
-                        return false;
-                    } else {
-                        dialog.alert(<?php echo xlj("Something went wrong. Recommend contacting the clinic.") ?>);
-                        return false;
-                    }
-                }
-            }).fail(function (err) {
-                var message = <?php echo xlj('Something went wrong.') ?>;
-                alert(message);
-            });
-        }
-
-        function bsAlert(msg) {
-            let divAlert = document.getElementById("alertStore").querySelector("div.alert").cloneNode(true);
-            document.querySelector("form").prepend(divAlert);
-            let strongMsg = document.createElement("strong");
-            strongMsg.innerHTML = msg;
-            divAlert.prepend(strongMsg);
-            setTimeout(() => {
-                document.querySelector("div.alert").remove();
-            }, 6000);
-        }
-    </script>
+    function bsAlert(msg) {
+        let divAlert = document.getElementById("alertStore").querySelector("div.alert").cloneNode(true);
+        document.querySelector("form").prepend(divAlert);
+        let strongMsg = document.createElement("strong");
+        strongMsg.innerHTML = msg;
+        divAlert.prepend(strongMsg);
+        setTimeout(() => {
+            document.querySelector("div.alert").remove();
+        }, 6000);
+    }
+</script>
 </body>
+
 </html>
