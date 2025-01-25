@@ -152,6 +152,7 @@ $ires = sqlStatement("SELECT id, type, title, begdate FROM lists WHERE " .
     "ORDER BY type, begdate", array($pid));
 ?>
 <!DOCTYPE html>
+
 <head>
     <?php Header::setupHeader(['datetime-picker', 'common']); ?>
     <title><?php echo xlt('Patient Encounter'); ?></title>
@@ -170,9 +171,11 @@ $ires = sqlStatement("SELECT id, type, title, begdate FROM lists WHERE " .
         // Process click on issue title.
         function newissue() {
             dlgopen('../../patient_file/summary/add_edit_issue.php', '_blank', 700, 535, '', '', {
-                buttons: [
-                    {text: <?php echo xlj('Close'); ?>, close: true, style: 'default btn-sm'}
-                ]
+                buttons: [{
+                    text: <?php echo xlj('Close'); ?>,
+                    close: true,
+                    style: 'default btn-sm'
+                }]
             });
             return false;
         }
@@ -194,8 +197,8 @@ $ires = sqlStatement("SELECT id, type, title, begdate FROM lists WHERE " .
         }
         ?>
         let collectvalidation = <?php echo $collectthis; ?>;
-        $(function () {
-            window.saveClicked = function (event) {
+        $(function() {
+            window.saveClicked = function(event) {
                 const submit = submitme(1, event, 'new-encounter-form', collectvalidation);
                 if (submit) {
                     top.restoreSession();
@@ -203,7 +206,7 @@ $ires = sqlStatement("SELECT id, type, title, begdate FROM lists WHERE " .
                 }
             }
 
-            $(".enc_issue").on('click', function (e) {
+            $(".enc_issue").on('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 dlgopen('', '', 700, 650, '', '', {
@@ -220,7 +223,8 @@ $ires = sqlStatement("SELECT id, type, title, begdate FROM lists WHERE " .
                 <?php $datetimepicker_showseconds = false; ?>
                 <?php $datetimepicker_formatInput = true; ?>
                 <?php require($GLOBALS['srcdir'] . '/js/xl/jquery-datetimepicker-2-5-4.js.php'); ?>
-                <?php // can add any additional javascript settings to datetimepicker here; need to prepend first setting with a comma ?>
+                <?php // can add any additional javascript settings to datetimepicker here; need to prepend first setting with a comma 
+                ?>
             });
         });
 
@@ -239,9 +243,9 @@ $ires = sqlStatement("SELECT id, type, title, begdate FROM lists WHERE " .
                     facility_id: facility,
                     csrf_token_form: <?php echo js_escape(CsrfUtils::collectCsrfToken()); ?>
                 }
-            }).done(function (fid) {
+            }).done(function(fid) {
                 document.forms[0].pos_code.value = JSON.parse(fid);
-            }).fail(function (xhr) {
+            }).fail(function(xhr) {
                 console.log('error', xhr);
             });
         }
@@ -256,7 +260,7 @@ $ires = sqlStatement("SELECT id, type, title, begdate FROM lists WHERE " .
                     provider_id: provider,
                     csrf_token_form: <?php echo js_escape(CsrfUtils::collectCsrfToken()); ?>
                 }
-            }).done(function (data) {
+            }).done(function(data) {
                 let rtn = JSON.parse(data);
                 document.forms[0].facility_id.value = rtn[0];
                 if (isPosEnabled) {
@@ -265,7 +269,7 @@ $ires = sqlStatement("SELECT id, type, title, begdate FROM lists WHERE " .
                 if (Number(rtn[2]) === 1) {
                     document.forms[0]['billing_facility'].value = rtn[0];
                 }
-            }).fail(function (xhr) {
+            }).fail(function(xhr) {
                 console.log('error', xhr);
             });
         }
@@ -283,14 +287,14 @@ $ires = sqlStatement("SELECT id, type, title, begdate FROM lists WHERE " .
             location.href = '<?php echo "$rootdir/patient_file/encounter/forms.php"; ?>';
             return false;
         }
-
     </script>
     <style>
         @media only screen and (max-width: 1024px) {
+
             #visit-details [class*="col-"],
             #visit-issues [class*="col-"] {
                 width: 100%;
-                text-align: <?php echo ($_SESSION['language_direction'] == 'rtl') ? 'right ' : 'left '?> !important;
+                text-align: <?php echo ($_SESSION['language_direction'] == 'rtl') ? 'right ' : 'left ' ?> !important;
             }
         }
     </style>
@@ -315,12 +319,12 @@ $ires = sqlStatement("SELECT id, type, title, begdate FROM lists WHERE " .
     <?php
     $arrOeUiSettings = array(
         'heading_title' => $heading_caption,
-        'include_patient_name' => true,// use only in appropriate pages
+        'include_patient_name' => true, // use only in appropriate pages
         'expandable' => false,
-        'expandable_files' => array(""),//all file names need suffix _xpd
-        'action' => "",//conceal, reveal, search, reset, link or back
+        'expandable_files' => array(""), //all file names need suffix _xpd
+        'action' => "", //conceal, reveal, search, reset, link or back
         'action_title' => "",
-        'action_href' => "",//only for actions - reset, link or back
+        'action_href' => "", //only for actions - reset, link or back
         'show_help_icon' => true,
         'help_file_name' => "common_help.php"
     );
@@ -352,12 +356,19 @@ $ires = sqlStatement("SELECT id, type, title, begdate FROM lists WHERE " .
     $MBO = new OpenEMR\Billing\MiscBillingOptions();
     ?>
 </head>
+
 <body <?php echo $body_javascript; ?>>
     <div id="container_div" class="<?php echo attr($oemr_ui->oeContainer()); ?> mt-3">
         <div class="row">
             <div class="col-sm-12">
                 <!-- Required for the popup date selectors -->
                 <div id="overDiv" style="position: absolute; visibility: hidden; z-index: 1000;"></div>
+                <div class="d-flex justify-content-end mb-2">
+                    <a href="../../patient_file/summary/visit_summarization.php" class="btn d-block btn-primary enc_issue" onclick="top.restoreSession()">
+                        <?php echo xlt('Summarize History'); ?>
+                        <i class="fa-solid fa-eye"></i>
+                    </a>
+                </div>
                 <?php echo $oemr_ui->pageHeading() . "\r\n"; ?>
             </div>
         </div>
@@ -446,13 +457,13 @@ $ires = sqlStatement("SELECT id, type, title, begdate FROM lists WHERE " .
                                 <?php } ?>
                             </div>
                         </div>
-                        <div class="col-sm <?php displayOption('enc_enable_class');?>">
+                        <div class="col-sm <?php displayOption('enc_enable_class'); ?>">
                             <div class="form-group">
                                 <label for='class' class="text-right"><?php echo xlt('Class'); ?>:</label>
                                 <?php echo generate_select_list('class_code', '_ActEncounterCode', $viewmode ? $result['class_code'] : '', '', ''); ?>
                             </div>
                         </div>
-                        <div class="col-sm <?php displayOption('enc_enable_type');?>">
+                        <div class="col-sm <?php displayOption('enc_enable_type'); ?>">
                             <div class="form-group">
                                 <label for='encounter_type' class="text-right"><?php echo xlt('Type'); ?>:</label>
                                 <?php
@@ -477,8 +488,8 @@ $ires = sqlStatement("SELECT id, type, title, begdate FROM lists WHERE " .
                         $sensitivities = AclExtended::aclGetSensitivities();
                         if ($sensitivities && count($sensitivities)) :
                             usort($sensitivities, "sensitivity_compare");
-                            ?>
-                            <div class="col-sm <?php displayOption('enc_sensitivity_visibility');?>">
+                        ?>
+                            <div class="col-sm <?php displayOption('enc_sensitivity_visibility'); ?>">
                                 <div class="form-group">
                                     <label for="pc_catid" class="text-right"><?php echo xlt('Sensitivity:'); ?> <i id='sensitivity-tooltip' class="fa fa-info-circle text-primary" aria-hidden="true"></i></label>
                                     <select name='form_sensitivity' id='form_sensitivity' class='form-control'>
@@ -541,7 +552,7 @@ $ires = sqlStatement("SELECT id, type, title, begdate FROM lists WHERE " .
                                 </select>
                             </div>
                         </div>
-                        <div class="col-sm <?php displayOption('enc_enable_referring_provider');?>">
+                        <div class="col-sm <?php displayOption('enc_enable_referring_provider'); ?>">
                             <div class="form-group">
                                 <label for='referring_provider_id' class="text-right"><?php echo xlt('Referring Provider'); ?>:</label>
                                 <?php
@@ -553,11 +564,11 @@ $ires = sqlStatement("SELECT id, type, title, begdate FROM lists WHERE " .
                                 </select>
                             </div>
                         </div>
-                        <div class="col-sm <?php displayOption('enc_enable_ordering_provider');?>">
+                        <div class="col-sm <?php displayOption('enc_enable_ordering_provider'); ?>">
                             <div class="form-group">
                                 <label for='ordering_provider_id' class="text-right"><?php echo xlt('Ordering Provider'); ?>:</label>
                                 <?php
-                                    $MBO->genOrderingProviderSelect('ordering_provider_id', '-- ' . xl("Please Select") . ' --', $result["ordering_provider_id"] ?? '');
+                                $MBO->genOrderingProviderSelect('ordering_provider_id', '-- ' . xl("Please Select") . ' --', $result["ordering_provider_id"] ?? '');
                                 ?>
                                 </select>
                             </div>
@@ -565,11 +576,11 @@ $ires = sqlStatement("SELECT id, type, title, begdate FROM lists WHERE " .
                         <div class="col-sm <?php displayOption('enc_enable_facility'); ?>">
                             <div class="form-group">
                                 <label for='facility_id_sel' class="text-right"><?php echo xlt('Facility'); ?>:</label>
-                                <select name='facility_id_sel' id='facility_id_sel' class='form-control' <?php echo ($mode === "followup") ? 'disabled' : ''; ?> >
+                                <select name='facility_id_sel' id='facility_id_sel' class='form-control' <?php echo ($mode === "followup") ? 'disabled' : ''; ?>>
                                     <?php
                                     $fac = getFacilityList();
                                     foreach ($fac as $f) : ?>
-                                        <option value="<?php echo attr($f['id']); ?>" <?php echo ($f['selected'] == true) ? 'selected' : '';?>><?php echo text($f['name']); ?></option>
+                                        <option value="<?php echo attr($f['id']); ?>" <?php echo ($f['selected'] == true) ? 'selected' : ''; ?>><?php echo text($f['name']); ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
@@ -582,7 +593,7 @@ $ires = sqlStatement("SELECT id, type, title, begdate FROM lists WHERE " .
                                     $default_bill_fac = $default_bill_fac_override;
                                 } elseif (!$viewmode && $mode !== "followup") {
                                     if ($user_facility['billing_location'] == '1') {
-                                        $default_bill_fac =  $user_facility['id'] ;
+                                        $default_bill_fac =  $user_facility['id'];
                                     } else {
                                         $tmp_be = $facilityService->getPrimaryBusinessEntity();
                                         $tmp_bl =  $facilityService->getPrimaryBillingLocation();
@@ -599,7 +610,7 @@ $ires = sqlStatement("SELECT id, type, title, begdate FROM lists WHERE " .
                     </div>
 
                     <div class="form-row align-items-center">
-                        <div class="col-sm <?php displayOption('enc_service_date');?>">
+                        <div class="col-sm <?php displayOption('enc_service_date'); ?>">
                             <div class="form-group">
                                 <label for='form_date' class="text-right"><?php echo xlt('Date of Service:'); ?></label>
                                 <input type='text' class='form-control datepicker' name='form_date' id='form_date' <?php echo ($disabled ?? '') ?> value='<?php echo $viewmode ? attr(oeFormatDateTime($result['date'])) : attr(oeFormatDateTime(date('Y-m-d H:i:00'))); ?>' title='<?php echo xla('Date of service'); ?>' />
@@ -611,13 +622,13 @@ $ires = sqlStatement("SELECT id, type, title, begdate FROM lists WHERE " .
                                 <input type='text' class='form-control datepicker' name='form_onset_date' id='form_onset_date' value='<?php echo $viewmode && $result['onset_date'] !== '0000-00-00 00:00:00' ? attr(oeFormatDateTime($result['onset_date'])) : ''; ?>' title='<?php echo xla('Date of onset or hospitalization'); ?>' />
                             </div>
                         </div>
-                        <div class="col-sm <?php echo ($GLOBALS['gbl_visit_referral_source'] == 1) ?: 'd-none';?>">
+                        <div class="col-sm <?php echo ($GLOBALS['gbl_visit_referral_source'] == 1) ?: 'd-none'; ?>">
                             <div class="form-group">
                                 <label for="form_referral_source" class="text-right"><?php echo xlt('Referral Source'); ?>:</label>
                                 <?php echo generate_select_list('form_referral_source', 'refsource', $viewmode ? $result['referral_source'] : '', ''); ?>
                             </div>
                         </div>
-                        <div class="col-sm <?php echo ($GLOBALS['set_pos_code_encounter'] == 1) ?: 'd-none';?>">
+                        <div class="col-sm <?php echo ($GLOBALS['set_pos_code_encounter'] == 1) ?: 'd-none'; ?>">
                             <div class="form-group">
                                 <label for='pos_code' class="text-right"><?php echo xlt('POS Code'); ?>:</label>
                                 <select name="pos_code" id="pos_code" class='form-control'>
@@ -662,8 +673,8 @@ $ires = sqlStatement("SELECT id, type, title, begdate FROM lists WHERE " .
                                     $dischargeDisposiitons = $dischargeListDisposition->getOptionsByListName('discharge-disposition') ?? [];
                                     foreach ($dischargeDisposiitons as $dispositon) {
                                         $selected = ($result['discharge_disposition'] ?? null) == $dispositon['option_id'] ? "selected='selected'" : "";
-                                        ?>
-                                    <option value="<?php echo attr($dispositon['option_id']); ?>" <?php echo $selected; ?> ><?php echo text($dispositon['title']); ?></option>
+                                    ?>
+                                        <option value="<?php echo attr($dispositon['option_id']); ?>" <?php echo $selected; ?>><?php echo text($dispositon['title']); ?></option>
                                     <?php } ?>
                                 </select>
                             </div>
@@ -688,7 +699,7 @@ $ires = sqlStatement("SELECT id, type, title, begdate FROM lists WHERE " .
                         </div>
                     </fieldset>
                 </div>
-                <div class="col-sm <?php displayOption('enc_enable_issues');?>">
+                <div class="col-sm <?php displayOption('enc_enable_issues'); ?>">
                     <?php
                     // Before we even check for auth, see if we will even display
                     // To see issues stuff user needs write access to all issue types.
@@ -700,7 +711,7 @@ $ires = sqlStatement("SELECT id, type, title, begdate FROM lists WHERE " .
                         }
                     }
                     if ($issuesauth) {
-                        ?>
+                    ?>
                         <fieldset>
                             <legend>
                                 <?php echo xlt('Link/Add Issues to This Visit') ?>
@@ -744,109 +755,121 @@ $ires = sqlStatement("SELECT id, type, title, begdate FROM lists WHERE " .
                                 </div>
                             </div>
                         </fieldset>
-                        <?php
+                    <?php
                     }
                     ?>
                 </div>
             </div>
-            <?php //can change position of buttons by creating a class 'position-override' and adding rule text-align:center or right as the case may be in individual stylesheets ?>
+            <?php //can change position of buttons by creating a class 'position-override' and adding rule text-align:center or right as the case may be in individual stylesheets 
+            ?>
             <div class="form-row">
                 <div class="col-sm-12 text-left position-override pl-3">
                     <div class="btn-group" role="group">
                         <?php $link_submit = ($viewmode || empty($_GET['autoloaded'])) ? '' : 'link_submit';
-                              $cancel_clicked = ($viewmode) ? 'cancelClickedOld()' : 'cancelClickedNew()';?>
+                        $cancel_clicked = ($viewmode) ? 'cancelClickedOld()' : 'cancelClickedNew()'; ?>
                         <button type="button" id="saveEncounter" class="btn btn-primary btn-save" onclick="top.restoreSession(); saveClicked(undefined);"><?php echo xlt('Save'); ?></button>
-                        <button type="button" class="btn btn-cancel <?php echo $link_submit;?>" onClick="return <?php echo $cancel_clicked;?>"><?php echo xlt('Cancel'); ?></button>
+                        <button type="button" class="btn btn-cancel <?php echo $link_submit; ?>" onClick="return <?php echo $cancel_clicked; ?>"><?php echo xlt('Cancel'); ?></button>
                     </div>
                 </div>
             </div>
         </form>
     </div><!--End of container div-->
     <?php $oemr_ui->oeBelowContainerDiv(); ?>
-<script>
-    const fac_id_sel = document.getElementById("facility_id_sel");
-    fac_id_sel.addEventListener("change", () => {
-        let fac_id = document.getElementById("facility_id");
-        fac_id.value = fac_id_sel[fac_id_sel.selectedIndex].value;
-        getPOS();
-    });
-
-    <?php
-    if (!$viewmode) { ?>
-    function duplicateVisit(enc, datestr) {
-        if (!confirm(<?php echo xlj("A visit already exists for this patient today. Click Cancel to open it, or OK to proceed with creating a new one.") ?>)) {
-            // User pressed the cancel button, so re-direct to today's encounter
-            top.restoreSession();
-            parent.left_nav.setEncounter(datestr, enc, window.name);
-            parent.left_nav.loadFrame('enc2', window.name, 'patient_file/encounter/encounter_top.php?set_encounter=' + encodeURIComponent(enc));
-            return;
-        }
-        // otherwise just continue normally
-    }
-        <?php
-    // Search for an encounter from today
-        $erow = sqlQuery("SELECT fe.encounter, fe.date " .
-        "FROM form_encounter AS fe, forms AS f WHERE " .
-        "fe.pid = ? " .
-        " AND fe.date >= ? " .
-        " AND fe.date <= ? " .
-        " AND " .
-        "f.formdir = 'newpatient' AND f.form_id = fe.id AND f.deleted = 0 " .
-        "ORDER BY fe.encounter DESC LIMIT 1", array($pid, date('Y-m-d 00:00:00'), date('Y-m-d 23:59:59')));
-
-        if (!empty($erow['encounter'])) {
-            // If there is an encounter from today then present the duplicate visit dialog
-            echo "duplicateVisit(" . js_escape($erow['encounter']) . ", " .
-            js_escape(oeFormatShortDate(substr($erow['date'], 0, 10))) . ");\n";
-        }
-    }
-    ?>
-    <?php
-    if ($GLOBALS['enable_group_therapy']) { ?>
-    /* hide / show group name input */
-    let groupCategories = <?php echo json_encode($therapyGroupCategories); ?>;
-    $('#pc_catid').on('change', function () {
-        if (groupCategories.indexOf($(this).val()) > -1) {
-            $('#therapy_group_name').show();
-        } else {
-            $('#therapy_group_name').hide();
-        }
-    });
-
-    function sel_group() {
-        top.restoreSession();
-        const url = '<?php echo $GLOBALS['webroot']?>/interface/main/calendar/find_group_popup.php';
-        dlgopen(url, '_blank', 500, 400, '', '', {
-            buttons: [
-                {text: <?php echo xlj('Close'); ?>, close: true, style: 'default btn-sm'}
-            ]
+    <script>
+        const fac_id_sel = document.getElementById("facility_id_sel");
+        fac_id_sel.addEventListener("change", () => {
+            let fac_id = document.getElementById("facility_id");
+            fac_id.value = fac_id_sel[fac_id_sel.selectedIndex].value;
+            getPOS();
         });
-    }
-
-    // This is for callback by the find-group popup.
-    function setgroup(gid, name) {
-        var f = document.forms[0];
-        f.form_group.value = name;
-        f.form_gid.value = gid;
-    }
 
         <?php
-        if ($viewmode && in_array($result['pc_catid'], $therapyGroupCategories)) {?>
-    $('#therapy_group_name').show();
+        if (!$viewmode) { ?>
+
+            function duplicateVisit(enc, datestr) {
+                if (!confirm(<?php echo xlj("A visit already exists for this patient today. Click Cancel to open it, or OK to proceed with creating a new one.") ?>)) {
+                    // User pressed the cancel button, so re-direct to today's encounter
+                    top.restoreSession();
+                    parent.left_nav.setEncounter(datestr, enc, window.name);
+                    parent.left_nav.loadFrame('enc2', window.name, 'patient_file/encounter/encounter_top.php?set_encounter=' + encodeURIComponent(enc));
+                    return;
+                }
+                // otherwise just continue normally
+            }
+        <?php
+            // Search for an encounter from today
+            $erow = sqlQuery("SELECT fe.encounter, fe.date " .
+                "FROM form_encounter AS fe, forms AS f WHERE " .
+                "fe.pid = ? " .
+                " AND fe.date >= ? " .
+                " AND fe.date <= ? " .
+                " AND " .
+                "f.formdir = 'newpatient' AND f.form_id = fe.id AND f.deleted = 0 " .
+                "ORDER BY fe.encounter DESC LIMIT 1", array($pid, date('Y-m-d 00:00:00'), date('Y-m-d 23:59:59')));
+
+            if (!empty($erow['encounter'])) {
+                // If there is an encounter from today then present the duplicate visit dialog
+                echo "duplicateVisit(" . js_escape($erow['encounter']) . ", " .
+                    js_escape(oeFormatShortDate(substr($erow['date'], 0, 10))) . ");\n";
+            }
+        }
+        ?>
+        <?php
+        if ($GLOBALS['enable_group_therapy']) { ?>
+            /* hide / show group name input */
+            let groupCategories = <?php echo json_encode($therapyGroupCategories); ?>;
+            $('#pc_catid').on('change', function() {
+                if (groupCategories.indexOf($(this).val()) > -1) {
+                    $('#therapy_group_name').show();
+                } else {
+                    $('#therapy_group_name').hide();
+                }
+            });
+
+            function sel_group() {
+                top.restoreSession();
+                const url = '<?php echo $GLOBALS['webroot'] ?>/interface/main/calendar/find_group_popup.php';
+                dlgopen(url, '_blank', 500, 400, '', '', {
+                    buttons: [{
+                        text: <?php echo xlj('Close'); ?>,
+                        close: true,
+                        style: 'default btn-sm'
+                    }]
+                });
+            }
+
+            // This is for callback by the find-group popup.
+            function setgroup(gid, name) {
+                var f = document.forms[0];
+                f.form_group.value = name;
+                f.form_gid.value = gid;
+            }
+
             <?php
-        } ?>
+            if ($viewmode && in_array($result['pc_catid'], $therapyGroupCategories)) { ?>
+                $('#therapy_group_name').show();
+            <?php
+            } ?>
         <?php
-    } ?>
+        } ?>
 
-    $(function () {
-        $('#sensitivity-tooltip').attr({"title": <?php echo xlj('If set as high will restrict visibility of encounter to users belonging to certain groups (AROs). By default - Physicians and Administrators'); ?>, "data-toggle": "tooltip", "data-placement": "bottom"}).tooltip();
-        $('#onset-tooltip').attr({"title": <?php echo xlj('Hospital date needed for successful billing of hospital encounters'); ?>, "data-toggle": "tooltip", "data-placement": "bottom"}).tooltip();
-    });
+        $(function() {
+            $('#sensitivity-tooltip').attr({
+                "title": <?php echo xlj('If set as high will restrict visibility of encounter to users belonging to certain groups (AROs). By default - Physicians and Administrators'); ?>,
+                "data-toggle": "tooltip",
+                "data-placement": "bottom"
+            }).tooltip();
+            $('#onset-tooltip').attr({
+                "title": <?php echo xlj('Hospital date needed for successful billing of hospital encounters'); ?>,
+                "data-toggle": "tooltip",
+                "data-placement": "bottom"
+            }).tooltip();
+        });
+    </script>
 
-</script>
-
-<?php if (!empty($GLOBALS['text_templates_enabled'])) { ?>
-    <script src="<?php echo $GLOBALS['web_root'] ?>/library/js/CustomTemplateLoader.js"></script>
-<?php } ?>
+    <?php if (!empty($GLOBALS['text_templates_enabled'])) { ?>
+        <script src="<?php echo $GLOBALS['web_root'] ?>/library/js/CustomTemplateLoader.js"></script>
+    <?php } ?>
 </body>
+
 </html>
