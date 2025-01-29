@@ -106,7 +106,7 @@ header('Content-type: text/html; charset=utf-8');
 <!-- @todo Adding DOCTYPE html breaks BS width/height percentages. Why? -->
 <html>
 <head>
-    <title>OpenEMR Database Upgrade</title>
+    <title>QuantumleapEMR Database Upgrade</title>
     <?php Header::setupHeader(); ?>
     <link rel="shortcut icon" href="public/images/favicon.ico" />
 <script>
