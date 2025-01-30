@@ -384,7 +384,7 @@ if (!empty($glrow)) {
         } elseif ($gl_name == 'css_header') {
             //Escape css file name using 'attr' for security (prevent XSS).
             if (!file_exists($webserver_root . '/public/themes/' . attr($gl_value))) {
-                $gl_value = 'style_light.css';
+                $gl_value = 'style_purple_white.css';
             }
             $GLOBALS[$gl_name] = $web_root . '/public/themes/' . attr($gl_value) . '?v=' . $v_js_includes;
             $GLOBALS['compact_header'] = $web_root . '/public/themes/compact_' . attr($gl_value) . '?v=' . $v_js_includes;
