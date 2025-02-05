@@ -41,6 +41,7 @@ $alertmsg = '';
 <head>
 
     <?php Header::setupHeader(['common', 'opener', 'erx']); ?>
+    
 
     <script src="checkpwd_validation.js"></script>
 
@@ -76,7 +77,6 @@ $alertmsg = '';
         }
 
         function submitform() {
-
             var valid = submitme(1, undefined, 'new_user', collectvalidation);
             if (!valid) return;
 

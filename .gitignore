@@ -28,3 +28,5 @@ ccdaservice/node_modules
 .phpunit.result.cache
 coverage/js-unit
 ./sites/default/sqlconf.php
+
+/sites/uploads/

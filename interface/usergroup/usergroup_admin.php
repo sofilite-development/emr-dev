@@ -366,7 +366,7 @@ if (isset($_POST["mode"])) {
             }
 
             // Create upload directory
-            $uploadDir = "uploads/signatures/";
+            $uploadDir = $OE_SITES_BASE . "/uploads/signatures/";
             if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0755, true);
             }
@@ -376,7 +376,7 @@ if (isset($_POST["mode"])) {
             $targetFile = $uploadDir . $fileName;
             // Move the file
             if (move_uploaded_file($_FILES["signature-user"]["tmp_name"], $targetFile)) {
-                $signaturePath = "'" . add_escape_custom($targetFile) . "'";
+                $signaturePath = add_escape_custom("sites/uploads/signatures/" . $fileName);
             } else {
                 echo "<script>alert('Error: Failed to save file!'); window.history.back();</script>";
                 exit;
