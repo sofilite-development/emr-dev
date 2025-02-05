@@ -279,7 +279,7 @@ function toggle_password() {
 <br />
 <FORM NAME="user_form" id="user_form" METHOD="POST" ACTION="usergroup_admin.php">
 <input type="hidden" name="csrf_token_form" value="<?php echo attr(CsrfUtils::collectCsrfToken()); ?>" />
-
+<!-- EDIT USER INFO -->
 <input type=hidden name="pre_active" value="<?php echo attr($iter["active"]); ?>" >
 <input type=hidden name="get_admin_id" value="<?php echo attr($GLOBALS['Emergency_Login_email']); ?>" >
 <input type=hidden name="admin_id" value="<?php echo attr($GLOBALS['Emergency_Login_email_id']); ?>" >

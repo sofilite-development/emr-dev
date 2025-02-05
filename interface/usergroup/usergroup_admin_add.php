@@ -41,7 +41,7 @@ $alertmsg = '';
 <head>
 
     <?php Header::setupHeader(['common', 'opener', 'erx']); ?>
-    
+
 
     <script src="checkpwd_validation.js"></script>
 
@@ -77,6 +77,11 @@ $alertmsg = '';
         }
 
         function submitform() {
+            const signature = document.getElementById("signature-user").value;
+            if (!signature) {
+                alert("Must need signature!");
+                return;
+            }
             var valid = submitme(1, undefined, 'new_user', collectvalidation);
             if (!valid) return;
 
@@ -200,7 +205,6 @@ $alertmsg = '';
 <body class="body_top">
 
     <div class="container">
-
         <table>
             <tr>
                 <td>

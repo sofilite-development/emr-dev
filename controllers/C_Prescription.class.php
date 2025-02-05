@@ -282,8 +282,8 @@ class C_Prescription extends Controller
 
         //print_r($_POST);
 
-    // Stupid Smarty code treats empty values as not specified values.
-    // Since active is a checkbox, represent the unchecked state as -1.
+        // Stupid Smarty code treats empty values as not specified values.
+        // Since active is a checkbox, represent the unchecked state as -1.
         if (empty($_POST['active'])) {
             $_POST['active'] = '-1';
         }
@@ -311,32 +311,32 @@ class C_Prescription extends Controller
             return $this->edit_action($this->prescriptions[0]->id);
         }
 
-    // Set the AMC reporting flag (to record percentage of prescriptions that
-    // are set as e-prescriptions)
+        // Set the AMC reporting flag (to record percentage of prescriptions that
+        // are set as e-prescriptions)
         if (!(empty($_POST['escribe_flag']))) {
-              // add the e-prescribe flag
-              processAmcCall('e_prescribe_amc', true, 'add', $this->prescriptions[0]->get_patient_id(), 'prescriptions', $this->prescriptions[0]->id);
+            // add the e-prescribe flag
+            processAmcCall('e_prescribe_amc', true, 'add', $this->prescriptions[0]->get_patient_id(), 'prescriptions', $this->prescriptions[0]->id);
         } else {
-              // remove the e-prescribe flag
-              processAmcCall('e_prescribe_amc', true, 'remove', $this->prescriptions[0]->get_patient_id(), 'prescriptions', $this->prescriptions[0]->id);
+            // remove the e-prescribe flag
+            processAmcCall('e_prescribe_amc', true, 'remove', $this->prescriptions[0]->get_patient_id(), 'prescriptions', $this->prescriptions[0]->id);
         }
 
-    // Set the AMC reporting flag (to record prescriptions that checked drug formulary)
+        // Set the AMC reporting flag (to record prescriptions that checked drug formulary)
         if (!(empty($_POST['checked_formulary_flag']))) {
-              // add the e-prescribe flag
-              processAmcCall('e_prescribe_chk_formulary_amc', true, 'add', $this->prescriptions[0]->get_patient_id(), 'prescriptions', $this->prescriptions[0]->id);
+            // add the e-prescribe flag
+            processAmcCall('e_prescribe_chk_formulary_amc', true, 'add', $this->prescriptions[0]->get_patient_id(), 'prescriptions', $this->prescriptions[0]->id);
         } else {
-              // remove the e-prescribe flag
-              processAmcCall('e_prescribe_chk_formulary_amc', true, 'remove', $this->prescriptions[0]->get_patient_id(), 'prescriptions', $this->prescriptions[0]->id);
+            // remove the e-prescribe flag
+            processAmcCall('e_prescribe_chk_formulary_amc', true, 'remove', $this->prescriptions[0]->get_patient_id(), 'prescriptions', $this->prescriptions[0]->id);
         }
 
-    // Set the AMC reporting flag (to record prescriptions that are controlled substances)
+        // Set the AMC reporting flag (to record prescriptions that are controlled substances)
         if (!(empty($_POST['controlled_substance_flag']))) {
-              // add the e-prescribe flag
-              processAmcCall('e_prescribe_cont_subst_amc', true, 'add', $this->prescriptions[0]->get_patient_id(), 'prescriptions', $this->prescriptions[0]->id);
+            // add the e-prescribe flag
+            processAmcCall('e_prescribe_cont_subst_amc', true, 'add', $this->prescriptions[0]->get_patient_id(), 'prescriptions', $this->prescriptions[0]->id);
         } else {
-              // remove the e-prescribe flag
-              processAmcCall('e_prescribe_cont_subst_amc', true, 'remove', $this->prescriptions[0]->get_patient_id(), 'prescriptions', $this->prescriptions[0]->id);
+            // remove the e-prescribe flag
+            processAmcCall('e_prescribe_cont_subst_amc', true, 'remove', $this->prescriptions[0]->get_patient_id(), 'prescriptions', $this->prescriptions[0]->id);
         }
 
         $this->list_action($this->prescriptions[0]->get_patient_id());
@@ -360,12 +360,12 @@ class C_Prescription extends Controller
         $my_y = $pdf->y;
         $pdf->ezNewPage();
         $pdf->ezText('<b>' . $p->provider->get_name_display() . '</b>', 12);
-    // A client had a bad experience with a patient misusing a DEA number, so
-    // now the doctors write those in on printed prescriptions and only when
-    // necessary.  If you need to change this back, then please make it a
-    // configurable option.  Faxed prescriptions were not changed.  -- Rod
-    // Now it is configureable. Change value in
-    //     Administration->Globals->Rx
+        // A client had a bad experience with a patient misusing a DEA number, so
+        // now the doctors write those in on printed prescriptions and only when
+        // necessary.  If you need to change this back, then please make it a
+        // configurable option.  Faxed prescriptions were not changed.  -- Rod
+        // Now it is configureable. Change value in
+        //     Administration->Globals->Rx
         if ($GLOBALS['rx_enable_DEA']) {
             if ($this->is_faxing || $GLOBALS['rx_show_DEA']) {
                 $pdf->ezText('<b>' . xl('DEA') . ':</b>' . $p->provider->federal_drug_id, 12);
@@ -376,7 +376,7 @@ class C_Prescription extends Controller
 
         if ($GLOBALS['rx_enable_NPI']) {
             if ($this->is_faxing || $GLOBALS['rx_show_NPI']) {
-                    $pdf->ezText('<b>' . xl('NPI') . ':</b>' . $p->provider->npi, 12);
+                $pdf->ezText('<b>' . xl('NPI') . ':</b>' . $p->provider->npi, 12);
             } else {
                 $pdf->ezText('<b>' . xl('NPI') . ':</b> _________________________', 12);
             }
@@ -425,7 +425,7 @@ class C_Prescription extends Controller
 
     function multiprintcss_header($p)
     {
-        echo("<div class='paddingdiv'>\n");
+        echo ("<div class='paddingdiv'>\n");
         $this->providerid = $p->provider->id;
         echo ("<table cellspacing='0' cellpadding='0' width='100%'>\n");
         echo ("<tr>\n");
@@ -438,8 +438,8 @@ class C_Prescription extends Controller
         echo ("<td>\n");
         $res = sqlQuery("SELECT concat('<b>',f.name,'</b>\n',f.street,'\n',f.city,', ',f.state,' ',f.postal_code,'\nTel:',f.phone,if(f.fax != '',concat('\nFax: ',f.fax),'')) addr FROM users JOIN facility AS f ON f.name = users.facility where users.id ='" . add_escape_custom($p->provider->id) . "'");
         if (!empty($res)) {
-            $patterns = array ('/\n/','/Tel:/','/Fax:/');
-            $replace = array ('<br />', xl('Tel') . ':', xl('Fax') . ':');
+            $patterns = array('/\n/', '/Tel:/', '/Fax:/');
+            $replace = array('<br />', xl('Tel') . ':', xl('Fax') . ':');
             $res = preg_replace($patterns, $replace, $res);
         }
 
@@ -452,7 +452,7 @@ class C_Prescription extends Controller
             if ($GLOBALS['rx_show_DEA']) {
                 echo ('<span class="large"><b>' . xl('DEA') . ':</b>' . $p->provider->federal_drug_id . '</span><br />');
             } else {
-                echo ('<b><span class="large">' . xl('DEA') . ':</span></b> ________________________<br />' );
+                echo ('<b><span class="large">' . xl('DEA') . ':</span></b> ________________________<br />');
             }
         }
 
@@ -480,8 +480,8 @@ class C_Prescription extends Controller
         echo ($p->patient->get_name_display() . '<br />');
         $res = sqlQuery("SELECT  concat(street,'\n',city,', ',state,' ',postal_code,'\n',if(phone_home!='',phone_home,if(phone_cell!='',phone_cell,if(phone_biz!='',phone_biz,'')))) addr from patient_data where pid =" . add_escape_custom($p->patient->id));
         if (!empty($res)) {
-            $patterns = array ('/\n/');
-            $replace = array ('<br />');
+            $patterns = array('/\n/');
+            $replace = array('<br />');
             $res = preg_replace($patterns, $replace, $res);
         }
 
@@ -489,7 +489,7 @@ class C_Prescription extends Controller
         echo ("</td>\n");
         echo ("<td class='bordered'>\n");
         echo ('<b><span class="small">' . xl('Date of Birth') . '</span></b>' . '<br />');
-        echo ($p->patient->date_of_birth );
+        echo ($p->patient->date_of_birth);
         echo ("</td>\n");
         echo ("</tr>\n");
         echo ("<tr>\n");
@@ -580,7 +580,7 @@ class C_Prescription extends Controller
         if (
             $this->pconfig['use_signature']
             && $this->current_user_has_signature()
-            && ( $this->is_faxing || $this->is_print_to_fax )
+            && ($this->is_faxing || $this->is_print_to_fax)
         ) {
             $sigfile = str_replace('{userid}', $_SESSION["authUser"], $this->pconfig['signature']);
             if (file_exists($sigfile)) {
@@ -605,13 +605,26 @@ class C_Prescription extends Controller
             }
         }
 
-        $pdf->ezText("\n\n\n\n" . xl('Signature') . ":________________________________\n" . xl('Date') . ": " . date('Y-m-d'), 12);
+        $pdf->ezText("\n\n\n\n" . xl('Signature') . ": \n", 14);
+        // signature_URL
+        $authUserId = $_SESSION["authUserID"];
+        $signatureData = sqlQueryNoLog("SELECT `url` FROM `users` WHERE `id` = ?", $authUserId);
+        $signatureUrl = $signatureData['url'];
+        $pdf->ezImage($signatureUrl, 0, 100, 'none', 'left');
+        $pdf->ezText("\n" . xl('Date') . ": " . date('Y-m-d'), 12);
+
+        // $pdf->ezText("\n\n\n\n" . xl('Signature') . ":________________________________\n" . xl('Date') . ": " . date('Y-m-d'), 12);
     }
 
     function multiprintcss_footer()
     {
+        // signature_URL
+        $authUserId = $_SESSION["authUserID"];
+        $signatureData = sqlQueryNoLog("SELECT `url` FROM `users` WHERE `id` = ?", $authUserId);
+        $signatureUrl = $signatureData['url'];
+
         echo ("<div class='signdiv'>\n");
-        echo (xl('Signature') . ":________________________________<br />");
+        echo (xl('Signature') . ': <img src="' . htmlspecialchars($signatureUrl) . '" alt="Signature" height="100"><br/>');
         echo (xl('Date') . ": " . date('Y-m-d'));
         echo ("</div>\n");
         echo ("</div>\n");
@@ -619,11 +632,11 @@ class C_Prescription extends Controller
 
     function multiprintcss_postfooter()
     {
-        echo("<script>\n");
-        echo("opener.top.printLogPrint(window);\n");
-        echo("</script>\n");
-        echo("</body>\n");
-        echo("</html>\n");
+        echo ("<script>\n");
+        echo ("opener.top.printLogPrint(window);\n");
+        echo ("</script>\n");
+        echo ("</body>\n");
+        echo ("</html>\n");
     }
 
     function get_prescription_body_text($p)
@@ -697,8 +710,8 @@ class C_Prescription extends Controller
     function multiprintcss_body($p)
     {
         $d = $this->get_prescription_body_text($p);
-        $patterns = array ('/\n/','/     /');
-        $replace = array ('<br />','&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+        $patterns = array('/\n/', '/     /');
+        $replace = array('<br />', '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
         $d = preg_replace($patterns, $replace, $d);
         echo ("<div class='scriptdiv'>\n" . $d . "</div>\n");
     }
@@ -763,7 +776,7 @@ class C_Prescription extends Controller
             if ($GLOBALS['rx_show_DEA']) {
                 echo (xl('DEA') . ':' . $p->provider->federal_drug_id . "\n");
             } else {
-                echo (xl('DEA') . ": ________________________\n" );
+                echo (xl('DEA') . ": ________________________\n");
             }
         }
 
@@ -808,7 +821,7 @@ class C_Prescription extends Controller
         echo ($address);
         echo "\n";
         echo (xl('Date of Birth')) . " ";
-        echo ($p->patient->date_of_birth );
+        echo ($p->patient->date_of_birth);
         echo "\n";
         echo xl('Medical Record #');
         echo (str_pad($p->patient->get_pubpid(), 10, "0", STR_PAD_LEFT));
@@ -819,7 +832,13 @@ class C_Prescription extends Controller
 
     function multiprintplain_footer()
     {
-        echo xl('Signature') . ":________________________________\n";
+        // signature_URL
+        $authUserId = $_SESSION["authUserID"];
+        $signatureData = sqlQueryNoLog("SELECT `url` FROM `users` WHERE `id` = ?", $authUserId);
+        $signatureUrl = $signatureData['url'];
+
+        echo ("<div class='signdiv'>\n");
+        echo (xl('Signature') . ': <img src="' . htmlspecialchars($signatureUrl) . '" alt="Signature" height="100"><br/>');
         echo xl('Date') . ": " . date('Y-m-d') . "\n";
     }
 
@@ -861,8 +880,8 @@ class C_Prescription extends Controller
         $this->multiprintplain_footer();
         $data = ob_get_clean();
         $result = [
-            'subject' => $GLOBALS['openemr_name'] . " " . xl(" Prescription ")
-            ,'message' => $data
+            'subject' => $GLOBALS['openemr_name'] . " " . xl(" Prescription "),
+            'message' => $data
         ];
         http_response_code(200);
         header("Content-Type:" . "application/json");
@@ -974,8 +993,8 @@ class C_Prescription extends Controller
         }
 
         $mail->From = $GLOBALS['practice_return_email_path'];
-//        $mail->FromName = $p->provider->get_name_display();
-//        $text_body  = $p->get_prescription_display();
+        //        $mail->FromName = $p->provider->get_name_display();
+        //        $text_body  = $p->get_prescription_display();
         $mail->Body = $mailBody;
         $mail->Subject = $GLOBALS['openemr_name'] . " " . xl("Prescription");
         $mail->AddAddress($email);
@@ -995,9 +1014,9 @@ class C_Prescription extends Controller
     function do_lookup()
     {
         if ($_POST['process'] != "true") {
-                    // don't do a lookup
+            // don't do a lookup
             $this->assign("drug", $_GET['drug']);
-                    return;
+            return;
         }
 
         // process the lookup
@@ -1045,7 +1064,7 @@ class C_Prescription extends Controller
                 }
 
                 $fileName = $GLOBALS['OE_SITE_DIR'] . "/documents/" . $p->get_id() .
-                $p->get_patient_id() . "_fax_.pdf";
+                    $p->get_patient_id() . "_fax_.pdf";
                 //print "filename is $fileName";
                 touch($fileName); // php bug
                 $handle = fopen($fileName, "w");

@@ -371,12 +371,14 @@ if (isset($_POST["mode"])) {
                 mkdir($uploadDir, 0755, true);
             }
 
+            $appUrl = $_ENV["APP_URL"] ?? "";
+
             // Generate unique filename
             $fileName = uniqid() . "_" . basename($_FILES["signature-user"]["name"]);
             $targetFile = $uploadDir . $fileName;
             // Move the file
             if (move_uploaded_file($_FILES["signature-user"]["tmp_name"], $targetFile)) {
-                $signaturePath = add_escape_custom("/sites/uploads/signatures/" . $fileName);
+                $signaturePath = add_escape_custom($appUrl . "/sites/uploads/signatures/" . $fileName);
             } else {
                 echo "<script>alert('Error: Failed to save file!'); window.history.back();</script>";
                 exit;
@@ -429,6 +431,7 @@ if (isset($_POST["mode"])) {
                 "', supervisor_id = '" . add_escape_custom((isset($_POST['supervisor_id']) ? (int)$_POST['supervisor_id'] : 0)) .
                 "', url = '" . add_escape_custom(trim(isset($signaturePath) ? $signaturePath : "")) .
                 "'";
+            // signature_URL
 
             $authUtilsNewPassword = new AuthUtils();
             $success = $authUtilsNewPassword->updatePassword(
@@ -797,6 +800,7 @@ $form_inactive = !empty($_POST['form_inactive']);
                                         echo '0';
                                     }
                                 }
+                                // signature_URL
                                 echo "<td align='left'><img src='" . htmlspecialchars($iter["url"]) . "' alt='Signature' style='max-width: 100px; height: auto; border: 1px solid #ccc;'></td>";
                                 echo '</td>';
                                 print "</tr>\n";
