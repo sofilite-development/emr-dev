@@ -155,17 +155,25 @@ $alertmsg = '';
 
             let post_url = $("#new_user").attr("action");
             let request_method = $("#new_user").attr("method");
-            let form_data = $("#new_user").serialize();
+            // let form_data = $("#new_user").serialize();
+            let form_data = new FormData(document.getElementById("new_user"));
+
 
             $.ajax({
                 url: post_url,
                 type: request_method,
-                data: form_data
-            }).done(function(r) {
-                if (r) {
-                    alert(r);
-                } else {
-                    dlgclose('reload', false);
+                data: form_data,
+                processData: false, // Prevent jQuery from converting FormData into a string
+                contentType: false, // Prevent jQuery from setting content type
+                success: function(response) {
+                    if (response) {
+                        alert(response);
+                    } else {
+                        dlgclose('reload', false);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert("Upload failed: " + error);
                 }
             });
 

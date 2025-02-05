@@ -329,11 +329,6 @@ if (isset($_POST["privatemode"]) && $_POST["privatemode"] == "user_admin") {
 /* To refresh and save variables in mail frame  - Arb*/
 if (isset($_POST["mode"])) {
     if ($_POST["mode"] == "new_user") {
-        if ($_FILES['signature-user']['error'] !== 0) {
-            die("File upload error: " . $_FILES['signature-user']['error']);
-        }
-
-
         if (empty($_POST["authorized"]) || $_POST["authorized"] != "1") {
             $_POST["authorized"] = 0;
         }
@@ -348,32 +343,46 @@ if (isset($_POST["mode"])) {
         }
 
 
-        $signaturePath = "NULL";
+        $signaturePath = "NULL"; // Default value
+
+        // Handle signature upload
         if (isset($_FILES['signature-user']) && $_FILES['signature-user']['error'] == 0) {
             $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+            $maxFileSize = 2 * 1024 * 1024; // 2MB
+
             $fileType = mime_content_type($_FILES['signature-user']['tmp_name']);
-            echo "<script>alert('File type: " . $fileType . "');</script>";
+            $fileExtension = strtolower(pathinfo($_FILES['signature-user']['name'], PATHINFO_EXTENSION));
 
-            if (in_array($fileType, $allowedTypes)) {
-                $uploadDir = "uploads/signatures/";
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0755, true);
-                }
+            // Validate file type and size
+            if (!in_array($fileType, $allowedTypes) || !in_array($fileExtension, $allowedExtensions)) {
+                echo "<script>alert('Error: Invalid file type!'); window.history.back();</script>";
+                exit;
+            }
 
-                $fileName = uniqid() . "_" . basename($_FILES["signature-user"]["name"]);
-                $targetFile = $uploadDir . $fileName;
-                echo "<script>alert('Target File: " . $targetFile . "');</script>";
+            if ($_FILES['signature-user']['size'] > $maxFileSize) {
+                echo "<script>alert('Error: File is too large!'); window.history.back();</script>";
+                exit;
+            }
 
-                if (move_uploaded_file($_FILES["signature-user"]["tmp_name"], $targetFile)) {
-                    $signaturePath = "'" . add_escape_custom($targetFile) . "'";
-                    echo "<script>alert('Signature uploaded successfully: " . $signaturePath . "');</script>";
-                } else {
-                    echo "<script>alert('Error: File upload failed!');</script>";
-                }
+            // Create upload directory
+            $uploadDir = "uploads/signatures/";
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+
+            // Generate unique filename
+            $fileName = uniqid() . "_" . basename($_FILES["signature-user"]["name"]);
+            $targetFile = $uploadDir . $fileName;
+            // Move the file
+            if (move_uploaded_file($_FILES["signature-user"]["tmp_name"], $targetFile)) {
+                $signaturePath = "'" . add_escape_custom($targetFile) . "'";
             } else {
-                echo "<script>alert('Error: Invalid file type!');</script>";
+                echo "<script>alert('Error: Failed to save file!'); window.history.back();</script>";
+                exit;
             }
         }
+
 
 
         if ($doit == true) {
@@ -418,6 +427,7 @@ if (isset($_POST["mode"])) {
                 "', calendar = '"      . add_escape_custom($calvar) .
                 "', portal_user = '"   . add_escape_custom($portalvar) .
                 "', supervisor_id = '" . add_escape_custom((isset($_POST['supervisor_id']) ? (int)$_POST['supervisor_id'] : 0)) .
+                "', url = '" . add_escape_custom(trim(isset($signaturePath) ? $signaturePath : "")) .
                 "'";
 
             $authUtilsNewPassword = new AuthUtils();
