@@ -376,7 +376,7 @@ if (isset($_POST["mode"])) {
             $targetFile = $uploadDir . $fileName;
             // Move the file
             if (move_uploaded_file($_FILES["signature-user"]["tmp_name"], $targetFile)) {
-                $signaturePath = add_escape_custom("sites/uploads/signatures/" . $fileName);
+                $signaturePath = add_escape_custom("/sites/uploads/signatures/" . $fileName);
             } else {
                 echo "<script>alert('Error: Failed to save file!'); window.history.back();</script>";
                 exit;
@@ -693,6 +693,7 @@ $form_inactive = !empty($_POST['form_inactive']);
                                 }
                                 ?>
                                 <th><?php echo xlt('Failed Login Counter'); ?></th>
+                                <th><?php echo xlt('Signature'); ?></th>
                             </tr>
                         <tbody>
                             <?php
@@ -796,6 +797,7 @@ $form_inactive = !empty($_POST['form_inactive']);
                                         echo '0';
                                     }
                                 }
+                                echo "<td align='left'><img src='" . htmlspecialchars($iter["url"]) . "' alt='Signature' style='max-width: 100px; height: auto; border: 1px solid #ccc;'></td>";
                                 echo '</td>';
                                 print "</tr>\n";
                             }
