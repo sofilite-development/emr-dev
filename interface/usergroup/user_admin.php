@@ -92,6 +92,9 @@ $iter = $result[0];
 
         function submitform() {
 
+            console.log(document.getElementById("signature-user").value)
+
+            return
             var valid = submitme(1, undefined, 'user_form', collectvalidation);
             if (!valid) return;
 
@@ -271,7 +274,8 @@ $iter = $result[0];
             <!-- signature_URL -->
             <tr>
                 <td>
-                    <label class="text" for="signature-user"><?php echo xlt('Update Signature'); ?>: </label>
+                    <label class="text"><?php echo xlt('Update Signature'); ?>:<span class="fa fa-fw fa-xs ml-1 fa-sync" style="cursor: pointer;" data-bind="click: tabRefresh, class: spinner"
+                            onclick="return reloadSignature()"></span></label>
                     <input type="file" id="signature-user" name="signature-user" placeholder="upload signature" accept="image/*" class="form-control">
                 </td>
 
@@ -699,15 +703,21 @@ Display red alert if entered password matched one of last three passwords/Displa
         <div class="container">
 
             <script>
-                document.getElementById('signature-user').addEventListener('change', function(event) {
+                var preview = document.getElementById('signaturePreview');
+                var signatureInput = document.getElementById('signature-user');
+                signatureInput.addEventListener('change', function(event) {
                     var reader = new FileReader();
                     reader.onload = function() {
-                        var preview = document.getElementById('signaturePreview');
                         preview.src = reader.result;
                         preview.style.display = 'block';
                     };
                     reader.readAsDataURL(event.target.files[0]);
                 });
+
+                function reloadSignature() {
+                    preview.src = "<?php echo $iter["url"] ?>";
+                    signatureInput.value = "";
+                }
             </script>
 </BODY>
 
