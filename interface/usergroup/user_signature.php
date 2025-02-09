@@ -76,12 +76,9 @@ $iter = $result[0];
     ?>
     <script>
         function submitform() {
-            const button = document.getElementById("save");
-            button.innerText = "loading...";
-            button.ariaDisabled = true;
             const input = document.getElementById("signature-user");
             if (!input.value) {
-                alert("New file missing");
+                alert("Please upload your signature!");
                 return;
             }
             if (input.value) {}
@@ -145,26 +142,26 @@ $iter = $result[0];
         }
         $disabled_save = !$is_super_user && $selected_user_is_superuser ? 'disabled' : '';
         ?>
-        <p class="title">Update Signature</p>&nbsp;
-        <br />
-        <button class="btn btn-secondary btn-save" name='form_save' href='#' type="button" id="save" onclick="return submitform()" <?php echo $disabled_save; ?>> <span><?php echo xlt('Save'); ?></span> </button>
-        <a class="btn btn-link btn-cancel" id='cancel' href='#'><span><?php echo xlt('Cancel'); ?></span></a>
+        <p class="title text-center"> <?php echo $iter["url"] ? "Update" : "Add"; ?> Signature</p>&nbsp;
 
-        <br>
         <form name="user_form" id="user_form" method="POST" action="signature_upload.php" enctype="multipart/form-data">
             <!-- signature_URL -->
             <div class="mb-4">
                 <div>
-                    <label for="signature-user" class="form-label"><?php echo xlt('Update Signature'); ?>:<span class="fa fa-fw fa-xs ml-1 fa-sync" style="cursor: pointer;" data-bind="click: tabRefresh, class: spinner"
-                            onclick="return reloadSignature()"></span></label>
+                    <label for="signature-user" class="form-label"><?php echo xlt('Upload'); ?>:</label>
+                    <span class="fa fa-fw fa-xs ml-1 fa-sync" style="cursor: pointer;" data-bind="click: tabRefresh, class: spinner"
+                        onclick="return reloadSignature()"></span>
                     <input type="file" id="signature-user" name="signature-user" placeholder="Upload signature" accept="image/*" class="form-control">
                 </div>
                 <div class="mt-2">
-                    <img id="signaturePreview" src="<?php echo $iter["url"]; ?>" alt="Signature Preview" style="max-width: 150px; height: auto; border: 1px solid #ccc;">
+                    <img id="signaturePreview" src="<?php echo $iter["url"] ?? "/public/images/blank_signature.jpg"; ?>" alt="Signature Preview" style="max-width: 150px; height: auto; border: 1px solid #ccc;">
                 </div>
             </div>
 
         </form>
+        <br>
+        <button class="btn btn-secondary btn-save" name='form_save' href='#' type="button" id="save" onclick="return submitform()" <?php echo $disabled_save; ?>> <span><?php echo xlt('Save'); ?></span> </button>
+        <a class="btn btn-link btn-cancel" id='cancel' href='#'><span><?php echo xlt('Cancel'); ?></span></a>
         <script>
             $(function() {
                 $("#cancel").click(function() {

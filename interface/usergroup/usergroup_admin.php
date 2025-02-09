@@ -639,7 +639,35 @@ $form_inactive = !empty($_POST['form_inactive']);
 
     <style>
         .signature-add-edit {
-            border: 1px solid red;
+            position: relative;
+            display: block;
+            width: max-content;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .signature-add-edit img {
+            max-width: 100%;
+            width: 100%;
+            max-width: 100px;
+            height: auto;
+            border: 1px solid #ccc;
+        }
+
+        .signature-add-edit span {
+            display: block;
+            position: absolute;
+            background: rgba(0, 0, 0, 0.3);
+            width: 100%;
+            height: 100%;
+            top: 0;
+            bottom: 0;
+            line-height: 100%;
+            margin: auto;
+            color:rgb(220, 215, 225);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     </style>
 
@@ -808,10 +836,10 @@ $form_inactive = !empty($_POST['form_inactive']);
                                 }
                                 // signature_URL
                                 $url = $iter["url"] ?? "/public/images/blank_signature.jpg";
-                                echo "<td align='center'>
+                                echo "<td align='right'>
                                 <a href='user_signature.php?id=" . attr_url($iter["id"]) . "&csrf_token_form=" . attr_url(CsrfUtils::collectCsrfToken()) .
-                                    "' class='medium_modal signature-add-edit' onclick='top.restoreSession()'>" . "<img src='" . htmlspecialchars($url) . "' alt='Signature' style='max-width: 100px; height: auto; border: 1px solid #ccc;'>" . 
-                                    "<span></span></a>";
+                                    "' class='medium_modal signature-add-edit' onclick='top.restoreSession()'>" . "<img src='" . htmlspecialchars($url) . "' alt='Signature' >" .
+                                    "<span><i class=\"fa fa-edit\">&nbsp;</i></span></a>";
                                 echo '</td>';
                                 print "</tr>\n";
                             }
