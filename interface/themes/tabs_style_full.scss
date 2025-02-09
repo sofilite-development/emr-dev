@@ -302,7 +302,7 @@ body {
 }
 
 .menuSection:hover {
-  background-color: #cce3f8;
+  // background-color: #cce3f8;
 }
 
 .menuSection>.menuEntries {
@@ -339,7 +339,7 @@ body {
 .menuLabel {
   color: var(--light);
   font-weight: 700;
-  padding: 0.9375rem 0.75rem;
+  padding: 8px 12px;
   transition: background-color 0.1s ease;
   width: 100%;
 }
@@ -349,8 +349,22 @@ Need some gap and border in nav menu
 author: Quantamleapcorp
 */
 .appMenu .menuLabel {
-  border-right: 1px ridge #bba8d272 !important;
+  // border-right: 1px ridge #bba8d272 !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
 }
+
+.nav-item {
+  background: #8455af !important;
+  border-radius: 14px !important;
+  transition: .2s;
+  cursor: pointer;
+}
+
+.nav-item:hover {
+  background: #dbcbea !important;
+}
+
 
 
 /**
@@ -360,7 +374,7 @@ author: Quantamleapcorp
  */
 
 .menuLabel:hover {
-  background-color: var(--dark);
+  // background-color: var(--dark);
   color: var(--light);
 }
 
@@ -376,10 +390,7 @@ div.menuLabel:hover {
   padding: 10px 20px;
 }
 
-.menuEntries li .menuLabel:hover {
-  background-color: var(--dark);
-  color: var(--light);
-}
+
 
 .logo {
   padding: 10px 0;
@@ -514,4 +525,22 @@ div.menuLabel:hover {
     top: 12px;
     transform: scaleX(-1);
   }
+}
+
+.menuLabel:hover {
+  background: none !important;
+}
+
+.menuEntries li .menuLabel:hover {
+  background-color: var(--dark);
+  color: var(--light);
+}
+
+.nav-item:hover {
+  background: #f7ccf8;
+}
+
+.menuSection .menuLabel:hover {
+  background: none !important;
+
 }

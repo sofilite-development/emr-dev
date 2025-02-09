@@ -47,7 +47,7 @@
 
   .appMenu > span:hover,
   .menuSection:hover {
-    background-color: $palepale !important;
+    // background-color: $palepale !important;
   }
 
   .menuSection > .menuEntries {
@@ -108,4 +108,7 @@
   .oe-expandable-search .any-search-legacy {
     background: $dark !important;
   }
+}
+.menuEntries{
+  border-radius: 10px !important;
 }

@@ -96,10 +96,10 @@ $esignApi = new Api();
         jsGlobals.date_display_format = <?php echo js_escape($GLOBALS['date_display_format']); ?>;
         jsGlobals.timezone = <?php echo js_escape($GLOBALS['gbl_time_zone'] ?? ''); ?>;
         jsGlobals.assetVersion = <?php echo js_escape($GLOBALS['v_js_includes']); ?>;
-        var WindowTitleAddPatient = <?php echo ($GLOBALS['window_title_add_patient_name'] ? 'true' : 'false' ); ?>;
+        var WindowTitleAddPatient = <?php echo ($GLOBALS['window_title_add_patient_name'] ? 'true' : 'false'); ?>;
         var WindowTitleBase = <?php echo js_escape($openemr_name); ?>;
         const isSms = "<?php echo !empty($GLOBALS['oefax_enable_sms'] ?? null); ?>";
-        const isFax = "<?php echo !empty($GLOBALS['oefax_enable_fax']) ?? null?>";
+        const isFax = "<?php echo !empty($GLOBALS['oefax_enable_fax']) ?? null ?>";
         const isServicesOther = (isSms || isFax);
 
         /**
@@ -114,7 +114,7 @@ $esignApi = new Api();
          * });
          * console.log('session pid', sessionPid);
          * console.log('auth User', authUser);
-        */
+         */
         async function getSessionValue(key) {
             restoreSession();
             let csrf_token_js = <?php echo js_escape(CsrfUtils::collectCsrfToken('default')); ?>;
@@ -374,20 +374,28 @@ $esignApi = new Api();
             min-height: 100% !important;
             height: 100% !important;
         }
+
+        .navbar-light-purple {
+            background-color: #ae96bd !important;
+        }
+
+        .menuLabel:hover {
+            color: #000 !important;
+        }
     </style>
 </head>
 
 <body class="min-vw-100">
-<?php
+    <?php
     // fire off an event here
-if (!empty($GLOBALS['kernel']->getEventDispatcher())) {
-    /**
-     * @var \Symfony\Component\EventDispatcher\EventDispatcher
-     */
-    $dispatcher = $GLOBALS['kernel']->getEventDispatcher();
-    $dispatcher->dispatch(new RenderEvent(), RenderEvent::EVENT_BODY_RENDER_PRE);
-}
-?>
+    if (!empty($GLOBALS['kernel']->getEventDispatcher())) {
+        /**
+         * @var \Symfony\Component\EventDispatcher\EventDispatcher
+         */
+        $dispatcher = $GLOBALS['kernel']->getEventDispatcher();
+        $dispatcher->dispatch(new RenderEvent(), RenderEvent::EVENT_BODY_RENDER_PRE);
+    }
+    ?>
     <!-- Below iframe is to support logout, which needs to be run in an inner iframe to work as intended -->
     <iframe name="logoutinnerframe" id="logoutinnerframe" style="visibility:hidden; position:absolute; left:0; top:0; height:0; width:0; border:none;" src="about:blank"></iframe>
     <?php // mdsupport - app settings
@@ -405,10 +413,10 @@ if (!empty($GLOBALS['kernel']->getEventDispatcher())) {
     }
     ?>
     <div id="mainBox" <?php echo $disp_mainBox ?>>
-        <nav class="navbar navbar-expand-xl navbar-light bg-light py-0">
+        <nav class="navbar navbar-expand-xl navbar-light-purple py-0">
             <?php if ($GLOBALS['display_main_menu_logo'] === '1') : ?>
                 <a class="navbar-brand" href="#" title="QuantumLeapEMR <?php echo xla("Website"); ?>" rel="noopener" target="_blank">
-                    <img src="<?php echo $menuLogo;?>" class="d-inline-block align-middle" height="16" alt="<?php echo xlt('Main Menu Logo');?>">
+                    <img src="<?php echo $menuLogo; ?>" class="d-inline-block align-middle" height="16" alt="<?php echo xlt('Main Menu Logo'); ?>">
                 </a>
             <?php endif; ?>
             <button class="navbar-toggler mr-auto" type="button" data-toggle="collapse" data-target="#mainMenu" aria-controls="mainMenu" aria-expanded="false" aria-label="Toggle navigation">
@@ -416,14 +424,14 @@ if (!empty($GLOBALS['kernel']->getEventDispatcher())) {
             </button>
             <div class="collapse navbar-collapse" id="mainMenu" data-bind="template: {name: 'menu-template', data: application_data}"></div>
             <?php if ($GLOBALS['search_any_patient'] != 'none') : ?>
-            <form name="frm_search_globals" class="form-inline">
-                <div class="input-group">
-                    <input type="text" id="anySearchBox" class="form-control-sm <?php echo $any_search_class ?> form-control" name="anySearchBox" placeholder="<?php echo xla("Search by any demographics") ?>" autocomplete="off">
-                    <div class="input-group-append">
-                        <button type="button" id="search_globals" class="btn btn-sm btn-secondary <?php echo $search_globals_class ?>" title='<?php echo xla("Search for patient by entering whole or part of any demographics field information"); ?>' data-bind="event: {mousedown: viewPtFinder.bind( $data, '<?php echo xla("The search field cannot be empty. Please enter a search term") ?>', '<?php echo attr($search_any_type); ?>')}"><i class="fa fa-search">&nbsp;</i></button>
+                <form name="frm_search_globals" class="form-inline">
+                    <div class="input-group">
+                        <input type="text" id="anySearchBox" class="form-control-sm <?php echo $any_search_class ?> form-control" name="anySearchBox" placeholder="<?php echo xla("Search by any demographics") ?>" autocomplete="off">
+                        <div class="input-group-append">
+                            <button type="button" id="search_globals" class="btn btn-sm btn-secondary <?php echo $search_globals_class ?>" title='<?php echo xla("Search for patient by entering whole or part of any demographics field information"); ?>' data-bind="event: {mousedown: viewPtFinder.bind( $data, '<?php echo xla("The search field cannot be empty. Please enter a search term") ?>', '<?php echo attr($search_any_type); ?>')}"><i class="fa fa-search">&nbsp;</i></button>
+                        </div>
                     </div>
-                </div>
-            </form>
+                </form>
             <?php endif; ?>
             <span id="userData" data-bind="template: {name: 'user-data-template', data: application_data}"></span>
         </nav>
@@ -459,7 +467,7 @@ if (!empty($GLOBALS['kernel']->getEventDispatcher())) {
         });
         document.addEventListener('touchstart', {}); //specifically added for iOS devices, especially in iframes
         <?php if (($_ENV['OPENEMR__NO_BACKGROUND_TASKS'] ?? 'false') !== 'true') { ?>
-            $(function () {
+            $(function() {
                 goRepeaterServices();
             });
         <?php } ?>
