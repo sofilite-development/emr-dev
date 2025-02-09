@@ -91,10 +91,6 @@ $iter = $result[0];
         }
 
         function submitform() {
-
-            console.log(document.getElementById("signature-user").value)
-
-            return
             var valid = submitme(1, undefined, 'user_form', collectvalidation);
             if (!valid) return;
 
@@ -271,24 +267,23 @@ $iter = $result[0];
                     <a class="btn btn-link btn-cancel" id='cancel' href='#'><span><?php echo xlt('Cancel'); ?></span></a>
                 </td>
             </tr>
+        </table>
+        <br />
+        <FORM NAME="user_form" id="user_form" METHOD="POST" ACTION="usergroup_admin.php" enctype="multipart/form-data">
             <!-- signature_URL -->
-            <tr>
-                <td>
+            <div class="mb-4">
+                <!-- <div>
                     <label class="text"><?php echo xlt('Update Signature'); ?>:<span class="fa fa-fw fa-xs ml-1 fa-sync" style="cursor: pointer;" data-bind="click: tabRefresh, class: spinner"
                             onclick="return reloadSignature()"></span></label>
                     <input type="file" id="signature-user" name="signature-user" placeholder="upload signature" accept="image/*" class="form-control">
-                </td>
+                </div> -->
+                <div class="mt-2">
+                    <p>Signature: </p>
+                    <img id="signaturePreview" src="<?php echo $iter["url"]; ?>" alt="Signature Preview" style="max-width: 100px; height: auto; border: 1px solid #ccc;">
+                </div>
+            </div>
 
-            </tr>
-            <tr>
-                <td colspan="3">
-                    <br>
-                    <img id="signaturePreview" src="<?php echo $iter["url"]; ?>" alt="Signature Preview" style="max-width: 150px; height: auto; border: 1px solid #ccc;">
-                </td>
-            </tr>
-        </table>
-        <br />
-        <FORM NAME="user_form" id="user_form" METHOD="POST" ACTION="usergroup_admin.php">
+
             <input type="hidden" name="csrf_token_form" value="<?php echo attr(CsrfUtils::collectCsrfToken()); ?>" />
             <!-- EDIT USER INFO -->
             <input type=hidden name="pre_active" value="<?php echo attr($iter["active"]); ?>">

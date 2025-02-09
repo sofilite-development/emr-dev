@@ -637,6 +637,12 @@ $form_inactive = !empty($_POST['form_inactive']);
         }
     </script>
 
+    <style>
+        .signature-add-edit {
+            border: 1px solid red;
+        }
+    </style>
+
 </head>
 
 <body class="body_top">
@@ -685,7 +691,7 @@ $form_inactive = !empty($_POST['form_inactive']);
                             <tr>
                                 <th><?php echo xlt('Username'); ?></th>
                                 <th><?php echo xlt('Real Name'); ?></th>
-                                <th><?php echo xlt('Additional Info'); ?></th>
+                                <!-- <th><?php echo xlt('Additional Info'); ?></th> -->
                                 <th><?php echo xlt('Authorized'); ?></th>
                                 <th><?php echo xlt('MFA'); ?></th>
                                 <?php
@@ -696,7 +702,7 @@ $form_inactive = !empty($_POST['form_inactive']);
                                 }
                                 ?>
                                 <th><?php echo xlt('Failed Login Counter'); ?></th>
-                                <th><?php echo xlt('Signature'); ?></th>
+                                <th><?php echo xlt('Signature Add/Edit'); ?></th>
                             </tr>
                         <tbody>
                             <?php
@@ -742,11 +748,11 @@ $form_inactive = !empty($_POST['form_inactive']);
                                     $grace_time = date("Y-m-d", strtotime($pwd_expires . "+" . $GLOBALS['password_grace_time'] . " days"));
                                 }
 
+                                // <td>" . text($iter["info"]) . "&nbsp;</td>
                                 print "<tr>
                                 <td><a href='user_admin.php?id=" . attr_url($iter["id"]) . "&csrf_token_form=" . attr_url(CsrfUtils::collectCsrfToken()) .
                                     "' class='medium_modal' onclick='top.restoreSession()'>" . text($iter["username"]) . "</a>" . "</td>
                                 <td>" . text($iter["fname"]) . ' ' . text($iter["lname"]) . "&nbsp;</td>
-                                <td>" . text($iter["info"]) . "&nbsp;</td>
                                 <td align='left'><span>" . text($iter["authorized"]) . "</td>
                                 <td align='left'><span>" . text($isMfa) . "</td>";
                                 if ($checkPassExp) {
@@ -801,7 +807,11 @@ $form_inactive = !empty($_POST['form_inactive']);
                                     }
                                 }
                                 // signature_URL
-                                echo "<td align='left'><img src='" . htmlspecialchars($iter["url"]) . "' alt='Signature' style='max-width: 100px; height: auto; border: 1px solid #ccc;'></td>";
+                                $url = $iter["url"] ?? "/public/images/blank_signature.jpg";
+                                echo "<td align='center'>
+                                <a href='user_signature.php?id=" . attr_url($iter["id"]) . "&csrf_token_form=" . attr_url(CsrfUtils::collectCsrfToken()) .
+                                    "' class='medium_modal signature-add-edit' onclick='top.restoreSession()'>" . "<img src='" . htmlspecialchars($url) . "' alt='Signature' style='max-width: 100px; height: auto; border: 1px solid #ccc;'>" . 
+                                    "<span></span></a>";
                                 echo '</td>';
                                 print "</tr>\n";
                             }
