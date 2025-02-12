@@ -21,49 +21,222 @@ use OpenEMR\Common\Csrf\CsrfUtils;
 use OpenEMR\Core\Header;
 
 $returnurl = 'encounter_top.php';
+$languagesFile = file_get_contents(__DIR__ . '/language.json');
+$languages = json_decode($languagesFile, true);
+$defaultLanguage = "en-US";
+
 ?>
 <html>
+
 <head>
     <title><?php echo xlt("Dictation"); ?></title>
 
-    <?php Header::setupHeader();?>
+    <?php Header::setupHeader(); ?>
+    <style>
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: end;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        #stopButtonDictation {
+            background-color: #f44336;
+            color: white;
+        }
+
+        #stopButtonDictation:hover {
+            background-color: #da190b;
+        }
+
+        #clearButtonDictation {
+            background-color: #808080;
+            color: white;
+        }
+
+        #clearButtonDictation:hover {
+            background-color: #666666;
+        }
+
+        .status {
+            text-align: center;
+            margin: 10px 0;
+            font-style: italic;
+            color: #666;
+        }
+
+        .error {
+            color: #f44336;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+    </style>
 </head>
+
 <body>
     <div class="container mt-3">
         <div class="row">
-            <div class="col-12">
+            <div class="col-12 d-flex justify-content-between">
                 <h2><?php echo xlt("Dictation"); ?></h2>
+                <div>
+                    <select name="language" class="form-control" id="language">
+                        <option value="">-- Select Language --</option>
+                        <?php foreach ($languages as $language): ?>
+                            <option value="<?php echo htmlspecialchars($language['code']); ?>"
+                                <?php echo ($language['code'] === $defaultLanguage) ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($language['name']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
             </div>
         </div>
         <div class="row">
             <div class="col-12">
-                <form name="my_form" method=post action="<?php echo $rootdir;?>/forms/dictation/save.php?mode=new" onsubmit="return top.restoreSession()">
+                <div class="controls ">
+                    <button type="button" class="btn btn-primary" id="startButtonDictation">Start Recording</button>
+                    <button type="button" id="stopButtonDictation" disabled>Stop</button>
+                    <button type="button" id="clearButtonDictation">Clear</button>
+                </div>
+                <form name="my_form" method=post action="<?php echo $rootdir; ?>/forms/dictation/save.php?mode=new" onsubmit="return top.restoreSession()">
                     <input type="hidden" name="csrf_token_form" value="<?php echo attr(CsrfUtils::collectCsrfToken()); ?>" />
-                        <fieldset>
-                            <legend><?php echo xlt('Dictation')?></legend>
-                            <div class="container">
-                                <div class="form-group">
-                                    <textarea name="dictation" class="form-control" cols="80" rows="15"></textarea>
-                                </div>
+                    <fieldset>
+                        <div class="flex">
+                            <legend><?php echo xlt('Dictation') ?></legend>
+                        </div>
+                        <div id="error" class="error"></div>
+                        <div id="status" class="status"></div>
+                        <div class="container">
+                            <div class="form-group">
+                                <textarea name="dictation" id="dictation_input" class="form-control" cols="80" rows="15"></textarea>
                             </div>
-                        </fieldset>
-                        <fieldset>
-                            <legend><?php echo xlt('Additional Notes'); ?></legend>
-                            <div class="container">
-                                <div class="form-group">
-                                    <textarea name="additional_notes" class="form-control" cols="80" rows="5"></textarea>
-                                </div>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend><?php echo xlt('Additional Notes'); ?></legend>
+                        <div class="container">
+                            <div class="form-group">
+                                <textarea name="additional_notes" class="form-control" cols="80" rows="5"></textarea>
                             </div>
-                        </fieldset>
+                        </div>
+                    </fieldset>
                     <div class="form-group">
                         <div class="btn-group" role="group">
                             <button type='submit' onclick='top.restoreSession()' class="btn btn-primary btn-save"><?php echo xlt('Save'); ?></button>
-                            <button type="button" class="btn btn-secondary btn-cancel" onclick="top.restoreSession(); parent.closeTab(window.name, false);"><?php echo xlt('Cancel');?></button>
+                            <button type="button" class="btn btn-secondary btn-cancel" onclick="top.restoreSession(); parent.closeTab(window.name, false);"><?php echo xlt('Cancel'); ?></button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+    <script>
+        // Get DOM elements
+        const startButton = document.getElementById('startButtonDictation');
+        const stopButton = document.getElementById('stopButtonDictation');
+        const clearButton = document.getElementById('clearButtonDictation');
+        const output = document.getElementById('dictation_input');
+        const status = document.getElementById('status');
+        const error = document.getElementById('error');
+        const langauge = document.getElementById("language");
+
+
+        // Initialize speech recognition
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = null;
+
+        // Check if browser supports speech recognition
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = "en-US"
+
+            // Configure recognition
+            recognition.onstart = () => {
+                status.textContent = 'Listening...';
+                startButton.disabled = true;
+                stopButton.disabled = false;
+                error.textContent = '';
+            };
+
+            recognition.onerror = (event) => {
+                error.textContent = `Error occurred: ${event.error}`;
+                stopRecording();
+            };
+
+            recognition.onend = () => {
+                status.textContent = 'Microphone is off.';
+                stopRecording();
+            };
+
+            recognition.onresult = (event) => {
+                let finalTranscript = '';
+                let interimTranscript = '';
+
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript;
+                    if (event.results[i].isFinal) {
+                        finalTranscript += transcript + ' ';
+                    } else {
+                        interimTranscript += transcript;
+                    }
+                }
+
+                if (finalTranscript) {
+                    output.value += finalTranscript;
+                }
+                status.textContent = interimTranscript ? `Recognizing: ${interimTranscript}` : 'Listening...';
+            };
+        } else {
+            error.textContent = 'Speech recognition is not supported in this browser.';
+            startButton.disabled = true;
+        }
+
+        //change language
+        langauge.addEventListener("change", ((event) => {
+            recognition.lang = event.target.value;
+        }))
+
+
+        // Button click handlers
+        startButton.addEventListener('click', () => {
+            if (recognition) {
+                recognition.start();
+            }
+        });
+
+        stopButton.addEventListener('click', () => {
+            if (recognition) {
+                recognition.stop();
+            }
+        });
+
+        clearButton.addEventListener('click', () => {
+            output.value = '';
+            error.textContent = '';
+            status.textContent = '';
+        });
+
+        function stopRecording() {
+            startButton.disabled = false;
+            stopButton.disabled = true;
+        }
+    </script>
 </body>
+
 </html>

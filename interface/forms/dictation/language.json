@@ -1,0 +1,122 @@
+[
+    {
+        "code": "en-US",
+        "name": "English"
+    },
+    {
+        "code": "zh-CN",
+        "name": "Chinese (Simplified)"
+    },
+    {
+        "code": "es-ES",
+        "name": "Spanish"
+    },
+    {
+        "code": "hi-IN",
+        "name": "Hindi"
+    },
+    {
+        "code": "ar-SA",
+        "name": "Arabic"
+    },
+    {
+        "code": "fr-FR",
+        "name": "French"
+    },
+    {
+        "code": "bn-BD",
+        "name": "Bangla"
+    },
+    {
+        "code": "ru-RU",
+        "name": "Russian"
+    },
+    {
+        "code": "pt-BR",
+        "name": "Portuguese"
+    },
+    {
+        "code": "ur-PK",
+        "name": "Urdu"
+    },
+    {
+        "code": "de-DE",
+        "name": "German"
+    },
+    {
+        "code": "ja-JP",
+        "name": "Japanese"
+    },
+    {
+        "code": "sw-KE",
+        "name": "Swahili"
+    },
+    {
+        "code": "mr-IN",
+        "name": "Marathi"
+    },
+    {
+        "code": "te-IN",
+        "name": "Telugu"
+    },
+    {
+        "code": "ta-IN",
+        "name": "Tamil"
+    },
+    {
+        "code": "ko-KR",
+        "name": "Korean"
+    },
+    {
+        "code": "vi-VN",
+        "name": "Vietnamese"
+    },
+    {
+        "code": "tr-TR",
+        "name": "Turkish"
+    },
+    {
+        "code": "pa-IN",
+        "name": "Punjabi"
+    },
+    {
+        "code": "it-IT",
+        "name": "Italian"
+    },
+    {
+        "code": "th-TH",
+        "name": "Thai"
+    },
+    {
+        "code": "gu-IN",
+        "name": "Gujarati"
+    },
+    {
+        "code": "fa-IR",
+        "name": "Persian"
+    },
+    {
+        "code": "pl-PL",
+        "name": "Polish"
+    },
+    {
+        "code": "uk-UA",
+        "name": "Ukrainian"
+    },
+    {
+        "code": "ml-IN",
+        "name": "Malayalam"
+    },
+    {
+        "code": "kn-IN",
+        "name": "Kannada"
+    },
+    {
+        "code": "or-IN",
+        "name": "Odia"
+    },
+    {
+        "code": "nl-NL",
+        "name": "Dutch"
+    }
+]
