@@ -23,6 +23,10 @@ OpenEMR\Common\Session\SessionUtil::portalSessionStart();
 session_regenerate_id(true);
 //
 
+// Determine if the request is coming from an API client (e.g. payload includes from=api)
+$is_api = (isset($_REQUEST['from']) && $_REQUEST['from'] === 'api');
+
+
 // landing page definition -- where to go if something goes wrong
 $landingpage = "index.php?site=" . urlencode($_SESSION['site_id'] ?? ($_GET['site'] ?? 'default'));
 //
@@ -84,6 +88,8 @@ require_once("$srcdir/user.inc.php");
 use OpenEMR\Common\Auth\AuthHash;
 use OpenEMR\Common\Csrf\CsrfUtils;
 
+use function PHPSTORM_META\type;
+
 $logit = new ApplicationTable();
 $password_update = isset($_SESSION['password_update']) ? $_SESSION['password_update'] : 0;
 unset($_SESSION['password_update']);
@@ -102,7 +108,14 @@ DEFINE("COL_POR_ONETIME", "portal_onetime");
 // one time reset requires a PIN where normal uses a new temp pass sent to user.
 if ($password_update === 2 && !empty($_SESSION['pin'])) {
     $sql = "SELECT " . implode(",", array(
-            COL_ID, COL_PID, COL_POR_PWD, COL_POR_USER, COL_POR_LOGINUSER, COL_POR_PWD_STAT, COL_POR_ONETIME)) . " FROM " . TBL_PAT_ACC_ON .
+        COL_ID,
+        COL_PID,
+        COL_POR_PWD,
+        COL_POR_USER,
+        COL_POR_LOGINUSER,
+        COL_POR_PWD_STAT,
+        COL_POR_ONETIME
+    )) . " FROM " . TBL_PAT_ACC_ON .
         " WHERE BINARY " . COL_POR_ONETIME . "= ?";
     $auth = privQuery($sql, array($_SESSION['forward']));
     if ($auth !== false) {
@@ -126,11 +139,23 @@ if ($password_update === 2 && !empty($_SESSION['pin'])) {
 } else {
     // normal login
     $sql = "SELECT " . implode(",", array(
-            COL_ID, COL_PID, COL_POR_PWD, COL_POR_USER, COL_POR_LOGINUSER, COL_POR_PWD_STAT)) . " FROM " . TBL_PAT_ACC_ON .
+        COL_ID,
+        COL_PID,
+        COL_POR_PWD,
+        COL_POR_USER,
+        COL_POR_LOGINUSER,
+        COL_POR_PWD_STAT
+    )) . " FROM " . TBL_PAT_ACC_ON .
         " WHERE " . COL_POR_LOGINUSER . "= ?";
     if ($password_update === 1) {
         $sql = "SELECT " . implode(",", array(
-                COL_ID, COL_PID, COL_POR_PWD, COL_POR_USER, COL_POR_LOGINUSER, COL_POR_PWD_STAT)) . " FROM " . TBL_PAT_ACC_ON .
+            COL_ID,
+            COL_PID,
+            COL_POR_PWD,
+            COL_POR_USER,
+            COL_POR_LOGINUSER,
+            COL_POR_PWD_STAT
+        )) . " FROM " . TBL_PAT_ACC_ON .
             " WHERE " . COL_POR_USER . "= ?";
     }
 
@@ -296,8 +321,41 @@ if (!empty($_REQUEST['redirect'])) {
         exit();
     }
 }
-header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-header("Cache-Control: no-cache");
-header("Pragma: no-cache");
-header('Location: ./home.php');
-exit();
+
+if ($is_api) {
+    // Function to sanitize data
+    function sanitizeData($data)
+    {
+        if (is_array($data)) {
+            return array_map('sanitizeData', $data);
+        } elseif (is_string($data)) {
+            return mb_convert_encoding($data, 'UTF-8', 'UTF-8');
+        } else {
+            return $data;
+        }
+    }
+
+    $responseData = [
+        'status'       => 'success',
+        'message'      => 'Login successful.',
+        'patient_data' => sanitizeData($userData)
+    ];
+
+    $response = json_encode($responseData);
+    if ($response === false) {
+        die("JSON encoding error: " . json_last_error_msg());
+    }
+    header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+    header("Cache-Control: no-cache");
+    header("Pragma: no-cache");
+    header("Content-Type: application/json");
+
+    echo $response;
+    exit();
+} else {
+    header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+    header("Cache-Control: no-cache");
+    header("Pragma: no-cache");
+    header('Location: ./home.php');
+    exit();
+}
