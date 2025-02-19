@@ -1,0 +1,1050 @@
+{
+	"info": {
+		"_postman_id": "865a73d4-2c00-4aaf-9e60-ca122aa11a35",
+		"name": "EMR",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32593435"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "uname",
+									"value": "admin_emr_user",
+									"type": "text"
+								},
+								{
+									"key": "pass",
+									"value": "@1Patient",
+									"type": "text"
+								},
+								{
+									"key": "passaddon",
+									"value": "mdmehedihasan2360@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "from",
+									"value": "api",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{SERVER_URL}}/portal/get_patient_info.php",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"portal",
+								"get_patient_info.php"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "login",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "uname",
+											"value": "admin_emr_user",
+											"type": "text"
+										},
+										{
+											"key": "pass",
+											"value": "@1Patient",
+											"type": "text"
+										},
+										{
+											"key": "passaddon",
+											"value": "mdmehedihasan2360@gmail.com",
+											"type": "text"
+										},
+										{
+											"key": "from",
+											"value": "api",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/portal/get_patient_info.php",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"portal",
+										"get_patient_info.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 17 Feb 2025 11:14:48 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.1.25"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.1.25"
+								},
+								{
+									"key": "Expires",
+									"value": "Mon, 26 Jul 1997 05:00:00 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "PortalOpenEMR=yB-NVdj7eWnbkeVQkrgFjq78kQM8c08tzad7ptnY70EwoM5W; path=/; HttpOnly; SameSite=Strict"
+								},
+								{
+									"key": "Content-Length",
+									"value": "2480"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=98"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"message\": \"Login successful.\",\n    \"patient_data\": {\n        \"id\": 1,\n        \"uuid\": \"?16E!?KԚYAe??\\u0003?\",\n        \"title\": \"Mr.\",\n        \"language\": \"\",\n        \"financial\": \"\",\n        \"fname\": \"Johon\",\n        \"lname\": \"Doe\",\n        \"mname\": \"\",\n        \"DOB\": \"1962-02-13\",\n        \"street\": \"\",\n        \"postal_code\": \"\",\n        \"city\": \"\",\n        \"state\": \"\",\n        \"country_code\": \"\",\n        \"drivers_license\": \"\",\n        \"ss\": \"\",\n        \"occupation\": \"\",\n        \"phone_home\": \"\",\n        \"phone_biz\": \"\",\n        \"phone_contact\": \"\",\n        \"phone_cell\": \"\",\n        \"pharmacy_id\": 0,\n        \"status\": \"\",\n        \"contact_relationship\": \"\",\n        \"date\": \"2025-02-13 11:54:16\",\n        \"sex\": \"Male\",\n        \"referrer\": \"\",\n        \"referrerID\": \"\",\n        \"providerID\": 0,\n        \"ref_providerID\": 0,\n        \"email\": \"mdmehedihasan2360@gmail.com\",\n        \"email_direct\": \"mdmehedihasan2360@gmail.com\",\n        \"ethnoracial\": \"\",\n        \"race\": \"\",\n        \"ethnicity\": \"\",\n        \"religion\": \"\",\n        \"interpretter\": \"\",\n        \"migrantseasonal\": \"\",\n        \"family_size\": \"\",\n        \"monthly_income\": \"\",\n        \"billing_note\": \"\",\n        \"homeless\": \"\",\n        \"financial_review\": \"0000-00-00 00:00:00\",\n        \"pubpid\": \"1\",\n        \"pid\": 1,\n        \"genericname1\": \"\",\n        \"genericval1\": \"\",\n        \"genericname2\": \"\",\n        \"genericval2\": \"\",\n        \"hipaa_mail\": \"YES\",\n        \"hipaa_voice\": \"YES\",\n        \"hipaa_notice\": \"\",\n        \"hipaa_message\": \"\",\n        \"hipaa_allowsms\": \"YES\",\n        \"hipaa_allowemail\": \"YES\",\n        \"squad\": \"\",\n        \"fitness\": 0,\n        \"referral_source\": \"\",\n        \"usertext1\": \"\",\n        \"usertext2\": \"\",\n        \"usertext3\": \"\",\n        \"usertext4\": \"\",\n        \"usertext5\": \"\",\n        \"usertext6\": \"\",\n        \"usertext7\": \"\",\n        \"usertext8\": \"\",\n        \"userlist1\": \"\",\n        \"userlist2\": \"\",\n        \"userlist3\": \"\",\n        \"userlist4\": \"\",\n        \"userlist5\": \"\",\n        \"userlist6\": \"\",\n        \"userlist7\": \"\",\n        \"pricelevel\": \"standard\",\n        \"regdate\": \"2025-02-12 07:33:30\",\n        \"contrastart\": null,\n        \"completed_ad\": \"NO\",\n        \"ad_reviewed\": null,\n        \"vfc\": \"\",\n        \"mothersname\": \"\",\n        \"guardiansname\": \"\",\n        \"allow_imm_reg_use\": \"YES\",\n        \"allow_imm_info_share\": \"\",\n        \"allow_health_info_ex\": \"YES\",\n        \"allow_patient_portal\": \"YES\",\n        \"deceased_date\": null,\n        \"deceased_reason\": \"\",\n        \"soap_import_status\": null,\n        \"cmsportal_login\": \"\",\n        \"care_team_provider\": null,\n        \"care_team_facility\": null,\n        \"care_team_status\": \"active\",\n        \"county\": \"\",\n        \"industry\": \"\",\n        \"imm_reg_status\": \"\",\n        \"imm_reg_stat_effdate\": null,\n        \"publicity_code\": \"\",\n        \"publ_code_eff_date\": null,\n        \"protect_indicator\": \"\",\n        \"prot_indi_effdate\": null,\n        \"guardianrelationship\": \"\",\n        \"guardiansex\": \"\",\n        \"guardianaddress\": \"\",\n        \"guardiancity\": \"\",\n        \"guardianstate\": \"\",\n        \"guardianpostalcode\": \"\",\n        \"guardiancountry\": \"\",\n        \"guardianphone\": \"\",\n        \"guardianworkphone\": \"\",\n        \"guardianemail\": \"\",\n        \"sexual_orientation\": \"\",\n        \"gender_identity\": \"\",\n        \"birth_fname\": \"\",\n        \"birth_lname\": \"\",\n        \"birth_mname\": \"\",\n        \"dupscore\": 0,\n        \"name_history\": null,\n        \"suffix\": \"\",\n        \"street_line_2\": \"\",\n        \"patient_groups\": \"\",\n        \"prevent_portal_apps\": \"\",\n        \"provider_since_date\": null,\n        \"created_by\": 1,\n        \"updated_by\": 1,\n        \"preferred_name\": \"\",\n        \"nationality_country\": \"\",\n        \"last_updated\": \"2025-02-13 11:54:16\"\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Appointments",
+			"item": [
+				{
+					"name": "get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER_URL}}/portal/api/appointments/index.php?action=get_appointments",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"portal",
+								"api",
+								"appointments",
+								"index.php"
+							],
+							"query": [
+								{
+									"key": "pid",
+									"value": "1",
+									"description": "patient id",
+									"disabled": true
+								},
+								{
+									"key": "action",
+									"value": "get_appointments"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "get",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/portal/api/appointments/index.php?action=get_appointments",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"portal",
+										"api",
+										"appointments",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "pid",
+											"value": "1",
+											"description": "patient id",
+											"disabled": true
+										},
+										{
+											"key": "action",
+											"value": "get_appointments"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 17 Feb 2025 12:06:02 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.1.25"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.1.25"
+								},
+								{
+									"key": "Expires",
+									"value": "Thu, 19 Nov 1981 08:52:00 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-store, no-cache, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Content-Length",
+									"value": "896"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=99"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"past_appointments\": [\n        {\n            \"pc_eventDate\": \"2025-02-13\",\n            \"pc_endDate\": \"0000-00-00\",\n            \"pc_startTime\": \"03:00:00\",\n            \"pc_endTime\": \"03:15:00\",\n            \"pc_duration\": 900,\n            \"pc_recurrtype\": 0,\n            \"pc_recurrspec\": \"a:5:{s:17:\\\"event_repeat_freq\\\";N;s:22:\\\"event_repeat_freq_type\\\";s:1:\\\"0\\\";s:19:\\\"event_repeat_on_num\\\";s:1:\\\"1\\\";s:19:\\\"event_repeat_on_day\\\";s:1:\\\"0\\\";s:20:\\\"event_repeat_on_freq\\\";s:1:\\\"1\\\";}\",\n            \"pc_recurrfreq\": 0,\n            \"pc_catid\": 9,\n            \"pc_eid\": 9,\n            \"pc_gid\": 0,\n            \"pc_title\": \"Established Patient\",\n            \"pc_hometext\": \"test\",\n            \"pc_apptstatus\": \"^\",\n            \"fname\": \"Johon\",\n            \"mname\": \"\",\n            \"lname\": \"Doe\",\n            \"DOB\": \"1962-02-13\",\n            \"pid\": 1,\n            \"pubpid\": \"1\",\n            \"phone_home\": \"\",\n            \"phone_cell\": \"\",\n            \"hipaa_allowsms\": \"YES\",\n            \"hipaa_voice\": \"YES\",\n            \"hipaa_allowemail\": \"YES\",\n            \"email\": \"mdmehedihasan2360@gmail.com\",\n            \"ufname\": \"Administrator\",\n            \"umname\": null,\n            \"ulname\": \"Administrator\",\n            \"uprovider_id\": 1,\n            \"name\": null,\n            \"pc_catname\": \"Established Patient\",\n            \"pc_facility\": 0\n        }\n    ],\n    \"upcoming_appointments\": []\n}"
+						}
+					]
+				},
+				{
+					"name": "get visits, providers, slots",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER_URL}}/portal/api/appointments/utils.php?for=visits",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"portal",
+								"api",
+								"appointments",
+								"utils.php"
+							],
+							"query": [
+								{
+									"key": "pid",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "for",
+									"value": "visits",
+									"description": "providers or slots or visits"
+								},
+								{
+									"key": "category_id",
+									"value": "1",
+									"description": "if for = slots",
+									"disabled": true
+								},
+								{
+									"key": "start_date",
+									"value": null,
+									"description": "if for = slots",
+									"disabled": true
+								},
+								{
+									"key": "provider_id",
+									"value": null,
+									"description": "if for = slots",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "empty",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/portal/api/appointments/utils.php",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"portal",
+										"api",
+										"appointments",
+										"utils.php"
+									],
+									"query": [
+										{
+											"key": "pid",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "for",
+											"value": "providers",
+											"description": "providers or slots or visits",
+											"disabled": true
+										},
+										{
+											"key": "category_id",
+											"value": "1",
+											"description": "if for = slots",
+											"disabled": true
+										},
+										{
+											"key": "start_date",
+											"value": null,
+											"description": "if for = slots",
+											"disabled": true
+										},
+										{
+											"key": "provider_id",
+											"value": null,
+											"description": "if for = slots",
+											"disabled": true
+										},
+										{
+											"key": "",
+											"value": null,
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 17 Feb 2025 11:53:07 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.1.25"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.1.25"
+								},
+								{
+									"key": "Expires",
+									"value": "Thu, 19 Nov 1981 08:52:00 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-store, no-cache, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Content-Length",
+									"value": "2"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[]"
+						},
+						{
+							"name": "providers",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/portal/api/appointments/utils.php?for=providers",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"portal",
+										"api",
+										"appointments",
+										"utils.php"
+									],
+									"query": [
+										{
+											"key": "pid",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "for",
+											"value": "providers",
+											"description": "providers or slots or visits"
+										},
+										{
+											"key": "category_id",
+											"value": "1",
+											"description": "if for = slots",
+											"disabled": true
+										},
+										{
+											"key": "start_date",
+											"value": null,
+											"description": "if for = slots",
+											"disabled": true
+										},
+										{
+											"key": "provider_id",
+											"value": null,
+											"description": "if for = slots",
+											"disabled": true
+										},
+										{
+											"key": "",
+											"value": null,
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 17 Feb 2025 11:53:31 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.1.25"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.1.25"
+								},
+								{
+									"key": "Expires",
+									"value": "Thu, 19 Nov 1981 08:52:00 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-store, no-cache, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Content-Length",
+									"value": "78"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=99"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": \"1\",\n        \"name\": \"Administrator, Administrator\",\n        \"username\": \"admin_emr_user\"\n    }\n]"
+						},
+						{
+							"name": "visits",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/portal/api/appointments/utils.php?for=visits",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"portal",
+										"api",
+										"appointments",
+										"utils.php"
+									],
+									"query": [
+										{
+											"key": "pid",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "for",
+											"value": "visits",
+											"description": "providers or slots or visits"
+										},
+										{
+											"key": "category_id",
+											"value": "1",
+											"description": "if for = slots",
+											"disabled": true
+										},
+										{
+											"key": "start_date",
+											"value": null,
+											"description": "if for = slots",
+											"disabled": true
+										},
+										{
+											"key": "provider_id",
+											"value": null,
+											"description": "if for = slots",
+											"disabled": true
+										},
+										{
+											"key": "",
+											"value": null,
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 17 Feb 2025 11:54:05 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.1.25"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.1.25"
+								},
+								{
+									"key": "Expires",
+									"value": "Thu, 19 Nov 1981 08:52:00 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-store, no-cache, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Content-Length",
+									"value": "735"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": \"1\",\n        \"name\": \"No Show\",\n        \"duration\": 0\n    },\n    {\n        \"id\": \"2\",\n        \"name\": \"In Office\",\n        \"duration\": 0\n    },\n    {\n        \"id\": \"3\",\n        \"name\": \"Out Of Office\",\n        \"duration\": 0\n    },\n    {\n        \"id\": \"4\",\n        \"name\": \"Vacation\",\n        \"duration\": 1440\n    },\n    {\n        \"id\": \"5\",\n        \"name\": \"Office Visit\",\n        \"duration\": 15\n    },\n    {\n        \"id\": \"6\",\n        \"name\": \"Holidays\",\n        \"duration\": 1440\n    },\n    {\n        \"id\": \"7\",\n        \"name\": \"Closed\",\n        \"duration\": 1440\n    },\n    {\n        \"id\": \"8\",\n        \"name\": \"Lunch\",\n        \"duration\": 60\n    },\n    {\n        \"id\": \"9\",\n        \"name\": \"Established Patient\",\n        \"duration\": 15\n    },\n    {\n        \"id\": \"10\",\n        \"name\": \"New Patient\",\n        \"duration\": 30\n    },\n    {\n        \"id\": \"11\",\n        \"name\": \"Reserved\",\n        \"duration\": 15\n    },\n    {\n        \"id\": \"12\",\n        \"name\": \"Health and Behavioral Assessment\",\n        \"duration\": 15\n    },\n    {\n        \"id\": \"13\",\n        \"name\": \"Preventive Care Services\",\n        \"duration\": 15\n    },\n    {\n        \"id\": \"14\",\n        \"name\": \"Ophthalmological Services\",\n        \"duration\": 15\n    },\n    {\n        \"id\": \"15\",\n        \"name\": \"Group Therapy\",\n        \"duration\": 60\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "action",
+									"value": "create_appointment",
+									"type": "text"
+								},
+								{
+									"key": "patient_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "provider_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "category_id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "date",
+									"value": "2025-03-15",
+									"type": "text"
+								},
+								{
+									"key": "start_time",
+									"value": "09:30",
+									"type": "text"
+								},
+								{
+									"key": "duration",
+									"value": "30",
+									"type": "text"
+								},
+								{
+									"key": "comments",
+									"value": "Follow-up checkup",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{SERVER_URL}}/portal/api/appointments/index.php",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"portal",
+								"api",
+								"appointments",
+								"index.php"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "action",
+									"value": "update_appointment",
+									"type": "text"
+								},
+								{
+									"key": "appointment_id",
+									"value": "10",
+									"type": "text"
+								},
+								{
+									"key": "patient_id",
+									"value": "123",
+									"type": "text"
+								},
+								{
+									"key": "provider_id",
+									"value": "5",
+									"type": "text"
+								},
+								{
+									"key": "category_id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "date",
+									"value": "2025-03-20",
+									"type": "text"
+								},
+								{
+									"key": "start_time",
+									"value": "10:00",
+									"type": "text"
+								},
+								{
+									"key": "duration",
+									"value": "45",
+									"type": "text"
+								},
+								{
+									"key": "comments",
+									"value": "Updated checkup",
+									"type": "text"
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{SERVER_URL}}/portal/api/appointments/index.php",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"portal",
+								"api",
+								"appointments",
+								"index.php"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "healthsnapshots",
+			"item": [
+				{
+					"name": "get all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER_URL}}/portal/api/healthsnapshot/get.php",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"portal",
+								"api",
+								"healthsnapshot",
+								"get.php"
+							],
+							"query": [
+								{
+									"key": "pid",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "get all",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/portal/api/healthsnapshot/get.php",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"portal",
+										"api",
+										"healthsnapshot",
+										"get.php"
+									],
+									"query": [
+										{
+											"key": "pid",
+											"value": "1",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 19 Feb 2025 08:06:37 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.1.25"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.1.25"
+								},
+								{
+									"key": "Expires",
+									"value": "Thu, 19 Nov 1981 08:52:00 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-store, no-cache, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Content-Length",
+									"value": "496"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"patientID\": 1,\n    \"immunizationRecords\": [],\n    \"medications\": [\n        {\n            \"id\": 1,\n            \"medication\": \"Metformin\",\n            \"start_date\": \"2025-01-27 17:40:00\",\n            \"stop_date\": \"2025-02-25 17:40:00\",\n            \"diagnosis\": \"\",\n            \"comments\": \"\",\n            \"active\": true\n        }\n    ],\n    \"prescriptions\": [],\n    \"allergies\": [],\n    \"labResults\": [],\n    \"problems\": [\n        {\n            \"title\": \"Dry Eye\",\n            \"reported_date\": \"2025-02-13 12:02:00\",\n            \"start_date\": \"2025-02-11 17:30:00\",\n            \"end_date\": null\n        },\n        {\n            \"title\": \"BCC\",\n            \"reported_date\": \"2025-02-13 12:02:10\",\n            \"start_date\": \"2025-02-12 19:00:00\",\n            \"end_date\": \"2025-02-20 19:30:00\"\n        }\n    ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Message",
+			"item": []
+		},
+		{
+			"name": "Profile",
+			"item": [
+				{
+					"name": "get profile info",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER_URL}}/portal/api/profile/get.php?pid=1",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"portal",
+								"api",
+								"profile",
+								"get.php"
+							],
+							"query": [
+								{
+									"key": "pid",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "profile data",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/portal/api/profile/get.php?pid=1",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"portal",
+										"api",
+										"profile",
+										"get.php"
+									],
+									"query": [
+										{
+											"key": "pid",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 19 Feb 2025 09:54:40 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.1.25"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.1.25"
+								},
+								{
+									"key": "Expires",
+									"value": "Thu, 19 Nov 1981 08:52:00 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-store, no-cache, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Content-Length",
+									"value": "2425"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"1\",\n    \"uuid\": \"\\u009e16E!ÊKÔ\\u009aYAeÁÑ\\u0003\\u0098\",\n    \"title\": \"Mr.\",\n    \"language\": \"\",\n    \"financial\": \"\",\n    \"fname\": \"Johon\",\n    \"lname\": \"Doe\",\n    \"mname\": \"\",\n    \"DOB\": \"1962-02-13\",\n    \"street\": \"\",\n    \"postal_code\": \"\",\n    \"city\": \"\",\n    \"state\": \"\",\n    \"country_code\": \"\",\n    \"drivers_license\": \"\",\n    \"ss\": \"\",\n    \"occupation\": \"\",\n    \"phone_home\": \"\",\n    \"phone_biz\": \"\",\n    \"phone_contact\": \"\",\n    \"phone_cell\": \"\",\n    \"pharmacy_id\": 0,\n    \"status\": \"\",\n    \"contact_relationship\": \"\",\n    \"date\": \"2025-02-13 11:54:16\",\n    \"sex\": \"Male\",\n    \"referrer\": \"\",\n    \"referrerID\": \"\",\n    \"providerID\": 0,\n    \"ref_providerID\": 0,\n    \"email\": \"mdmehedihasan2360@gmail.com\",\n    \"email_direct\": \"mdmehedihasan2360@gmail.com\",\n    \"ethnoracial\": \"\",\n    \"race\": \"\",\n    \"ethnicity\": \"\",\n    \"religion\": \"\",\n    \"interpretter\": \"\",\n    \"migrantseasonal\": \"\",\n    \"family_size\": \"\",\n    \"monthly_income\": \"\",\n    \"billing_note\": \"\",\n    \"homeless\": \"\",\n    \"financial_review\": \"0000-00-00 00:00:00\",\n    \"pubpid\": \"1\",\n    \"pid\": \"1\",\n    \"genericname1\": \"\",\n    \"genericval1\": \"\",\n    \"genericname2\": \"\",\n    \"genericval2\": \"\",\n    \"hipaa_mail\": \"YES\",\n    \"hipaa_voice\": \"YES\",\n    \"hipaa_notice\": \"\",\n    \"hipaa_message\": \"\",\n    \"hipaa_allowsms\": \"YES\",\n    \"hipaa_allowemail\": \"YES\",\n    \"squad\": \"\",\n    \"fitness\": 0,\n    \"referral_source\": \"\",\n    \"usertext1\": \"\",\n    \"usertext2\": \"\",\n    \"usertext3\": \"\",\n    \"usertext4\": \"\",\n    \"usertext5\": \"\",\n    \"usertext6\": \"\",\n    \"usertext7\": \"\",\n    \"usertext8\": \"\",\n    \"userlist1\": \"\",\n    \"userlist2\": \"\",\n    \"userlist3\": \"\",\n    \"userlist4\": \"\",\n    \"userlist5\": \"\",\n    \"userlist6\": \"\",\n    \"userlist7\": \"\",\n    \"pricelevel\": \"standard\",\n    \"regdate\": \"2025-02-12 07:33:30\",\n    \"contrastart\": null,\n    \"completed_ad\": \"NO\",\n    \"ad_reviewed\": null,\n    \"vfc\": \"\",\n    \"mothersname\": \"\",\n    \"guardiansname\": \"\",\n    \"allow_imm_reg_use\": \"YES\",\n    \"allow_imm_info_share\": \"\",\n    \"allow_health_info_ex\": \"YES\",\n    \"allow_patient_portal\": \"YES\",\n    \"deceased_date\": null,\n    \"deceased_reason\": \"\",\n    \"soap_import_status\": null,\n    \"cmsportal_login\": \"\",\n    \"care_team_provider\": null,\n    \"care_team_facility\": null,\n    \"care_team_status\": \"active\",\n    \"county\": \"\",\n    \"industry\": \"\",\n    \"imm_reg_status\": \"\",\n    \"imm_reg_stat_effdate\": null,\n    \"publicity_code\": \"\",\n    \"publ_code_eff_date\": null,\n    \"protect_indicator\": \"\",\n    \"prot_indi_effdate\": null,\n    \"guardianrelationship\": \"\",\n    \"guardiansex\": \"\",\n    \"guardianaddress\": \"\",\n    \"guardiancity\": \"\",\n    \"guardianstate\": \"\",\n    \"guardianpostalcode\": \"\",\n    \"guardiancountry\": \"\",\n    \"guardianphone\": \"\",\n    \"guardianworkphone\": \"\",\n    \"guardianemail\": \"\",\n    \"sexual_orientation\": \"\",\n    \"gender_identity\": \"\",\n    \"birth_fname\": \"\",\n    \"birth_lname\": \"\",\n    \"birth_mname\": \"\",\n    \"dupscore\": 0,\n    \"name_history\": null,\n    \"suffix\": \"\",\n    \"street_line_2\": \"\",\n    \"patient_groups\": \"\",\n    \"prevent_portal_apps\": \"\",\n    \"provider_since_date\": null,\n    \"created_by\": \"1\",\n    \"updated_by\": \"1\",\n    \"preferred_name\": \"\",\n    \"nationality_country\": \"\",\n    \"last_updated\": \"2025-02-13 11:54:16\"\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "SERVER_URL",
+			"value": "http://localhost:8081",
+			"type": "string"
+		}
+	]
+}
