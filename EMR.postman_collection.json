@@ -1014,6 +1014,386 @@
 							"body": "{\n    \"id\": \"1\",\n    \"uuid\": \"\\u009e16E!ÊKÔ\\u009aYAeÁÑ\\u0003\\u0098\",\n    \"title\": \"Mr.\",\n    \"language\": \"\",\n    \"financial\": \"\",\n    \"fname\": \"Johon\",\n    \"lname\": \"Doe\",\n    \"mname\": \"\",\n    \"DOB\": \"1962-02-13\",\n    \"street\": \"\",\n    \"postal_code\": \"\",\n    \"city\": \"\",\n    \"state\": \"\",\n    \"country_code\": \"\",\n    \"drivers_license\": \"\",\n    \"ss\": \"\",\n    \"occupation\": \"\",\n    \"phone_home\": \"\",\n    \"phone_biz\": \"\",\n    \"phone_contact\": \"\",\n    \"phone_cell\": \"\",\n    \"pharmacy_id\": 0,\n    \"status\": \"\",\n    \"contact_relationship\": \"\",\n    \"date\": \"2025-02-13 11:54:16\",\n    \"sex\": \"Male\",\n    \"referrer\": \"\",\n    \"referrerID\": \"\",\n    \"providerID\": 0,\n    \"ref_providerID\": 0,\n    \"email\": \"mdmehedihasan2360@gmail.com\",\n    \"email_direct\": \"mdmehedihasan2360@gmail.com\",\n    \"ethnoracial\": \"\",\n    \"race\": \"\",\n    \"ethnicity\": \"\",\n    \"religion\": \"\",\n    \"interpretter\": \"\",\n    \"migrantseasonal\": \"\",\n    \"family_size\": \"\",\n    \"monthly_income\": \"\",\n    \"billing_note\": \"\",\n    \"homeless\": \"\",\n    \"financial_review\": \"0000-00-00 00:00:00\",\n    \"pubpid\": \"1\",\n    \"pid\": \"1\",\n    \"genericname1\": \"\",\n    \"genericval1\": \"\",\n    \"genericname2\": \"\",\n    \"genericval2\": \"\",\n    \"hipaa_mail\": \"YES\",\n    \"hipaa_voice\": \"YES\",\n    \"hipaa_notice\": \"\",\n    \"hipaa_message\": \"\",\n    \"hipaa_allowsms\": \"YES\",\n    \"hipaa_allowemail\": \"YES\",\n    \"squad\": \"\",\n    \"fitness\": 0,\n    \"referral_source\": \"\",\n    \"usertext1\": \"\",\n    \"usertext2\": \"\",\n    \"usertext3\": \"\",\n    \"usertext4\": \"\",\n    \"usertext5\": \"\",\n    \"usertext6\": \"\",\n    \"usertext7\": \"\",\n    \"usertext8\": \"\",\n    \"userlist1\": \"\",\n    \"userlist2\": \"\",\n    \"userlist3\": \"\",\n    \"userlist4\": \"\",\n    \"userlist5\": \"\",\n    \"userlist6\": \"\",\n    \"userlist7\": \"\",\n    \"pricelevel\": \"standard\",\n    \"regdate\": \"2025-02-12 07:33:30\",\n    \"contrastart\": null,\n    \"completed_ad\": \"NO\",\n    \"ad_reviewed\": null,\n    \"vfc\": \"\",\n    \"mothersname\": \"\",\n    \"guardiansname\": \"\",\n    \"allow_imm_reg_use\": \"YES\",\n    \"allow_imm_info_share\": \"\",\n    \"allow_health_info_ex\": \"YES\",\n    \"allow_patient_portal\": \"YES\",\n    \"deceased_date\": null,\n    \"deceased_reason\": \"\",\n    \"soap_import_status\": null,\n    \"cmsportal_login\": \"\",\n    \"care_team_provider\": null,\n    \"care_team_facility\": null,\n    \"care_team_status\": \"active\",\n    \"county\": \"\",\n    \"industry\": \"\",\n    \"imm_reg_status\": \"\",\n    \"imm_reg_stat_effdate\": null,\n    \"publicity_code\": \"\",\n    \"publ_code_eff_date\": null,\n    \"protect_indicator\": \"\",\n    \"prot_indi_effdate\": null,\n    \"guardianrelationship\": \"\",\n    \"guardiansex\": \"\",\n    \"guardianaddress\": \"\",\n    \"guardiancity\": \"\",\n    \"guardianstate\": \"\",\n    \"guardianpostalcode\": \"\",\n    \"guardiancountry\": \"\",\n    \"guardianphone\": \"\",\n    \"guardianworkphone\": \"\",\n    \"guardianemail\": \"\",\n    \"sexual_orientation\": \"\",\n    \"gender_identity\": \"\",\n    \"birth_fname\": \"\",\n    \"birth_lname\": \"\",\n    \"birth_mname\": \"\",\n    \"dupscore\": 0,\n    \"name_history\": null,\n    \"suffix\": \"\",\n    \"street_line_2\": \"\",\n    \"patient_groups\": \"\",\n    \"prevent_portal_apps\": \"\",\n    \"provider_since_date\": null,\n    \"created_by\": \"1\",\n    \"updated_by\": \"1\",\n    \"preferred_name\": \"\",\n    \"nationality_country\": \"\",\n    \"last_updated\": \"2025-02-13 11:54:16\"\n}"
 						}
 					]
+				},
+				{
+					"name": "insurance",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER_URL}}/portal/api/profile/insurance.php?pid=1",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"portal",
+								"api",
+								"profile",
+								"insurance.php"
+							],
+							"query": [
+								{
+									"key": "pid",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "insurance",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/portal/api/profile/insurance.php?pid=1",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"portal",
+										"api",
+										"profile",
+										"insurance.php"
+									],
+									"query": [
+										{
+											"key": "pid",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 20 Feb 2025 09:23:07 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.1.25"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.1.25"
+								},
+								{
+									"key": "Expires",
+									"value": "Thu, 19 Nov 1981 08:52:00 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-store, no-cache, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Content-Length",
+									"value": "343"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"primary\": {\n        \"type\": {\n            \"1\": {\n                \"value\": \"primary\",\n                \"date\": null\n            }\n        },\n        \"accept_assignment\": {\n            \"1\": {\n                \"value\": \"TRUE\",\n                \"date\": null\n            }\n        }\n    },\n    \"tertiary\": {\n        \"type\": {\n            \"1\": {\n                \"value\": \"tertiary\",\n                \"date\": null\n            }\n        },\n        \"accept_assignment\": {\n            \"1\": {\n                \"value\": \"TRUE\",\n                \"date\": null\n            }\n        }\n    },\n    \"secondary\": {\n        \"type\": {\n            \"1\": {\n                \"value\": \"secondary\",\n                \"date\": null\n            }\n        },\n        \"accept_assignment\": {\n            \"1\": {\n                \"value\": \"TRUE\",\n                \"date\": null\n            }\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "update request",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"console.log(pm.request.body)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "activity",
+									"value": "profile",
+									"type": "text"
+								},
+								{
+									"key": "require_audit",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "pending_action",
+									"value": "review",
+									"type": "text"
+								},
+								{
+									"key": "action_taken",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "status",
+									"value": "waiting",
+									"type": "text"
+								},
+								{
+									"key": "narrative",
+									"value": "Patient request changes to demographics.",
+									"type": "text"
+								},
+								{
+									"key": "table_action",
+									"value": "update",
+									"type": "text"
+								},
+								{
+									"key": "table_args",
+									"value": "{\"id\":\"1\",\"title\":\"Mr.\",\"language\":\"Bangla\",\"financial\":\"\",\"fname\":\"dev test\",\"lname\":\"mehedi hasan\",\"mname\":\"\",\"DOB\":\"1998-02-17\",\"street\":\"Mirpur - 6\",\"postal_code\":\"2324\",\"city\":\"Dhaka\",\"state\":\"FL\",\"country_code\":\"880\",\"drivers_license\":\"\",\"ss\":\"\",\"occupation\":\"\",\"phone_home\":\"01913382360\",\"phone_biz\":\"01913382360\",\"phone_contact\":\"01913382360\",\"phone_cell\":\"01913382360\",\"pharmacy_id\":0,\"status\":\"single\",\"contact_relationship\":\"01913382360\",\"date\":\"2025-02-13 11:54:16\",\"sex\":\"Male\",\"referrer\":\"\",\"referrerID\":\"\",\"providerID\":\"1\",\"ref_providerID\":0,\"email\":\"mdmehedihasan2360@gmail.com\",\"email_direct\":\"mdmehedihasan2360@gmail.com\",\"ethnoracial\":\"\",\"race\":\"\",\"ethnicity\":\"\",\"religion\":\"\",\"family_size\":\"4\",\"pubpid\":\"1\",\"pid\":\"1\",\"hipaa_mail\":\"YES\",\"hipaa_voice\":\"YES\",\"hipaa_notice\":\"\",\"hipaa_message\":\"\",\"hipaa_allowsms\":\"YES\",\"hipaa_allowemail\":\"YES\",\"regdate\":\"2025-02-12\",\"mothersname\":\"Hosneara\",\"guardiansname\":\"Hosneara \",\"allow_imm_reg_use\":\"YES\",\"allow_imm_info_share\":\"\",\"allow_health_info_ex\":\"YES\",\"allow_patient_portal\":\"YES\",\"care_team_provider\":0,\"county\":\"Bangladesh\",\"note\":\"\"}\n",
+									"type": "text"
+								},
+								{
+									"key": "action_user",
+									"value": "admin",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "action_taken_time",
+									"value": "2025-02-23 14:30:00",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "checksum",
+									"value": "abcd1234",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{SERVER_URL}}/portal/api/profile/update.php?pid=1",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"portal",
+								"api",
+								"profile",
+								"update.php"
+							],
+							"query": [
+								{
+									"key": "pid",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "update request response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "activity",
+											"value": "profile",
+											"type": "text"
+										},
+										{
+											"key": "require_audit",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "pending_action",
+											"value": "review",
+											"type": "text"
+										},
+										{
+											"key": "action_taken",
+											"value": "",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "status",
+											"value": "waiting",
+											"type": "text"
+										},
+										{
+											"key": "narrative",
+											"value": "Patient request changes to demographics.",
+											"type": "text"
+										},
+										{
+											"key": "table_action",
+											"value": "update",
+											"type": "text"
+										},
+										{
+											"key": "table_args",
+											"value": "{\"id\":\"1\",\"title\":\"Mr.\",\"language\":\"Bangla\",\"financial\":\"\",\"fname\":\"dev test\",\"lname\":\"mehedi hasan\",\"mname\":\"\",\"DOB\":\"1998-02-17\",\"street\":\"Mirpur - 6\",\"postal_code\":\"2324\",\"city\":\"Dhaka\",\"state\":\"FL\",\"country_code\":\"880\",\"drivers_license\":\"\",\"ss\":\"\",\"occupation\":\"\",\"phone_home\":\"01913382360\",\"phone_biz\":\"01913382360\",\"phone_contact\":\"01913382360\",\"phone_cell\":\"01913382360\",\"pharmacy_id\":0,\"status\":\"single\",\"contact_relationship\":\"01913382360\",\"date\":\"2025-02-13 11:54:16\",\"sex\":\"Male\",\"referrer\":\"\",\"referrerID\":\"\",\"providerID\":\"1\",\"ref_providerID\":0,\"email\":\"mdmehedihasan2360@gmail.com\",\"email_direct\":\"mdmehedihasan2360@gmail.com\",\"ethnoracial\":\"\",\"race\":\"\",\"ethnicity\":\"\",\"religion\":\"\",\"family_size\":\"4\",\"pubpid\":\"1\",\"pid\":\"1\",\"hipaa_mail\":\"YES\",\"hipaa_voice\":\"YES\",\"hipaa_notice\":\"\",\"hipaa_message\":\"\",\"hipaa_allowsms\":\"YES\",\"hipaa_allowemail\":\"YES\",\"regdate\":\"2025-02-12\",\"mothersname\":\"Hosneara\",\"guardiansname\":\"Hosneara \",\"allow_imm_reg_use\":\"YES\",\"allow_imm_info_share\":\"\",\"allow_health_info_ex\":\"YES\",\"allow_patient_portal\":\"YES\",\"care_team_provider\":0,\"county\":\"Bangladesh\",\"note\":\"\"}\n",
+											"type": "text"
+										},
+										{
+											"key": "action_user",
+											"value": "admin",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "action_taken_time",
+											"value": "2025-02-23 14:30:00",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "checksum",
+											"value": "abcd1234",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "",
+											"value": "",
+											"type": "text",
+											"disabled": true
+										}
+									],
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/portal/api/profile/update.php?pid=1",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"portal",
+										"api",
+										"profile",
+										"update.php"
+									],
+									"query": [
+										{
+											"key": "pid",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Sun, 23 Feb 2025 08:26:16 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.1.25"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.1.25"
+								},
+								{
+									"key": "Expires",
+									"value": "Thu, 19 Nov 1981 08:52:00 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-store, no-cache, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Content-Length",
+									"value": "16"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Patient",
+			"item": [
+				{
+					"name": "test",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER_URL}}/portal/patient/api/patient",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"portal",
+								"patient",
+								"api",
+								"patient"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
