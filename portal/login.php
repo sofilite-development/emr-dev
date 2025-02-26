@@ -36,35 +36,20 @@ if (!empty($_REQUEST['redirect'])) {
     $landingpage .= "&redirect=" . urlencode($_REQUEST['redirect']);
 }
 
-// checking whether the request comes from index.php
-if (!isset($_SESSION['itsme'])) {
-    OpenEMR\Common\Session\SessionUtil::portalSessionCookieDestroy();
-    header('Location: ' . $landingpage . '&w');
-    exit();
-}
 
 // some validation
-if (!isset($_POST['uname']) || empty($_POST['uname'])) {
-    OpenEMR\Common\Session\SessionUtil::portalSessionCookieDestroy();
-    header('Location: ' . $landingpage . '&w&c');
-    exit();
-}
+// if (!isset($_POST['uname']) || empty($_POST['uname'])) {
+//     OpenEMR\Common\Session\SessionUtil::portalSessionCookieDestroy();
+//     header('Location: ' . $landingpage . '&w&c');
+//     exit();
+// }
 
-if (!isset($_POST['pass']) || empty($_POST['pass'])) {
-    OpenEMR\Common\Session\SessionUtil::portalSessionCookieDestroy();
-    header('Location: ' . $landingpage . '&w&c');
-    exit();
-}
+// if (!isset($_POST['pass']) || empty($_POST['pass'])) {
+//     OpenEMR\Common\Session\SessionUtil::portalSessionCookieDestroy();
+//     header('Location: ' . $landingpage . '&w&c');
+//     exit();
+// }
 
-// set the language
-if (!empty($_POST['languageChoice'])) {
-    $_SESSION['language_choice'] = (int)$_POST['languageChoice'];
-} elseif (empty($_SESSION['language_choice'])) {
-    // just in case both are empty, then use english
-    $_SESSION['language_choice'] = 1;
-} else {
-    // keep the current session language token
-}
 
 // Settings that will override globals.php
 $ignoreAuth_onsite_portal = true;
@@ -72,15 +57,6 @@ $ignoreAuth_onsite_portal = true;
 
 // Authentication
 require_once('../interface/globals.php');
-
-if (
-    $GLOBALS['enforce_signin_email']
-    && (!isset($_POST['passaddon']) || empty($_POST['passaddon']))
-) {
-    OpenEMR\Common\Session\SessionUtil::portalSessionCookieDestroy();
-    header('Location: ' . $landingpage . '&w&c');
-    exit();
-}
 
 require_once(dirname(__FILE__) . "/lib/appsql.class.php");
 require_once("$srcdir/user.inc.php");
@@ -91,8 +67,6 @@ use OpenEMR\Common\Csrf\CsrfUtils;
 use function PHPSTORM_META\type;
 
 $logit = new ApplicationTable();
-$password_update = isset($_SESSION['password_update']) ? $_SESSION['password_update'] : 0;
-unset($_SESSION['password_update']);
 
 $authorizedPortal = false; // flag
 DEFINE("TBL_PAT_ACC_ON", "patient_access_onsite");
@@ -104,63 +78,19 @@ DEFINE("COL_POR_LOGINUSER", "portal_login_username");
 DEFINE("COL_POR_PWD_STAT", "portal_pwd_status");
 DEFINE("COL_POR_ONETIME", "portal_onetime");
 
-// 2 is flag for one time credential reset else 1 = normal reset.
-// one time reset requires a PIN where normal uses a new temp pass sent to user.
-if ($password_update === 2 && !empty($_SESSION['pin'])) {
-    $sql = "SELECT " . implode(",", array(
-        COL_ID,
-        COL_PID,
-        COL_POR_PWD,
-        COL_POR_USER,
-        COL_POR_LOGINUSER,
-        COL_POR_PWD_STAT,
-        COL_POR_ONETIME
-    )) . " FROM " . TBL_PAT_ACC_ON .
-        " WHERE BINARY " . COL_POR_ONETIME . "= ?";
-    $auth = privQuery($sql, array($_SESSION['forward']));
-    if ($auth !== false) {
-        // remove the token from database
-        privStatement("UPDATE " . TBL_PAT_ACC_ON . " SET " . COL_POR_ONETIME . "=NULL WHERE BINARY " . COL_POR_ONETIME . " = ?", [$auth['portal_onetime']]);
-        // validation
-        $validate = substr($auth[COL_POR_ONETIME], 32, 6);
-        if (!empty($validate) && !empty($_POST['token_pin'])) {
-            if ($_SESSION['pin'] !== $_POST['token_pin']) {
-                $auth = false;
-            } elseif ($validate !== $_POST['token_pin']) {
-                $auth = false;
-            }
-        } else {
-            $auth = false;
-        }
-        unset($_SESSION['forward']);
-        unset($_SESSION['pin']);
-        unset($_POST['token_pin']);
-    }
-} else {
-    // normal login
-    $sql = "SELECT " . implode(",", array(
-        COL_ID,
-        COL_PID,
-        COL_POR_PWD,
-        COL_POR_USER,
-        COL_POR_LOGINUSER,
-        COL_POR_PWD_STAT
-    )) . " FROM " . TBL_PAT_ACC_ON .
-        " WHERE " . COL_POR_LOGINUSER . "= ?";
-    if ($password_update === 1) {
-        $sql = "SELECT " . implode(",", array(
-            COL_ID,
-            COL_PID,
-            COL_POR_PWD,
-            COL_POR_USER,
-            COL_POR_LOGINUSER,
-            COL_POR_PWD_STAT
-        )) . " FROM " . TBL_PAT_ACC_ON .
-            " WHERE " . COL_POR_USER . "= ?";
-    }
 
-    $auth = privQuery($sql, array($_POST['uname']));
-}
+// normal login
+$sql = "SELECT " . implode(",", array(
+    COL_ID,
+    COL_PID,
+    COL_POR_PWD,
+    COL_POR_USER,
+    COL_POR_LOGINUSER,
+    COL_POR_PWD_STAT
+)) . " FROM " . TBL_PAT_ACC_ON .
+    " WHERE " . COL_POR_LOGINUSER . "= ?";
+$auth = privQuery($sql, array($_POST['uname']));
+
 if ($auth === false) {
     $logit->portalLog('login attempt', '', ($_POST['uname'] . ':invalid username'), '', '0');
     OpenEMR\Common\Session\SessionUtil::portalSessionCookieDestroy();
@@ -168,39 +98,31 @@ if ($auth === false) {
     exit();
 }
 
-if ($password_update === 2) {
-    if ($_POST['pass'] != $auth[COL_POR_PWD]) {
-        $logit->portalLog('login attempt', '', ($_POST['uname'] . ':invalid password'), '', '0');
-        OpenEMR\Common\Session\SessionUtil::portalSessionCookieDestroy();
-        header('Location: ' . $landingpage . '&w&p');
-        exit();
+if (AuthHash::passwordVerify($_POST['pass'], $auth[COL_POR_PWD])) {
+    $authHashPortal = new AuthHash('auth');
+    if ($authHashPortal->passwordNeedsRehash($auth[COL_POR_PWD])) {
+        // If so, create a new hash, and replace the old one (this will ensure always using most modern hashing)
+        $reHash = $authHashPortal->passwordHash($_POST['pass']);
+        if (empty($reHash)) {
+            // Something is seriously wrong
+            error_log('OpenEMR Error : OpenEMR is not working because unable to create a hash.');
+            die("OpenEMR Error : OpenEMR is not working because unable to create a hash.");
+        }
+        privStatement(
+            "UPDATE " . TBL_PAT_ACC_ON . " SET " . COL_POR_PWD . " = ? WHERE " . COL_ID . " = ?",
+            [
+                $reHash,
+                $auth[COL_ID]
+            ]
+        );
     }
 } else {
-    if (AuthHash::passwordVerify($_POST['pass'], $auth[COL_POR_PWD])) {
-        $authHashPortal = new AuthHash('auth');
-        if ($authHashPortal->passwordNeedsRehash($auth[COL_POR_PWD])) {
-            // If so, create a new hash, and replace the old one (this will ensure always using most modern hashing)
-            $reHash = $authHashPortal->passwordHash($_POST['pass']);
-            if (empty($reHash)) {
-                // Something is seriously wrong
-                error_log('OpenEMR Error : OpenEMR is not working because unable to create a hash.');
-                die("OpenEMR Error : OpenEMR is not working because unable to create a hash.");
-            }
-            privStatement(
-                "UPDATE " . TBL_PAT_ACC_ON . " SET " . COL_POR_PWD . " = ? WHERE " . COL_ID . " = ?",
-                [
-                    $reHash,
-                    $auth[COL_ID]
-                ]
-            );
-        }
-    } else {
-        $logit->portalLog('login attempt', '', ($_POST['uname'] . ':invalid password'), '', '0');
-        OpenEMR\Common\Session\SessionUtil::portalSessionCookieDestroy();
-        header('Location: ' . $landingpage . '&w&p');
-        exit();
-    }
+    $logit->portalLog('login attempt', '', ($_POST['uname'] . ':invalid password'), '', '0');
+    OpenEMR\Common\Session\SessionUtil::portalSessionCookieDestroy();
+    header('Location: ' . $landingpage . '&w&p');
+    exit();
 }
+
 
 
 
@@ -212,13 +134,6 @@ $sql = "SELECT * FROM `patient_data` WHERE `pid` = ?";
 if ($userData = sqlQuery($sql, array($auth['pid']))) { // if query gets executed
     if (empty($userData)) {
         $logit->portalLog('login attempt', '', ($_POST['uname'] . ':not active patient'), '', '0');
-        OpenEMR\Common\Session\SessionUtil::portalSessionCookieDestroy();
-        header('Location: ' . $landingpage . '&w');
-        exit();
-    }
-
-    if ($userData['email'] != ($_POST['passaddon'] ?? '') && $GLOBALS['enforce_signin_email']) {
-        $logit->portalLog('login attempt', '', ($_POST['uname'] . ':invalid email'), '', '0');
         OpenEMR\Common\Session\SessionUtil::portalSessionCookieDestroy();
         header('Location: ' . $landingpage . '&w');
         exit();
@@ -239,29 +154,6 @@ if ($userData = sqlQuery($sql, array($auth['pid']))) { // if query gets executed
         exit();
     }
 
-    if ($password_update) {
-        $code_new = $_POST['pass_new'];
-        $code_new_confirm = $_POST['pass_new_confirm'];
-        if (!(empty($_POST['pass_new'])) && !(empty($_POST['pass_new_confirm'])) && ($code_new == $code_new_confirm)) {
-            $new_hash = (new AuthHash('auth'))->passwordHash($code_new);
-            if (empty($new_hash)) {
-                // Something is seriously wrong
-                error_log('OpenEMR Error : OpenEMR is not working because unable to create a hash.');
-                die("OpenEMR Error : OpenEMR is not working because unable to create a hash.");
-            }
-            // Update the password and continue (patient is authorized)
-            privStatement(
-                "UPDATE " . TBL_PAT_ACC_ON . "  SET " . COL_POR_LOGINUSER . "=?," . COL_POR_PWD . "=?," . COL_POR_PWD_STAT . "=1 WHERE id=?",
-                array(
-                    $_POST['login_uname'],
-                    $new_hash,
-                    $auth['id']
-                )
-            );
-            $authorizedPortal = true;
-            $logit->portalLog('password update', $auth['pid'], ($_POST['login_uname'] . ': ' . $_SESSION['ptName'] . ':success'));
-        }
-    }
 
     if ($auth['portal_pwd_status'] == 0) {
         if (!$authorizedPortal) {
