@@ -152,7 +152,7 @@ for ($i = 0; $i < $slot_count; ++$i) {
     }
 
     if ($in_office && !($slots[$i] & 4)) {
-        $date = date("d-m-Y", $slot_start_time + ($i * $slot_secs));
+        $date = date("Y-m-d", $slot_start_time + ($i * $slot_secs));
         $time = date("H.i", $slot_start_time + ($i * $slot_secs));
         $available_slots[$date][] = ["time" => $time];
     }

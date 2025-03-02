@@ -1,23 +1,46 @@
 <?php
+require("../../../library/pnotes.inc.php");
+
+use OpenEMR\Services\AppointmentService;
+
 function getVisitCategories()
 {
     $categories = [];
-    $query = "SELECT pc_catid, pc_catname, pc_duration, pc_end_all_day
+    $cattype = 0; // Only include categories of type 0
+
+    $query = "SELECT pc_catid, pc_cattype, pc_constant_id, pc_catname, 
+                     pc_duration, pc_end_all_day
               FROM openemr_postcalendar_categories 
-              WHERE pc_active = 1 ORDER BY pc_seq";
+              WHERE pc_active = 1 
+              ORDER BY pc_seq";
 
     $result = sqlStatement($query);
 
     while ($row = sqlFetchArray($result)) {
-        $categories[] = [
-            'id' => $row['pc_catid'],
-            'name' => xl_appt_category($row['pc_catname']),
-            'duration' => $row['pc_end_all_day'] ? 1440 : round($row['pc_duration'] / 60) // Convert duration to minutes
-        ];
+        // Skip categories that do not match cattype 0 or are marked as "No Show"
+        if (
+            $row['pc_cattype'] != $cattype ||
+            $row['pc_constant_id'] === AppointmentService::CATEGORY_CONSTANT_NO_SHOW
+        ) {
+            continue;
+        }
+
+        // Calculate duration (all-day events get 1440 minutes)
+        $duration = $row['pc_end_all_day'] ? 1440 : round($row['pc_duration'] / 60);
+
+        // Only add categories with a valid duration
+        if ($duration > 0) {
+            $categories[] = [
+                'id' => $row['pc_catid'],
+                'name' => xl_appt_category($row['pc_catname']),
+                'duration' => $duration
+            ];
+        }
     }
 
     return $categories;
 }
+
 
 function getProviderList()
 {
