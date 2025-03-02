@@ -65,3 +65,6 @@ Thanks to our [ONC Certification Major Sponsors](https://www.open-emr.org/wiki/i
 ### License
 
 [GNU GPL](LICENSE)
+
+
+- https://chatgpt.com/share/67c36212-aadc-8012-b6cc-274fe844178a
