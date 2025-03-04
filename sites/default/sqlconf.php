@@ -5,10 +5,10 @@
 global $disable_utf8_flag;
 $disable_utf8_flag = false;
 
-$host	= 'localhost';
+$host	= '127.0.0.1';
 $port	= '3306';
-$login	= 'openemruser';
-$pass	= 'securepassword';
+$login	= 'root';
+$pass	= 'admin';
 $dbase	= 'openemr';
 $db_encoding	= 'utf8mb4';
 

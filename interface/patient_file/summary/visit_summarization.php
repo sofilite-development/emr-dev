@@ -13,7 +13,6 @@
  * @copyright Copyright (c) 2020 Thomas Pantelis <tompantelis@gmail.com>
  * @license   https://github.com/openemr/openemr/blob/master/LICENSE GNU General Public License 3
  */
-
 require_once '../../globals.php';
 require_once $GLOBALS['srcdir'] . '/lists.inc.php';
 require_once $GLOBALS['srcdir'] . '/patient.inc.php';
@@ -36,7 +35,7 @@ use OpenEMR\Services\PatientIssuesService;
 <?php
 
 if (!empty($_POST['form_save'])) {
-    if (!CsrfUtils::verifyCsrfToken($_POST["csrf_token_form"])) {
+    if (!CsrfUtils::verifyCsrfToken($_POST['csrf_token_form'])) {
         CsrfUtils::csrfNotVerified();
     }
 
@@ -59,23 +58,23 @@ if (isset($ISSUE_TYPES['ippf_gcac'])) {
     }
 }
 
-$info_msg = "";
+$info_msg = '';
 
 // A nonempty thistype is an issue type to be forced for a new issue.
 $thistype = empty($_REQUEST['thistype']) ? '' : $_REQUEST['thistype'];
 
 if ($thistype && !$issue && !AclMain::aclCheckIssue($thistype, '', array('write', 'addonly'))) {
-    die(xlt("Add is not authorized!"));
+    die(xlt('Add is not authorized!'));
 }
 
-$tmp = getPatientData($thispid, "squad");
+$tmp = getPatientData($thispid, 'squad');
 if ($tmp['squad'] && !AclMain::aclCheckCore('squads', $tmp['squad'])) {
-    die(xlt("Not authorized for this squad!"));
+    die(xlt('Not authorized for this squad!'));
 }
 
 function QuotedOrNull($fld)
 {
-    return ($fld) ? "'" . add_escape_custom($fld) . "'" : "NULL";
+    return ($fld) ? "'" . add_escape_custom($fld) . "'" : 'NULL';
 }
 
 function rbinput($name, $value, $desc, $colname)
@@ -84,7 +83,7 @@ function rbinput($name, $value, $desc, $colname)
     $_p = [
         attr($name),
         attr($value),
-        ($irow[$colname] == $value) ? " checked" : "",
+        ($irow[$colname] == $value) ? ' checked' : '',
         text($desc)
     ];
     $str = '<input type="radio" name="%s" value="%s" %s>%s';
@@ -107,9 +106,9 @@ function issueTypeIndex($tstr)
 
 function ActiveIssueCodeRecycleFn($thispid2, $ISSUE_TYPES2)
 {
-    ///////////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////////
     // Active Issue Code Recycle Function authored by epsdky (2014-2015) //
-    ///////////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////////
 
     $modeIssueTypes = array();
     $issueTypeIdx2 = array();
@@ -133,8 +132,8 @@ function ActiveIssueCodeRecycleFn($thispid2, $ISSUE_TYPES2)
     );
 
     while ($issueCodesRow2 = sqlFetchArray($issueCodes2)) {
-        if ($issueCodesRow2['diagnosis'] != "") {
-            $someCodes2 = explode(";", $issueCodesRow2['diagnosis']);
+        if ($issueCodesRow2['diagnosis'] != '') {
+            $someCodes2 = explode(';', $issueCodesRow2['diagnosis']);
             $codeList2 = array_merge($codeList2, $someCodes2);
         }
     }
@@ -150,14 +149,16 @@ function ActiveIssueCodeRecycleFn($thispid2, $ISSUE_TYPES2)
     $memberCodes[2] = array();
 
     $allowedCodes2 = array();
-    $allowedCodes2[0] = collect_codetypes("medical_problem");
-    $allowedCodes2[1] = collect_codetypes("diagnosis");
-    $allowedCodes2[2] = collect_codetypes("drug");
+    $allowedCodes2[0] = collect_codetypes('medical_problem');
+    $allowedCodes2[1] = collect_codetypes('diagnosis');
+    $allowedCodes2[2] = collect_codetypes('drug');
 
     // Test membership of codes to each code type set
     foreach ($allowedCodes2 as $akey1 => $allowCodes2) {
         foreach ($codeList2 as $listCode2) {
-            list($codeTyX,) = explode(":", $listCode2);
+            list(
+                $codeTyX,
+            ) = explode(':', $listCode2);
 
             if (in_array($codeTyX, $allowCodes2)) {
                 array_push($memberCodes[$akey1], $listCode2);
@@ -166,7 +167,7 @@ function ActiveIssueCodeRecycleFn($thispid2, $ISSUE_TYPES2)
     }
 
     // output sets of display options
-    $displayCodeSets[0] = $memberCodes[0]; // medical_problem
+    $displayCodeSets[0] = $memberCodes[0];  // medical_problem
     $displayCodeSets[1] = array_merge($memberCodes[1], $memberCodes[2]);  // allergy
     $displayCodeSets[2] = array_merge($memberCodes[2], $memberCodes[1]);  // medication
     $displayCodeSets[3] = $memberCodes[1];  // default
@@ -174,19 +175,19 @@ function ActiveIssueCodeRecycleFn($thispid2, $ISSUE_TYPES2)
     echo "var listBoxOptionSets = new Array();\n\n";
 
     foreach ($displayCodeSets as $akey => $displayCodeSet) {
-        echo "listBoxOptionSets[" . attr($akey) . "] = new Array();\n";
+        echo 'listBoxOptionSets[' . attr($akey) . "] = new Array();\n";
 
         if ($displayCodeSet) {
             foreach ($displayCodeSet as $code) {
                 $text = getCodeText($code);
-                echo "listBoxOptionSets[" .
-                    attr($akey) .
-                    "][listBoxOptionSets[" .
-                    attr($akey) .
-                    "].length] = new Option(" .
-                    js_escape($text) .
-                    ", " . js_escape($code) .
-                    ", false, false);\n";
+                echo 'listBoxOptionSets['
+                    . attr($akey)
+                    . '][listBoxOptionSets['
+                    . attr($akey)
+                    . '].length] = new Option('
+                    . js_escape($text)
+                    . ', ' . js_escape($code)
+                    . ", false, false);\n";
             }
         }
     }
@@ -198,38 +199,38 @@ function ActiveIssueCodeRecycleFn($thispid2, $ISSUE_TYPES2)
         $modeIndexMapping[$akey2] = 3;
     }
 
-    if (array_key_exists("medical_problem", $issueTypeIdx2)) {
+    if (array_key_exists('medical_problem', $issueTypeIdx2)) {
         $modeIndexMapping[$issueTypeIdx2['medical_problem']] = 0;
     }
 
-    if (array_key_exists("allergy", $issueTypeIdx2)) {
+    if (array_key_exists('allergy', $issueTypeIdx2)) {
         $modeIndexMapping[$issueTypeIdx2['allergy']] = 1;
     }
 
-    if (array_key_exists("medication", $issueTypeIdx2)) {
+    if (array_key_exists('medication', $issueTypeIdx2)) {
         $modeIndexMapping[$issueTypeIdx2['medication']] = 2;
     }
 
     echo "\nvar listBoxOptions2 = new Array();\n\n";
 
     foreach ($modeIssueTypes as $akey2 => $isJunk) {
-        echo "listBoxOptions2[" . attr($akey2) . "] = listBoxOptionSets[" . attr($modeIndexMapping[$akey2]) . "];\n";
+        echo 'listBoxOptions2[' . attr($akey2) . '] = listBoxOptionSets[' . attr($modeIndexMapping[$akey2]) . "];\n";
     }
 
-    ///////////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////////
     // End of Active Issue Code Recycle Function main code block         //
-    ///////////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////////
 }
 
 // If we are saving, then save and close the window.
 //
 if (!empty($_POST['form_save'])) {
-    if (!CsrfUtils::verifyCsrfToken($_POST["csrf_token_form"])) {
+    if (!CsrfUtils::verifyCsrfToken($_POST['csrf_token_form'])) {
         CsrfUtils::csrfNotVerified();
     }
 
     $i = 0;
-    $text_type = "unknown";
+    $text_type = 'unknown';
     foreach ($ISSUE_TYPES as $key => $value) {
         if ($i++ == $_POST['form_type']) {
             $text_type = $key;
@@ -237,20 +238,20 @@ if (!empty($_POST['form_save'])) {
     }
 
     $form_begin = !empty($_POST['form_begin']) ? DateTimeToYYYYMMDDHHMMSS($_POST['form_begin']) : null;
-    $form_end   = !empty($_POST['form_end']) ? DateTimeToYYYYMMDDHHMMSS($_POST['form_end']) : null;
+    $form_end = !empty($_POST['form_end']) ? DateTimeToYYYYMMDDHHMMSS($_POST['form_end']) : null;
     $form_return = !empty($_POST['form_return']) ? DateToYYYYMMDD($_POST['form_return']) : null;
 
     $form_injury_part = $_POST['form_medical_system'] ?? '';
     $form_injury_type = $_POST['form_medical_type'] ?? '';
 
     $issueRecord = [
-        'type' => $text_type
-        ,'begdate' => $form_begin ?? null
-        ,'enddate' => $form_end ?? null
-        ,'returndate' => $form_return ?? null
-        ,'erx_uploaded' => '0'
-        ,'id' => $issue ?? null
-        ,'pid' => $thispid
+        'type' => $text_type,
+        'begdate' => $form_begin ?? null,
+        'enddate' => $form_end ?? null,
+        'returndate' => $form_return ?? null,
+        'erx_uploaded' => '0',
+        'id' => $issue ?? null,
+        'pid' => $thispid
     ];
     // TODO: we could simplify this array by just adding 'form_' onto everything
     // but not all of the fields precisely match so that would need to be fixed up
@@ -288,7 +289,7 @@ if (!empty($_POST['form_save'])) {
     if ($issue) {
         $patientIssuesService->updateIssue($issueRecord);
     } else {
-        $issueRecord["date"] = date("Y-m-d H:m:s");
+        $issueRecord['date'] = date('Y-m-d H:m:s');
         $issueRecord['activity'] = 1;
         $issueRecord['user'] = $_SESSION['authUser'];
         $issueRecord['groupname'] = $_SESSION['authProvider'];
@@ -308,7 +309,7 @@ if (!empty($_POST['form_save'])) {
 
     // If requested, link the issue to a specified encounter.
     if ($thisenc) {
-        $sql = "INSERT INTO issue_encounter(pid, list_id, encounter) VALUES (?, ?, ?)";
+        $sql = 'INSERT INTO issue_encounter(pid, list_id, encounter) VALUES (?, ?, ?)';
         sqlStatement($sql, [$thispid, $issue, $thisenc]);
     }
 
@@ -318,11 +319,11 @@ if (!empty($_POST['form_save'])) {
     //
     echo "<html><body><script>\n";
     if ($info_msg) {
-        echo " alert(" . js_escape($info_msg) . ");\n";
+        echo ' alert(' . js_escape($info_msg) . ");\n";
     }
 
     echo " var myboss = opener ? opener : parent;\n";
-    echo " if (myboss.refreshIssue) myboss.refreshIssue(" . js_escape($issue) . "," . js_escape($tmp_title) . ");\n";
+    echo ' if (myboss.refreshIssue) myboss.refreshIssue(' . js_escape($issue) . ',' . js_escape($tmp_title) . ");\n";
     echo " else if (myboss.reloadIssues) myboss.reloadIssues();\n";
     echo " else myboss.location.reload();\n";
     echo " dlgclose();\n";
@@ -336,7 +337,7 @@ if ($issue) {
     $patientIssuesService = new PatientIssuesService();
     $irow = $patientIssuesService->getOneById($issue);
     if (!AclMain::aclCheckIssue($irow['type'], '', 'write')) {
-        die(xlt("Edit is not authorized!"));
+        die(xlt('Edit is not authorized!'));
     }
 } elseif ($thistype) {
     $irow['type'] = $thistype;
@@ -366,7 +367,7 @@ function getCodeText($code)
     $codedesc = lookup_code_descriptions($code);
     $text = $code;
     if ($codedesc) {
-        $text .= " (" . $codedesc . ")";
+        $text .= ' (' . $codedesc . ')';
     }
 
     $code_texts[$code] = $text;
@@ -375,447 +376,598 @@ function getCodeText($code)
 
 ?>
 <html>
+
 <head>
-<?php Header::setupHeader(['common', 'datetime-picker', 'select2']); ?>
-<title><?php echo ($issue) ? xlt('Edit Issue') : xlt('Add New Issue'); ?></title>
+    <?php Header::setupHeader(['common', 'datetime-picker', 'select2']); ?>
+    <title><?php echo ($issue) ? xlt('Edit Issue') : xlt('Add New Issue'); ?></title>
 
-<style>
-    div.section {
-        border: 1px solid var(--primary) !important;
-        margin: 0 0 0 13px;
-        padding: 7px;
-    }
+    <style>
+        div.section {
+            border: 1px solid var(--primary) !important;
+            margin: 0 0 0 13px;
+            padding: 7px;
+        }
 
-    /* Override theme's selected tab top color so it matches tab contents. */
-    ul.tabNav li.current a {
-        background: var(--white);
-    }
-</style>
+        /* Override theme's selected tab top color so it matches tab contents. */
+        ul.tabNav li.current a {
+            background: var(--white);
+        }
+    </style>
 
-<script>
-    var aitypes = new Array(); // issue type attributes
-    var aopts = new Array(); // Option objects
-    var codeTexts = new Map()
-    <?php
-    $i = 0;
-    foreach ($ISSUE_TYPES as $key => $value) {
-        echo " aitypes[" . attr($i) . "] = " . js_escape($value[3]) . ";\n";
-        echo " aopts[" . attr($i) . "] = new Array();\n";
-        $qry = sqlStatement(
-            "SELECT * FROM list_options WHERE list_id = ? AND activity = 1",
-            array($key . "_issue_list")
-        );
-        while ($res = sqlFetchArray($qry)) {
-            echo " opt = new Option(" .
-                js_escape(xl_list_label(trim($res['title']))) .
-                ", " .
-                js_escape(trim($res['option_id'])) .
-                ", false, false);\n";
-            echo " aopts[" . attr($i) . "][aopts[" . attr($i) . "].length] = opt\n";
-            if ($res['codes']) {
-                $codes = explode(";", $res['codes']);
-                foreach ($codes as $code) {
-                    $text = getCodeText($code);
-                    echo " codeTexts.set(" . js_escape($code) . ", " . js_escape($text) . ");\n";
+    <script>
+        var aitypes = new Array(); // issue type attributes
+        var aopts = new Array(); // Option objects
+        var codeTexts = new Map()
+        <?php
+        $i = 0;
+        foreach ($ISSUE_TYPES as $key => $value) {
+            echo ' aitypes[' . attr($i) . '] = ' . js_escape($value[3]) . ";\n";
+            echo ' aopts[' . attr($i) . "] = new Array();\n";
+            $qry = sqlStatement(
+                'SELECT * FROM list_options WHERE list_id = ? AND activity = 1',
+                array($key . '_issue_list')
+            );
+            while ($res = sqlFetchArray($qry)) {
+                echo ' opt = new Option('
+                    . js_escape(xl_list_label(trim($res['title'])))
+                    . ', '
+                    . js_escape(trim($res['option_id']))
+                    . ", false, false);\n";
+                echo ' aopts[' . attr($i) . '][aopts[' . attr($i) . "].length] = opt\n";
+                if ($res['codes']) {
+                    $codes = explode(';', $res['codes']);
+                    foreach ($codes as $code) {
+                        $text = getCodeText($code);
+                        echo ' codeTexts.set(' . js_escape($code) . ', ' . js_escape($text) . ");\n";
+                    }
+                    echo " opt.setAttribute('codes'," . js_escape(trim($res['codes'])) . ");\n";
                 }
-                echo " opt.setAttribute('codes'," . js_escape(trim($res['codes'])) . ");\n";
-            }
-        }
-
-        ++$i;
-    }
-
-    ///////////
-    ActiveIssueCodeRecycleFn($thispid, $ISSUE_TYPES);
-    ///////////
-    ?>
-
-    <?php require $GLOBALS['srcdir'] . "/restoreSession.php"; ?>
-
-    ///////////////////////////
-    function onActiveCodeSelected() {
-        var f = document.forms[0];
-        var sel = f.form_active_codes.options[f.form_active_codes.selectedIndex];
-        addSelectedCode(sel.value, sel.text)
-        f.form_active_codes.selectedIndex = -1;
-    }
-    ///////////////////////////
-    //
-    // React to selection of an issue type.  This loads the associated
-    // shortcuts into the selection list of titles, and determines which
-    // rows are displayed or hidden.
-    function newtype(index) {
-        var f = document.forms[0];
-        var theopts = f.form_titles.options;
-        theopts.length = 0;
-        var i = 0;
-        for (i = 0; i < aopts[index].length; ++i) {
-            theopts[i] = aopts[index][i];
-        }
-        document.getElementById('row_titles').style.display = i ? '' : 'none';
-        //
-        ///////////////////////
-        var listBoxOpts2 = f.form_active_codes.options;
-        listBoxOpts2.length = 0;
-        var ix = 0;
-        for (ix = 0; ix < listBoxOptions2[index].length; ++ix) {
-            listBoxOpts2[ix] = listBoxOptions2[index][ix];
-            listBoxOpts2[ix].title = listBoxOptions2[index][ix].text;
-        }
-        document.getElementById('row_active_codes').style.display = ix ? '' : 'none';
-
-        //////////////////////
-        //
-        // Show or hide various rows depending on issue type, except do not
-        // hide the comments or referred-by fields if they have data.
-
-        $(function() {
-            var comdisp = (aitypes[index] == 1) ? 'none' : '';
-            var revdisp = (aitypes[index] == 1) ? '' : 'none';
-            var injdisp = (aitypes[index] == 2) ? '' : 'none';
-            var nordisp = (aitypes[index] == 0) ? '' : 'none';
-            // reaction row should be displayed only for medication allergy.
-            var alldisp = (index == <?php echo issueTypeIndex('allergy'); ?>) ? '' : 'none';
-            var verificationdisp = (index == <?php echo issueTypeIndex('medical_problem'); ?>) ||
-                (index == <?php echo issueTypeIndex('allergy'); ?>) ? '' : 'none';
-            document.getElementById('row_enddate').style.display = comdisp;
-            // Note that by default all the issues will not show the active row
-            //  (which is desired functionality, since then use the end date
-            //   to inactivate the item.)
-            document.getElementById('row_active').style.display = revdisp;
-            document.getElementById('row_selected_codes').style.display = comdisp;
-            document.getElementById('row_occurrence').style.display = comdisp;
-            document.getElementById('row_classification').style.display = injdisp;
-            document.getElementById('row_reinjury_id').style.display = injdisp;
-            document.getElementById('row_severity').style.display = alldisp;
-            document.getElementById('row_reaction').style.display = alldisp;
-            document.getElementById('row_verification').style.display = verificationdisp;
-            document.getElementById('row_referredby').style.display = (f.form_referredby.value) ? '' : comdisp;
-            //document.getElementById('row_comments'      ).style.display = (f.form_comments.value) ? '' : revdisp;
-            document.getElementById('row_referredby').style.display = (f.form_referredby.value) ? '' : comdisp;
-        });
-        <?php
-        if (!empty($ISSUE_TYPES['ippf_gcac']) && empty($_POST['form_save'])) {
-            // Generate more of these for gcac and contraceptive fields.
-            if (empty($issue) || $irow['type'] == 'ippf_gcac') {
-                issue_ippf_gcac_newtype();
             }
 
-            if (empty($issue) || $irow['type'] == 'contraceptive') {
-                issue_ippf_con_newtype();
-            }
+            ++$i;
         }
+
+        // /////////
+        ActiveIssueCodeRecycleFn($thispid, $ISSUE_TYPES);
+        // /////////
         ?>
-    }
 
-    // If a clickoption title is selected, copy it to the title field.
-    // If it has a code, add that too.
-    function set_text() {
-        var f = document.forms[0];
-        var sel = f.form_titles.options[f.form_titles.selectedIndex];
-        f.form_title.value = sel.text;
-        f.form_title_id.value = sel.value;
+        <?php require $GLOBALS['srcdir'] . '/restoreSession.php'; ?>
 
-        f.form_selected_codes.options.length = 0
+        ///////////////////////////
+        function onActiveCodeSelected() {
+            var f = document.forms[0];
+            var sel = f.form_active_codes.options[f.form_active_codes.selectedIndex];
+            addSelectedCode(sel.value, sel.text)
+            f.form_active_codes.selectedIndex = -1;
+        }
+        ///////////////////////////
+        //
+        // React to selection of an issue type.  This loads the associated
+        // shortcuts into the selection list of titles, and determines which
+        // rows are displayed or hidden.
+        function newtype(index) {
+            var f = document.forms[0];
+            var theopts = f.form_titles.options;
+            theopts.length = 0;
+            var i = 0;
+            for (i = 0; i < aopts[index].length; ++i) {
+                theopts[i] = aopts[index][i];
+            }
+            document.getElementById('row_titles').style.display = i ? '' : 'none';
+            //
+            ///////////////////////
+            var listBoxOpts2 = f.form_active_codes.options;
+            listBoxOpts2.length = 0;
+            var ix = 0;
+            for (ix = 0; ix < listBoxOptions2[index].length; ++ix) {
+                listBoxOpts2[ix] = listBoxOptions2[index][ix];
+                listBoxOpts2[ix].title = listBoxOptions2[index][ix].text;
+            }
+            document.getElementById('row_active_codes').style.display = ix ? '' : 'none';
 
-        var str = sel.getAttribute('codes')
-        if (str) {
-            var codes = str.split(";")
-            for (i = 0; i < codes.length; i++) {
-                addSelectedCode(codes[i], codeTexts.has(codes[i]) ? codeTexts.get(codes[i]) : codes[i])
+            //////////////////////
+            //
+            // Show or hide various rows depending on issue type, except do not
+            // hide the comments or referred-by fields if they have data.
+
+            $(function () {
+                var comdisp = (aitypes[index] == 1) ? 'none' : '';
+                var revdisp = (aitypes[index] == 1) ? '' : 'none';
+                var injdisp = (aitypes[index] == 2) ? '' : 'none';
+                var nordisp = (aitypes[index] == 0) ? '' : 'none';
+                // reaction row should be displayed only for medication allergy.
+                var alldisp = (index == <?php echo issueTypeIndex('allergy'); ?>) ? '' : 'none';
+                var verificationdisp = (index == <?php echo issueTypeIndex('medical_problem'); ?>) ||
+                    (index == <?php echo issueTypeIndex('allergy'); ?>) ? '' : 'none';
+                document.getElementById('row_enddate').style.display = comdisp;
+                // Note that by default all the issues will not show the active row
+                //  (which is desired functionality, since then use the end date
+                //   to inactivate the item.)
+                document.getElementById('row_active').style.display = revdisp;
+                document.getElementById('row_selected_codes').style.display = comdisp;
+                document.getElementById('row_occurrence').style.display = comdisp;
+                document.getElementById('row_classification').style.display = injdisp;
+                document.getElementById('row_reinjury_id').style.display = injdisp;
+                document.getElementById('row_severity').style.display = alldisp;
+                document.getElementById('row_reaction').style.display = alldisp;
+                document.getElementById('row_verification').style.display = verificationdisp;
+                document.getElementById('row_referredby').style.display = (f.form_referredby.value) ? '' : comdisp;
+                //document.getElementById('row_comments'      ).style.display = (f.form_comments.value) ? '' : revdisp;
+                document.getElementById('row_referredby').style.display = (f.form_referredby.value) ? '' : comdisp;
+            });
+            <?php
+            if (!empty($ISSUE_TYPES['ippf_gcac']) && empty($_POST['form_save'])) {
+                // Generate more of these for gcac and contraceptive fields.
+                if (empty($issue) || $irow['type'] == 'ippf_gcac') {
+                    issue_ippf_gcac_newtype();
+                }
+
+                if (empty($issue) || $irow['type'] == 'contraceptive') {
+                    issue_ippf_con_newtype();
+                }
+            }
+            ?>
+        }
+
+        // If a clickoption title is selected, copy it to the title field.
+        // If it has a code, add that too.
+        function set_text() {
+            var f = document.forms[0];
+            var sel = f.form_titles.options[f.form_titles.selectedIndex];
+            f.form_title.value = sel.text;
+            f.form_title_id.value = sel.value;
+
+            f.form_selected_codes.options.length = 0
+
+            var str = sel.getAttribute('codes')
+            if (str) {
+                var codes = str.split(";")
+                for (i = 0; i < codes.length; i++) {
+                    addSelectedCode(codes[i], codeTexts.has(codes[i]) ? codeTexts.get(codes[i]) : codes[i])
+                }
             }
         }
-    }
 
-    function closeme() {
-        dlgclose();
-    }
-
-    // Called when the Active checkbox is clicked.  For consistency we
-    // use the existence of an end date to indicate inactivity, even
-    // though the simple verion of the form does not show an end date.
-    function activeClicked(cb) {
-        var f = document.forms[0];
-        if (cb.checked) {
-            f.form_end.value = '';
-        } else {
-            var today = new Date();
-            f.form_end.value = '' + (today.getYear() + 1900) + '-' +
-                (today.getMonth() + 1) + '-' + today.getDate();
+        function closeme() {
+            dlgclose();
         }
-    }
 
-    // Called when resolved outcome is chosen and the end date is entered.
-    function outcomeClicked(cb) {
-        var f = document.forms[0];
-        if (cb.value == '1') {
-            var today = new Date();
-            f.form_end.value = '' + (today.getYear() + 1900) + '-' +
-                ("0" + (today.getMonth() + 1)).slice(-2) + '-' + ("0" + today.getDate()).slice(-2);
-            f.form_end.focus();
-        }
-    }
-
-    // This is for callback by the select codes popup.
-    // Appends to or erases the current list of diagnoses.
-    function OnCodeSelected(codetype, code, selector, codedesc) {
-        var codeKey = codetype + ':' + code
-        addSelectedCode(codeKey, codeKey + ' (' + codedesc + ')')
-
-        var f = document.forms[0]
-        if (f.form_title.value == '') {
-            f.form_title.value = codedesc;
-        }
-    }
-
-    function addSelectedCode(codeKey, codeText) {
-        var f = document.forms[0]
-        var sel = f.form_selected_codes
-        for (i = 0; i < sel.options.length; i++) {
-            if (sel.options[i].value == codeKey) {
-                return
+        // Called when the Active checkbox is clicked.  For consistency we
+        // use the existence of an end date to indicate inactivity, even
+        // though the simple verion of the form does not show an end date.
+        function activeClicked(cb) {
+            var f = document.forms[0];
+            if (cb.checked) {
+                f.form_end.value = '';
+            } else {
+                var today = new Date();
+                f.form_end.value = '' + (today.getYear() + 1900) + '-' +
+                    (today.getMonth() + 1) + '-' + today.getDate();
             }
         }
 
-        var option = document.createElement("option");
-        option.value = codeKey
-        option.text = codeText
-        sel.add(option);
-
-        updateDiagnosisFromSelectedCodes()
-    }
-
-    function updateDiagnosisFromSelectedCodes() {
-        var f = document.forms[0]
-        var diag = ''
-        options = f.form_selected_codes.options
-        if (options.length > 0) {
-            diag = options[0].value
-            for (i = 1; i < options.length; i++) {
-                diag += ';' + options[i].value;
+        // Called when resolved outcome is chosen and the end date is entered.
+        function outcomeClicked(cb) {
+            var f = document.forms[0];
+            if (cb.value == '1') {
+                var today = new Date();
+                f.form_end.value = '' + (today.getYear() + 1900) + '-' +
+                    ("0" + (today.getMonth() + 1)).slice(-2) + '-' + ("0" + today.getDate()).slice(-2);
+                f.form_end.focus();
             }
         }
 
-        f.form_diagnosis.value = diag;
-    }
+        // This is for callback by the select codes popup.
+        // Appends to or erases the current list of diagnoses.
+        function OnCodeSelected(codetype, code, selector, codedesc) {
+            var codeKey = codetype + ':' + code
+            addSelectedCode(codeKey, codeKey + ' (' + codedesc + ')')
 
-    // This invokes the find-code popup.
-    function onAddCode() {
-        <?php
-        $url = '../encounter/select_codes.php?codetype=';
-        if (!empty($irow['type']) && ($irow['type'] == 'medical_problem')) {
-            $url .= urlencode(collect_codetypes("medical_problem", "csv"));
-        } else {
-            $url .= urlencode(collect_codetypes("diagnosis", "csv"));
-            $tmp_csv = collect_codetypes("drug", "csv");
-            $tmp_csv .= "," . collect_codetypes("clinical_term", "csv");
-            $tmp = explode(",", $tmp_csv);
-            if (!empty($irow['type']) && ($irow['type'] == 'allergy')) {
-                if ($tmp) {
-                    foreach ($tmp as $item) {
-                        $pos = strpos($url, $item);
-                        if ($pos === false) {
-                            $item = urlencode($item);
-                            $url .= ",$item";
+            var f = document.forms[0]
+            if (f.form_title.value == '') {
+                f.form_title.value = codedesc;
+            }
+        }
+
+        function addSelectedCode(codeKey, codeText) {
+            var f = document.forms[0]
+            var sel = f.form_selected_codes
+            for (i = 0; i < sel.options.length; i++) {
+                if (sel.options[i].value == codeKey) {
+                    return
+                }
+            }
+
+            var option = document.createElement("option");
+            option.value = codeKey
+            option.text = codeText
+            sel.add(option);
+
+            updateDiagnosisFromSelectedCodes()
+        }
+
+        function updateDiagnosisFromSelectedCodes() {
+            var f = document.forms[0]
+            var diag = ''
+            options = f.form_selected_codes.options
+            if (options.length > 0) {
+                diag = options[0].value
+                for (i = 1; i < options.length; i++) {
+                    diag += ';' + options[i].value;
+                }
+            }
+
+            f.form_diagnosis.value = diag;
+        }
+
+        // This invokes the find-code popup.
+        function onAddCode() {
+            <?php
+            $url = '../encounter/select_codes.php?codetype=';
+            if (!empty($irow['type']) && ($irow['type'] == 'medical_problem')) {
+                $url .= urlencode(collect_codetypes('medical_problem', 'csv'));
+            } else {
+                $url .= urlencode(collect_codetypes('diagnosis', 'csv'));
+                $tmp_csv = collect_codetypes('drug', 'csv');
+                $tmp_csv .= ',' . collect_codetypes('clinical_term', 'csv');
+                $tmp = explode(',', $tmp_csv);
+                if (!empty($irow['type']) && ($irow['type'] == 'allergy')) {
+                    if ($tmp) {
+                        foreach ($tmp as $item) {
+                            $pos = strpos($url, $item);
+                            if ($pos === false) {
+                                $item = urlencode($item);
+                                $url .= ",$item";
+                            }
+                        }
+                    }
+                } elseif (!empty($irow['type']) && ($irow['type'] == 'medication')) {
+                    if ($tmp) {
+                        foreach ($tmp as $item) {
+                            $pos = strpos($url, $item);
+                            if ($pos === false) {
+                                $item = urlencode($item);
+                                $url .= ",$item&default=$item";
+                            }
                         }
                     }
                 }
-            } elseif (!empty($irow['type']) && ($irow['type'] == 'medication')) {
-                if ($tmp) {
-                    foreach ($tmp as $item) {
-                        $pos = strpos($url, $item);
-                        if ($pos === false) {
-                            $item = urlencode($item);
-                            $url .= ",$item&default=$item";
-                        }
-                    }
+            }
+            ?>
+            dlgopen(<?php echo js_escape($url); ?>, '_blank', 985, 800, '', <?php echo xlj('Select Codes'); ?>);
+        }
+
+        function onRemoveCode() {
+            var sel = document.forms[0].form_selected_codes
+            for (i = 0; i < sel.options.length; i++) {
+                if (sel.options[i].selected) {
+                    sel.remove(i)
+                    i--
                 }
             }
-        }
-        ?>
-        dlgopen(<?php echo js_escape($url); ?>, '_blank', 985, 800, '', <?php echo xlj("Select Codes"); ?>);
-    }
 
-    function onRemoveCode() {
-        var sel = document.forms[0].form_selected_codes
-        for (i = 0; i < sel.options.length; i++) {
-            if (sel.options[i].selected) {
-                sel.remove(i)
-                i--
+            onCodeSelectionChange()
+            updateDiagnosisFromSelectedCodes()
+        }
+
+        function onCodeSelectionChange() {
+            document.forms[0].rem_selected_code.disabled = document.forms[0].form_selected_codes.selectedIndex == -1
+        }
+
+        function processUdiEnter(event) {
+            if (event.key == 'Enter') {
+                event.preventDefault();
+                processUdi(document.getElementById('udi_process_button'));
+                return false;
+            } {
+                return true;
             }
         }
 
-        onCodeSelectionChange()
-        updateDiagnosisFromSelectedCodes()
-    }
+        function processUdi(param) {
+            let udi = document.getElementById("form_udi").value;
+            if (!udi) {
+                alert(<?php echo xlj('UDI field is missing'); ?>);
+                document.getElementById('udi_display').innerHTML = <?php echo xlj('A valid UDI has not been processed yet.'); ?>;
+                document.getElementById('udi_data').value = '';
+                return false;
+            }
 
-    function onCodeSelectionChange() {
-        document.forms[0].rem_selected_code.disabled = document.forms[0].form_selected_codes.selectedIndex == -1
-    }
+            originalLabel = param.innerHTML;
+            param.innerHTML = "<i class='fa fa-circle-notch fa-spin'></i> " + jsText(<?php echo xlj('Processing'); ?>);
 
-    function processUdiEnter(event) {
-        if (event.key == 'Enter') {
-            event.preventDefault();
-            processUdi(document.getElementById('udi_process_button'));
-            return false;
-        } {
+            top.restoreSession();
+            let url = '../../../library/ajax/udi.php?udi=' + encodeURIComponent(udi) + '&csrf_token_form=' + <?php echo js_url(CsrfUtils::collectCsrfToken('udi')); ?>;
+            fetch(url, {
+                credentials: 'same-origin',
+                method: 'GET',
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.raw_search == null || data.raw_search.udi == null || data.raw_search.udi.udi == null) {
+                        errorMessage = <?php echo xlj('UDI search failed'); ?>;
+                        if (data.raw_search != null && data.raw_search.error != null) {
+                            errorMessage += ': ' + data.raw_search.error;
+                        }
+                        document.getElementById('udi_display').innerHTML = jsText(errorMessage);
+                        document.getElementById('udi_data').value = '';
+                    } else {
+                        let dataJSON = JSON.stringify(data);
+                        document.getElementById('udi_data').value = dataJSON;
+                        displayUdi(data);
+                    }
+                })
+                .catch(error => console.error(error))
+
+            param.innerHTML = jsText(originalLabel);
+        }
+
+        function displayUdi(data) {
+            let display = '';
+            <?php echo MedicalDevice::fullOutputJavascript('display', 'data', false); ?>
+            document.getElementById('udi_display').innerHTML = display;
+            document.getElementById('form_title').value = data.standard_elements.deviceName;
+        }
+
+        // Check for errors when the form is submitted.
+        function validate() {
+            var f = document.forms[0];
+            var begin_date_val = f.form_begin.value;
+            begin_date_val = begin_date_val ? DateToYYYYMMDD_js(begin_date_val) : begin_date_val;
+            var end_date_val = f.form_end.value;
+            end_date_val = end_date_val ? DateToYYYYMMDD_js(end_date_val) : end_date_val;
+            var begin_date = new Date(begin_date_val);
+            var end_date = new Date(end_date_val);
+
+            if ((end_date_val) && (begin_date > end_date)) {
+                alert(<?php echo xlj('Please Enter End Date greater than Begin Date!'); ?>);
+                return false;
+            }
+            if (!f.form_title.value) {
+                alert(<?php echo xlj('Please enter a title!'); ?>);
+                return false;
+            }
+            top.restoreSession();
             return true;
         }
-    }
 
-    function processUdi(param) {
-        let udi = document.getElementById("form_udi").value;
-        if (!udi) {
-            alert(<?php echo xlj('UDI field is missing'); ?>);
-            document.getElementById('udi_display').innerHTML = <?php echo xlj('A valid UDI has not been processed yet.'); ?>;
-            document.getElementById('udi_data').value = '';
-            return false;
-        }
-
-        originalLabel = param.innerHTML;
-        param.innerHTML = "<i class='fa fa-circle-notch fa-spin'></i> " + jsText(<?php echo xlj('Processing'); ?>);
-
-        top.restoreSession();
-        let url = '../../../library/ajax/udi.php?udi=' + encodeURIComponent(udi) + '&csrf_token_form=' + <?php echo js_url(CsrfUtils::collectCsrfToken('udi')); ?>;
-        fetch(url, {
-            credentials: 'same-origin',
-            method: 'GET',
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.raw_search == null || data.raw_search.udi == null || data.raw_search.udi.udi == null) {
-                errorMessage = <?php echo xlj('UDI search failed'); ?>;
-                if (data.raw_search != null && data.raw_search.error != null) {
-                    errorMessage += ': ' + data.raw_search.error;
-                }
-                document.getElementById('udi_display').innerHTML = jsText(errorMessage);
-                document.getElementById('udi_data').value = '';
+        // Supports customizable forms (currently just for IPPF).
+        function divclick(cb, divid) {
+            var divstyle = document.getElementById(divid).style;
+            if (cb.checked) {
+                divstyle.display = 'block';
             } else {
-                let dataJSON = JSON.stringify(data);
-                document.getElementById('udi_data').value = dataJSON;
-                displayUdi(data);
+                divstyle.display = 'none';
             }
-        })
-        .catch(error => console.error(error))
-
-        param.innerHTML = jsText(originalLabel);
-    }
-
-    function displayUdi(data) {
-        let display = '';
-        <?php echo MedicalDevice::fullOutputJavascript('display', 'data', false); ?>
-        document.getElementById('udi_display').innerHTML = display;
-        document.getElementById('form_title').value = data.standard_elements.deviceName;
-    }
-
-    // Check for errors when the form is submitted.
-    function validate() {
-        var f = document.forms[0];
-        var begin_date_val = f.form_begin.value;
-        begin_date_val = begin_date_val ? DateToYYYYMMDD_js(begin_date_val) : begin_date_val;
-        var end_date_val = f.form_end.value;
-        end_date_val = end_date_val ? DateToYYYYMMDD_js(end_date_val) : end_date_val;
-        var begin_date = new Date(begin_date_val);
-        var end_date = new Date(end_date_val);
-
-        if ((end_date_val) && (begin_date > end_date)) {
-            alert(<?php echo xlj('Please Enter End Date greater than Begin Date!'); ?>);
-            return false;
+            return true;
         }
-        if (!f.form_title.value) {
-            alert(<?php echo xlj('Please enter a title!'); ?>);
-            return false;
-        }
-        top.restoreSession();
-        return true;
-    }
 
-    // Supports customizable forms (currently just for IPPF).
-    function divclick(cb, divid) {
-        var divstyle = document.getElementById(divid).style;
-        if (cb.checked) {
-            divstyle.display = 'block';
-        } else {
-            divstyle.display = 'none';
-        }
-        return true;
-    }
-
-    $(function() {
-        $('.datepicker').datetimepicker({
-            <?php $datetimepicker_timepicker = true; ?>
-            <?php $datetimepicker_showseconds = false; ?>
-            <?php $datetimepicker_formatInput = true; ?>
-            <?php require $GLOBALS['srcdir'] . '/js/xl/jquery-datetimepicker-2-5-4.js.php'; ?>
-            <?php // can add any additional javascript settings to datetimepicker here; need to prepend first setting with a comma
-            ?>
+        $(function () {
+            $('.datepicker').datetimepicker({
+                <?php $datetimepicker_timepicker = true; ?>
+                <?php $datetimepicker_showseconds = false; ?>
+                <?php $datetimepicker_formatInput = true; ?>
+                <?php require $GLOBALS['srcdir'] . '/js/xl/jquery-datetimepicker-2-5-4.js.php'; ?>
+                <?php  // can add any additional javascript settings to datetimepicker here; need to prepend first setting with a comma
+                ?>
+            });
         });
-    });
-    $('div').hide();
-</script>
+        $('div').hide();
+    </script>
 </head>
+
 <body>
+
     <div class="container-fluid mt-3">
         <ul class="tabNav">
-            <li class='current'><a href='#'><?php echo xlt('History'); ?></a></li>
-            <?php
-            // Build html tab data for each visit form linked to this issue.
-            $tabcontents = '';
-            if ($issue) {
-                $vres = sqlStatement(
-                    "SELECT f.id, f.encounter, f.form_name, f.form_id, f.formdir, fe.date " .
-                        "FROM forms AS f, form_encounter AS fe WHERE " .
-                        "f.pid = ? AND f.issue_id = ? AND f.deleted = 0 AND " .
-                        "fe.pid = f.pid and fe.encounter = f.encounter " .
-                        "ORDER BY fe.date DESC, f.id DESC",
-                    array($thispid, $issue)
-                );
-                while ($vrow = sqlFetchArray($vres)) {
-                    $formdir = $vrow['formdir'];
-                    $formid  = $vrow['form_id'];
-                    $visitid = $vrow['encounter'];
-                    echo " <li><a href='#'>" . text(oeFormatShortDate(substr($vrow['date'], 0, 10))) . ' ' .
-                        text($vrow['form_name']) . "</a></li>\n";
-                    $tabcontents .= "<div class='tab' style='height:90%;width:98%;'>\n";
-                    $tabcontents .= "<iframe frameborder='0' class='h-100 w-100' " .
-                        "src='../../forms/LBF/new.php?formname=" . attr_url($formdir) . "&id=" . attr_url($formid) . "&visitid=" . attr_url($visitid) . "&from_issue_form=1'" .
-                        ">Oops</iframe>\n";
-                    $tabcontents .= "</div>\n";
+
+            <li class="current">
+                <a href="#" id="history" class='tab-btn'>History</a>
+            </li>
+
+            <li>
+                <a href="#" id="examination" class='tab-btn'>Examination</a>
+            </li>
+
+            <li>
+                <a href="#" id="diagnosis" class='tab-btn'>Diagnosis</a>
+            </li>
+
+        </ul>
+
+        <script>
+            $(document).ready(function () {
+                $(".tab-btn").click(function (e) {
+                    e.preventDefault();
+
+                    $(".tab-btn").parent().removeClass("current");
+
+                    $(this).parent().addClass("current");
+
+                    let tabId = $(this).attr("id");
+
+                    $(".tab-content").hide();
+
+                    $("#" + tabId + "_content").show();
+                });
+
+                $(".tab-btn").first().click();
+            });
+
+
+        </script>
+
+
+        <?php
+        $encounterData = [];
+        $dictationData = [];
+        $orderData = [];
+
+        // patient information
+        $query = sqlStatement('SELECT id, title, fname, lname, mname, DOB, street, postal_code, city, sex, race, ethnicity, religion, family_size FROM patient_data WHERE id = ?', array($thispid));
+        $patientInformation = sqlFetchArray($query);
+
+        // Encounters
+        $query = sqlStatement('
+            SELECT id, facility, reason, discharge_disposition, encounter_type_code, encounter_type_description 
+            FROM form_encounter 
+            WHERE pid = ?', array($thispid));
+
+        while ($row = sqlFetchArray($query)) {
+            $encounterData[] = $row;
+        }
+
+        // Dictations 
+        $query = sqlStatement('
+            SELECT id, dictation, additional_notes 
+            FROM form_dictation 
+            WHERE pid = ?', array($thispid));
+
+        while ($row = sqlFetchArray($query)) {
+            $dictationData[] = $row;
+        }
+
+        // Procedure order 
+        $query = sqlStatement('
+            SELECT procedure_order_id, patient_instructions, clinical_hx 
+            FROM procedure_order
+            WHERE patient_id = ?', array($thispid));
+
+        while ($row = sqlFetchArray($query)) {
+            $orderData[] = $row;
+        }
+
+        // Structure the final JSON
+        $data = [
+            "patient_informatiom" => $patientInformation,
+            "encounter" => $encounterData,
+            "dictation" => $dictationData,
+            "procedure_order" => $orderData
+        ];
+
+        if (empty(array_filter($data))) {
+            echo json_encode(["error" => "No data available"]);
+            exit;
+        }
+
+        $jsonDataForSummery = json_encode($data, JSON_PRETTY_PRINT);
+
+        $docuaiUrl = $_ENV['DOCUAI_BASE_URL'] . "/api/medical-records/summary";
+        $docuAiSecret = $_ENV['DOCUAI_API_KAY'];
+
+
+        // $ch = curl_init($docuaiUrl);
+        
+        // curl_setopt_array($ch, [
+        //     CURLOPT_RETURNTRANSFER => true,
+        //     CURLOPT_POST => true,
+        //     CURLOPT_HTTPHEADER => [
+        //         "X-Api-Key: $docuAiSecret",
+        //         "Content-Type: application/json"
+        //     ],
+        //     CURLOPT_POSTFIELDS => $jsonDataForSummery,
+        //     CURLOPT_SSL_VERIFYPEER => false, // Add if using https
+        //     CURLOPT_TIMEOUT => 30 // Set timeout
+        // ]);
+        
+
+        // $response = curl_exec($ch);
+        // $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        
+        // curl_close($ch);
+        
+        // if ($httpCode !== 200) {
+        //     echo json_encode(["error" => "Request failed!", "status" => $httpCode]);
+        //     exit;
+        // }
+        // echo $response;
+        
+        ?>
+
+        <script>
+            $(document).ready(function () {
+                // Show the loading spinner immediately
+                $("#loading").show();
+                $("#history_content").html("");
+                $("#examination_content").html("");
+                $("#diagnosis_content").html("");
+
+                const docuaiUrl = "<?php echo $docuaiUrl; ?>";
+                const docuAiSecret = "<?php echo $docuAiSecret; ?>";
+                const requestData = <?php echo json_encode($jsonDataForSummery); ?>;
+
+                $.ajax({
+                    type: "POST",
+                    url: docuaiUrl, // Call the PHP script instead of API directly
+                    dataType: "json",
+                    headers: {
+                        "X-Api-Key": docuAiSecret,
+                        "Content-Type": "application/json"
+                    },
+                    data: requestData,
+                    beforeSend: function () {
+                        $("#loading").show(); // Ensure spinner is visible before sending request
+                    },
+                    success: function (response) {
+                        $("#loading").hide(); // Hide loading message when response is received
+
+                        if (response.error) {
+                            $("#show_summery").text("Error fetching data!");
+                            return;
+                        }
+
+                        $("#history_content").text(response.history || "No history found"); // Display API response
+                        $("#diagnosis_content").text(response.diagnosis || "No diagnisis data found"); // Display API response
+                        $("#examination_content").text(response.examination || "No examination data found"); // Display API response
+                    },
+                    error: function (xhr, status, error) {
+                        $("#loading").hide();
+                        $("#show_summery").text("Failed to fetch summary." + error);
+                    }
+                });
+            });
+        </script>
+
+
+        <div class="tabContainer">
+            <div style="margin-top: 30px; font-size: 16px; letter-spacing: 0.5px;">
+                <div id="loading" style="display: none; text-align: center; ">
+                    <div class="spinner" style="margin-bottom: 16px;"></div>
+                    <p>Processing data, please wait...</p>
+                </div>
+
+                <div id="history_content" class="tab-content"></div>
+                <div id="examination_content" class="tab-content" style="display: none;"></div>
+                <div id="diagnosis_content" class="tab-content" style="display: none;"></div>
+            </div>
+        </div>
+        <style>
+            .spinner {
+                width: 40px;
+                height: 40px;
+                border: 4px solid rgba(0, 0, 0, 0.3);
+                border-top: 4px solid #3498db;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+                margin: auto;
+            }
+
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+
+                100% {
+                    transform: rotate(360deg);
                 }
             }
-            ?>
-        </ul>
-        <div class="tabContainer">
-            <div class='tab current h-auto'>
-                Details of history
-            </div>
-            <?php echo $tabcontents; ?>
-        </div>
+        </style>
+
     </div>
-</div>
 
-<script>
-    newtype(<?php echo js_escape($type_index); ?>);
-    // Set up the tabbed UI.
-    tabbify();
 
-    function toggleBtnExpOpts() {
-        let btnExpOpts = document.querySelector('button[data-target="#expanded_options"]');
-        let isOpen = btnExpOpts.toggleAttribute('data-open');
-        let txtShowHide = isOpen ? <?php echo xlj("Hide More Fields"); ?> : <?php echo xlj("Show More Fields"); ?>;
-        let iconShowHide = isOpen ? "fa-angles-up" : "fa-angles-down";
-        btnExpOpts.innerHTML = `${txtShowHide}&nbsp;<i class='fa ${iconShowHide}'></i>`;
-    }
-
-    $(function() {
-        // Include bs3 / bs4 classes here.  Keep html tags functional.
-        $('table').addClass('table table-sm');
-        $('.select2').select2({theme: 'bootstrap4'});
-        $('button[data-target="#expanded_options"]').on('click', () => {toggleBtnExpOpts()});
-
-        onCodeSelectionChange()
-    });
-</script>
-<?php validateUsingPageRules($_SERVER['PHP_SELF']); ?>
+    <?php validateUsingPageRules($_SERVER['PHP_SELF']); ?>
 </body>
+
 </html>
