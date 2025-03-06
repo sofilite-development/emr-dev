@@ -151,11 +151,11 @@ function createAppointment($patientId, $providerId, $categoryId, $date, $startTi
     return ['success' => 'Appointment created successfully'];
 }
 
-function updateAppointment($appointmentId, $patientId, $providerId, $categoryId, $date, $startTime, $duration, $comments)
+function updateAppointment($appointmentId, $patientId, $providerId, $categoryId, $date = "", $startTime, $duration, $comments)
 {
     global $pid;
 
-    if (!$appointmentId || !$patientId || !$providerId || !$categoryId || !$date || !$startTime || !$duration) {
+    if (!$appointmentId || !$patientId || !$providerId || !$categoryId || !$startTime || !$duration) {
         return ['error' => 'Missing required parameters'];
     }
 
@@ -197,4 +197,69 @@ function updateAppointment($appointmentId, $patientId, $providerId, $categoryId,
     addPnote($patientId, $note, 1, 1, $title, $user['username'], '', 'New');
 
     return ['success' => 'Appointment updated successfully'];
+}
+
+function cancelAppointment($appointmentId, $reason)
+{
+    if (!$appointmentId) {
+        return ['error' => 'Missing required parameters'];
+    }
+
+    // Ensure the appointment exists
+    $checkAppointment = sqlQuery("SELECT pc_pid FROM openemr_postcalendar_events WHERE pc_eid = ?", [$appointmentId]);
+
+    if (!$checkAppointment || !$checkAppointment['pc_pid']) {
+        return ['error' => 'Unauthorized appointment cancellation'];
+    }
+
+    // Update appointment status to indicate cancellation
+    $query = "UPDATE openemr_postcalendar_events 
+              SET pc_apptstatus = 'x', pc_hometext = ?, pc_endDate = ?
+              WHERE pc_eid = ?";
+
+    sqlStatement($query, [$reason, "0000-00-00", $appointmentId]);
+
+    // Add a patient note about the cancellation
+    $note = xl("An Appointment cancellation request was received from portal patient") . " " . $_SESSION['ptName'];
+    $title = xl("Patient Reminders");
+    $user = sqlQueryNoLog("SELECT users.username FROM users WHERE id = (SELECT pc_aid FROM openemr_postcalendar_events WHERE pc_eid = ?)", [$appointmentId]);
+
+    addPnote($checkAppointment['pc_pid'], $note, 1, 1, $title, $user['username'], '', 'New');
+
+    return ['success' => 'Appointment canceled successfully'];
+}
+
+function getAllAppoitmentStatus()
+{
+    $data = [];
+
+    // return $list;
+    $apptStatusQuery = sqlStatement("SELECT * FROM list_options WHERE list_id = 'apptstat' AND activity = 1 ORDER BY seq");
+
+    while ($row = sqlFetchArray($apptStatusQuery)) {
+        list($hexColor, $percentage) = explode('|', $row['notes']);
+        $data[] = [
+            'option_id' => $row['option_id'],
+            'title' => $row['title'],
+            'notes' => hexToRgba($hexColor, $percentage)
+        ];
+    }
+    return $data;
+}
+
+function hexToRgba($hex, $opacity)
+{
+    // Remove the "#" if it's present
+    $hex = ltrim($hex, '#');
+
+    // If shorthand notation (e.g., "abc"), expand it
+    if (strlen($hex) == 3) {
+        $hex = str_repeat($hex[0], 2) . str_repeat($hex[1], 2) . str_repeat($hex[2], 2);
+    }
+
+    // Convert the hex to RGB
+    list($r, $g, $b) = sscanf($hex, "%02x%02x%02x");
+
+    // Return RGBA value
+    return "rgba($r, $g, $b, $opacity)";
 }

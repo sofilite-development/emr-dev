@@ -4,7 +4,6 @@ require_once(__DIR__ . "/../../verify_session.php");
 require_once(__DIR__ . '/../../../library/appointments.inc.php');
 require_once(__DIR__ . '/helper.php');
 
-// Get `pid` from query params (e.g., ?pid=123)
 $pid = $_GET['pid'] ?? null;
 $response = [];
 $requestedFor = $_GET["for"] ?? null;
@@ -36,6 +35,9 @@ if ($requestedFor === "visits") {
 
     $availableSlots = getAvailableAppointments($providerId, $startDate, $categoryId);
     $response = $availableSlots;
+} elseif ($requestedFor === "status") {
+    $statusList = getAllAppoitmentStatus();
+    $response = $statusList;
 }
 
 echo json_encode($response);
