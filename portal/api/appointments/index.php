@@ -15,6 +15,12 @@ if (!$pid) {
 
 switch ($action) {
     case 'get_appointments':
+        $response = [];
+        $appointmentId = $_GET["appointment_id"] ?? null;
+        if ($appointmentId) {
+            echo json_encode(getSingleAppointment($appointmentId));
+            break;
+        }
         $current_date2 = date('Y-m-d');
         $apptLimit = 10;
         $appts = fetchNextXAppts($current_date2, $pid, $apptLimit);

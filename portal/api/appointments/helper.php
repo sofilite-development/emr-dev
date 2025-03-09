@@ -263,3 +263,9 @@ function hexToRgba($hex, $opacity)
     // Return RGBA value
     return "rgba($r, $g, $b, $opacity)";
 }
+
+function getSingleAppointment($appointmentId)
+{
+    $appointment = sqlQuery("SELECT * FROM openemr_postcalendar_events WHERE pc_eid = ?", [$appointmentId]);
+    return $appointment;
+}
