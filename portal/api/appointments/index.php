@@ -51,6 +51,10 @@ switch ($action) {
         ));
         break;
 
+    case 'cancel_appointment':
+        echo json_encode(cancelAppointment($_POST["appointment_id"], $_POST["reason"]));
+        break;
+
     default:
         echo json_encode(['error' => 'Invalid action']);
 }

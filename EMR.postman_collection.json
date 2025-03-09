@@ -1014,6 +1014,1007 @@
 							"body": "{\n    \"id\": \"1\",\n    \"uuid\": \"\\u009e16E!ÊKÔ\\u009aYAeÁÑ\\u0003\\u0098\",\n    \"title\": \"Mr.\",\n    \"language\": \"\",\n    \"financial\": \"\",\n    \"fname\": \"Johon\",\n    \"lname\": \"Doe\",\n    \"mname\": \"\",\n    \"DOB\": \"1962-02-13\",\n    \"street\": \"\",\n    \"postal_code\": \"\",\n    \"city\": \"\",\n    \"state\": \"\",\n    \"country_code\": \"\",\n    \"drivers_license\": \"\",\n    \"ss\": \"\",\n    \"occupation\": \"\",\n    \"phone_home\": \"\",\n    \"phone_biz\": \"\",\n    \"phone_contact\": \"\",\n    \"phone_cell\": \"\",\n    \"pharmacy_id\": 0,\n    \"status\": \"\",\n    \"contact_relationship\": \"\",\n    \"date\": \"2025-02-13 11:54:16\",\n    \"sex\": \"Male\",\n    \"referrer\": \"\",\n    \"referrerID\": \"\",\n    \"providerID\": 0,\n    \"ref_providerID\": 0,\n    \"email\": \"mdmehedihasan2360@gmail.com\",\n    \"email_direct\": \"mdmehedihasan2360@gmail.com\",\n    \"ethnoracial\": \"\",\n    \"race\": \"\",\n    \"ethnicity\": \"\",\n    \"religion\": \"\",\n    \"interpretter\": \"\",\n    \"migrantseasonal\": \"\",\n    \"family_size\": \"\",\n    \"monthly_income\": \"\",\n    \"billing_note\": \"\",\n    \"homeless\": \"\",\n    \"financial_review\": \"0000-00-00 00:00:00\",\n    \"pubpid\": \"1\",\n    \"pid\": \"1\",\n    \"genericname1\": \"\",\n    \"genericval1\": \"\",\n    \"genericname2\": \"\",\n    \"genericval2\": \"\",\n    \"hipaa_mail\": \"YES\",\n    \"hipaa_voice\": \"YES\",\n    \"hipaa_notice\": \"\",\n    \"hipaa_message\": \"\",\n    \"hipaa_allowsms\": \"YES\",\n    \"hipaa_allowemail\": \"YES\",\n    \"squad\": \"\",\n    \"fitness\": 0,\n    \"referral_source\": \"\",\n    \"usertext1\": \"\",\n    \"usertext2\": \"\",\n    \"usertext3\": \"\",\n    \"usertext4\": \"\",\n    \"usertext5\": \"\",\n    \"usertext6\": \"\",\n    \"usertext7\": \"\",\n    \"usertext8\": \"\",\n    \"userlist1\": \"\",\n    \"userlist2\": \"\",\n    \"userlist3\": \"\",\n    \"userlist4\": \"\",\n    \"userlist5\": \"\",\n    \"userlist6\": \"\",\n    \"userlist7\": \"\",\n    \"pricelevel\": \"standard\",\n    \"regdate\": \"2025-02-12 07:33:30\",\n    \"contrastart\": null,\n    \"completed_ad\": \"NO\",\n    \"ad_reviewed\": null,\n    \"vfc\": \"\",\n    \"mothersname\": \"\",\n    \"guardiansname\": \"\",\n    \"allow_imm_reg_use\": \"YES\",\n    \"allow_imm_info_share\": \"\",\n    \"allow_health_info_ex\": \"YES\",\n    \"allow_patient_portal\": \"YES\",\n    \"deceased_date\": null,\n    \"deceased_reason\": \"\",\n    \"soap_import_status\": null,\n    \"cmsportal_login\": \"\",\n    \"care_team_provider\": null,\n    \"care_team_facility\": null,\n    \"care_team_status\": \"active\",\n    \"county\": \"\",\n    \"industry\": \"\",\n    \"imm_reg_status\": \"\",\n    \"imm_reg_stat_effdate\": null,\n    \"publicity_code\": \"\",\n    \"publ_code_eff_date\": null,\n    \"protect_indicator\": \"\",\n    \"prot_indi_effdate\": null,\n    \"guardianrelationship\": \"\",\n    \"guardiansex\": \"\",\n    \"guardianaddress\": \"\",\n    \"guardiancity\": \"\",\n    \"guardianstate\": \"\",\n    \"guardianpostalcode\": \"\",\n    \"guardiancountry\": \"\",\n    \"guardianphone\": \"\",\n    \"guardianworkphone\": \"\",\n    \"guardianemail\": \"\",\n    \"sexual_orientation\": \"\",\n    \"gender_identity\": \"\",\n    \"birth_fname\": \"\",\n    \"birth_lname\": \"\",\n    \"birth_mname\": \"\",\n    \"dupscore\": 0,\n    \"name_history\": null,\n    \"suffix\": \"\",\n    \"street_line_2\": \"\",\n    \"patient_groups\": \"\",\n    \"prevent_portal_apps\": \"\",\n    \"provider_since_date\": null,\n    \"created_by\": \"1\",\n    \"updated_by\": \"1\",\n    \"preferred_name\": \"\",\n    \"nationality_country\": \"\",\n    \"last_updated\": \"2025-02-13 11:54:16\"\n}"
 						}
 					]
+				},
+				{
+					"name": "insurance",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER_URL}}/portal/api/profile/insurance.php?pid=1",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"portal",
+								"api",
+								"profile",
+								"insurance.php"
+							],
+							"query": [
+								{
+									"key": "pid",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "insurance",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/portal/api/profile/insurance.php?pid=1",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"portal",
+										"api",
+										"profile",
+										"insurance.php"
+									],
+									"query": [
+										{
+											"key": "pid",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 20 Feb 2025 09:23:07 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.1.25"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.1.25"
+								},
+								{
+									"key": "Expires",
+									"value": "Thu, 19 Nov 1981 08:52:00 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-store, no-cache, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Content-Length",
+									"value": "343"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"primary\": {\n        \"type\": {\n            \"1\": {\n                \"value\": \"primary\",\n                \"date\": null\n            }\n        },\n        \"accept_assignment\": {\n            \"1\": {\n                \"value\": \"TRUE\",\n                \"date\": null\n            }\n        }\n    },\n    \"tertiary\": {\n        \"type\": {\n            \"1\": {\n                \"value\": \"tertiary\",\n                \"date\": null\n            }\n        },\n        \"accept_assignment\": {\n            \"1\": {\n                \"value\": \"TRUE\",\n                \"date\": null\n            }\n        }\n    },\n    \"secondary\": {\n        \"type\": {\n            \"1\": {\n                \"value\": \"secondary\",\n                \"date\": null\n            }\n        },\n        \"accept_assignment\": {\n            \"1\": {\n                \"value\": \"TRUE\",\n                \"date\": null\n            }\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "update request",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"console.log(pm.request.body)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "activity",
+									"value": "profile",
+									"type": "text"
+								},
+								{
+									"key": "require_audit",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "pending_action",
+									"value": "review",
+									"type": "text"
+								},
+								{
+									"key": "action_taken",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "status",
+									"value": "waiting",
+									"type": "text"
+								},
+								{
+									"key": "narrative",
+									"value": "Patient request changes to demographics.",
+									"type": "text"
+								},
+								{
+									"key": "table_action",
+									"value": "update",
+									"type": "text"
+								},
+								{
+									"key": "table_args",
+									"value": "{\"id\":\"1\",\"title\":\"Mr.\",\"language\":\"Bangla\",\"financial\":\"\",\"fname\":\"dev test\",\"lname\":\"mehedi hasan\",\"mname\":\"\",\"DOB\":\"1998-02-17\",\"street\":\"Mirpur - 6\",\"postal_code\":\"2324\",\"city\":\"Dhaka\",\"state\":\"FL\",\"country_code\":\"880\",\"drivers_license\":\"\",\"ss\":\"\",\"occupation\":\"\",\"phone_home\":\"01913382360\",\"phone_biz\":\"01913382360\",\"phone_contact\":\"01913382360\",\"phone_cell\":\"01913382360\",\"pharmacy_id\":0,\"status\":\"single\",\"contact_relationship\":\"01913382360\",\"date\":\"2025-02-13 11:54:16\",\"sex\":\"Male\",\"referrer\":\"\",\"referrerID\":\"\",\"providerID\":\"1\",\"ref_providerID\":0,\"email\":\"mdmehedihasan2360@gmail.com\",\"email_direct\":\"mdmehedihasan2360@gmail.com\",\"ethnoracial\":\"\",\"race\":\"\",\"ethnicity\":\"\",\"religion\":\"\",\"family_size\":\"4\",\"pubpid\":\"1\",\"pid\":\"1\",\"hipaa_mail\":\"YES\",\"hipaa_voice\":\"YES\",\"hipaa_notice\":\"\",\"hipaa_message\":\"\",\"hipaa_allowsms\":\"YES\",\"hipaa_allowemail\":\"YES\",\"regdate\":\"2025-02-12\",\"mothersname\":\"Hosneara\",\"guardiansname\":\"Hosneara \",\"allow_imm_reg_use\":\"YES\",\"allow_imm_info_share\":\"\",\"allow_health_info_ex\":\"YES\",\"allow_patient_portal\":\"YES\",\"care_team_provider\":0,\"county\":\"Bangladesh\",\"note\":\"\"}\n",
+									"type": "text"
+								},
+								{
+									"key": "action_user",
+									"value": "admin",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "action_taken_time",
+									"value": "2025-02-23 14:30:00",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "checksum",
+									"value": "abcd1234",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{SERVER_URL}}/portal/api/profile/update.php?pid=1",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"portal",
+								"api",
+								"profile",
+								"update.php"
+							],
+							"query": [
+								{
+									"key": "pid",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "update request response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "activity",
+											"value": "profile",
+											"type": "text"
+										},
+										{
+											"key": "require_audit",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "pending_action",
+											"value": "review",
+											"type": "text"
+										},
+										{
+											"key": "action_taken",
+											"value": "",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "status",
+											"value": "waiting",
+											"type": "text"
+										},
+										{
+											"key": "narrative",
+											"value": "Patient request changes to demographics.",
+											"type": "text"
+										},
+										{
+											"key": "table_action",
+											"value": "update",
+											"type": "text"
+										},
+										{
+											"key": "table_args",
+											"value": "{\"id\":\"1\",\"title\":\"Mr.\",\"language\":\"Bangla\",\"financial\":\"\",\"fname\":\"dev test\",\"lname\":\"mehedi hasan\",\"mname\":\"\",\"DOB\":\"1998-02-17\",\"street\":\"Mirpur - 6\",\"postal_code\":\"2324\",\"city\":\"Dhaka\",\"state\":\"FL\",\"country_code\":\"880\",\"drivers_license\":\"\",\"ss\":\"\",\"occupation\":\"\",\"phone_home\":\"01913382360\",\"phone_biz\":\"01913382360\",\"phone_contact\":\"01913382360\",\"phone_cell\":\"01913382360\",\"pharmacy_id\":0,\"status\":\"single\",\"contact_relationship\":\"01913382360\",\"date\":\"2025-02-13 11:54:16\",\"sex\":\"Male\",\"referrer\":\"\",\"referrerID\":\"\",\"providerID\":\"1\",\"ref_providerID\":0,\"email\":\"mdmehedihasan2360@gmail.com\",\"email_direct\":\"mdmehedihasan2360@gmail.com\",\"ethnoracial\":\"\",\"race\":\"\",\"ethnicity\":\"\",\"religion\":\"\",\"family_size\":\"4\",\"pubpid\":\"1\",\"pid\":\"1\",\"hipaa_mail\":\"YES\",\"hipaa_voice\":\"YES\",\"hipaa_notice\":\"\",\"hipaa_message\":\"\",\"hipaa_allowsms\":\"YES\",\"hipaa_allowemail\":\"YES\",\"regdate\":\"2025-02-12\",\"mothersname\":\"Hosneara\",\"guardiansname\":\"Hosneara \",\"allow_imm_reg_use\":\"YES\",\"allow_imm_info_share\":\"\",\"allow_health_info_ex\":\"YES\",\"allow_patient_portal\":\"YES\",\"care_team_provider\":0,\"county\":\"Bangladesh\",\"note\":\"\"}\n",
+											"type": "text"
+										},
+										{
+											"key": "action_user",
+											"value": "admin",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "action_taken_time",
+											"value": "2025-02-23 14:30:00",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "checksum",
+											"value": "abcd1234",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "",
+											"value": "",
+											"type": "text",
+											"disabled": true
+										}
+									],
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/portal/api/profile/update.php?pid=1",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"portal",
+										"api",
+										"profile",
+										"update.php"
+									],
+									"query": [
+										{
+											"key": "pid",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Sun, 23 Feb 2025 08:26:16 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.1.25"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.1.25"
+								},
+								{
+									"key": "Expires",
+									"value": "Thu, 19 Nov 1981 08:52:00 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-store, no-cache, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Content-Length",
+									"value": "16"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "form utility",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER_URL}}/portal/api/profile/utils.php?option=sex|titles|religious_affiliation|marital|state|race|ethnicity&is_multiple=true",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"portal",
+								"api",
+								"profile",
+								"utils.php"
+							],
+							"query": [
+								{
+									"key": "option",
+									"value": "sex|titles|religious_affiliation|marital|state|race|ethnicity",
+									"description": "sex | titles | religious_affiliation | marital | state | race | ethnicity"
+								},
+								{
+									"key": "is_multiple",
+									"value": "true",
+									"description": "yes | no"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "sex",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/portal/api/profile/utils.php?option=sex",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"portal",
+										"api",
+										"profile",
+										"utils.php"
+									],
+									"query": [
+										{
+											"key": "option",
+											"value": "sex"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 24 Feb 2025 10:47:51 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.1.25"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.1.25"
+								},
+								{
+									"key": "Expires",
+									"value": "Thu, 19 Nov 1981 08:52:00 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-store, no-cache, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Content-Length",
+									"value": "103"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"label\": \"Female\",\n        \"value\": \"Female\"\n    },\n    {\n        \"label\": \"Male\",\n        \"value\": \"Male\"\n    },\n    {\n        \"label\": \"Unknown\",\n        \"value\": \"UNK\"\n    }\n]"
+						},
+						{
+							"name": "titles",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/portal/api/profile/utils.php?option=status",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"portal",
+										"api",
+										"profile",
+										"utils.php"
+									],
+									"query": [
+										{
+											"key": "option",
+											"value": "status",
+											"description": "sex | titles | "
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 24 Feb 2025 10:48:13 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.1.25"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.1.25"
+								},
+								{
+									"key": "Expires",
+									"value": "Thu, 19 Nov 1981 08:52:00 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-store, no-cache, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Content-Length",
+									"value": "123"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"label\": \"Dr.\",\n        \"value\": \"Dr.\"\n    },\n    {\n        \"label\": \"Mr.\",\n        \"value\": \"Mr.\"\n    },\n    {\n        \"label\": \"Mrs.\",\n        \"value\": \"Mrs.\"\n    },\n    {\n        \"label\": \"Ms.\",\n        \"value\": \"Ms.\"\n    }\n]"
+						},
+						{
+							"name": "maritial status",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/portal/api/profile/utils.php?option=marital",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"portal",
+										"api",
+										"profile",
+										"utils.php"
+									],
+									"query": [
+										{
+											"key": "option",
+											"value": "marital",
+											"description": "sex | titles | marital"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 24 Feb 2025 10:51:18 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.1.25"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.1.25"
+								},
+								{
+									"key": "Expires",
+									"value": "Thu, 19 Nov 1981 08:52:00 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-store, no-cache, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Content-Length",
+									"value": "251"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"label\": \"Divorced\",\n        \"value\": \"divorced\"\n    },\n    {\n        \"label\": \"Domestic Partner\",\n        \"value\": \"domestic partner\"\n    },\n    {\n        \"label\": \"Married\",\n        \"value\": \"married\"\n    },\n    {\n        \"label\": \"Separated\",\n        \"value\": \"separated\"\n    },\n    {\n        \"label\": \"Single\",\n        \"value\": \"single\"\n    },\n    {\n        \"label\": \"Widowed\",\n        \"value\": \"widowed\"\n    }\n]"
+						},
+						{
+							"name": "relegiions",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/portal/api/profile/utils.php?option=religious_affiliation",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"portal",
+										"api",
+										"profile",
+										"utils.php"
+									],
+									"query": [
+										{
+											"key": "option",
+											"value": "religious_affiliation",
+											"description": "sex | titles | "
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 24 Feb 2025 10:53:03 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.1.25"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.1.25"
+								},
+								{
+									"key": "Expires",
+									"value": "Thu, 19 Nov 1981 08:52:00 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-store, no-cache, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Content-Length",
+									"value": "3965"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"label\": \"Adventist\",\n        \"value\": \"adventist\"\n    },\n    {\n        \"label\": \"African Religions\",\n        \"value\": \"african_religions\"\n    },\n    {\n        \"label\": \"Afro-Caribbean Religions\",\n        \"value\": \"afro-caribbean_religions\"\n    },\n    {\n        \"label\": \"Agnosticism\",\n        \"value\": \"agnosticism\"\n    },\n    {\n        \"label\": \"Anglican\",\n        \"value\": \"anglican\"\n    },\n    {\n        \"label\": \"Animism\",\n        \"value\": \"animism\"\n    },\n    {\n        \"label\": \"Assembly of God\",\n        \"value\": \"assembly_of_god\"\n    },\n    {\n        \"label\": \"Atheism\",\n        \"value\": \"atheism\"\n    },\n    {\n        \"label\": \"Babi &amp; Baha'I faiths\",\n        \"value\": \"babi_bahai_faiths\"\n    },\n    {\n        \"label\": \"Baptist\",\n        \"value\": \"baptist\"\n    },\n    {\n        \"label\": \"Bon\",\n        \"value\": \"bon\"\n    },\n    {\n        \"label\": \"Brethren\",\n        \"value\": \"brethren\"\n    },\n    {\n        \"label\": \"Cao Dai\",\n        \"value\": \"cao_dai\"\n    },\n    {\n        \"label\": \"Celticism\",\n        \"value\": \"celticism\"\n    },\n    {\n        \"label\": \"Christian Scientist\",\n        \"value\": \"christian_scientist\"\n    },\n    {\n        \"label\": \"Christian (non-Catholic, non-specific)\",\n        \"value\": \"christiannoncatholicnonspecifc\"\n    },\n    {\n        \"label\": \"Church of Christ\",\n        \"value\": \"church_of_christ\"\n    },\n    {\n        \"label\": \"Church of God\",\n        \"value\": \"church_of_god\"\n    },\n    {\n        \"label\": \"Confucianism\",\n        \"value\": \"confucianism\"\n    },\n    {\n        \"label\": \"Congregational\",\n        \"value\": \"congregational\"\n    },\n    {\n        \"label\": \"Cyberculture Religions\",\n        \"value\": \"cyberculture_religions\"\n    },\n    {\n        \"label\": \"Disciples of Christ\",\n        \"value\": \"disciples_of_christ\"\n    },\n    {\n        \"label\": \"Divination\",\n        \"value\": \"divination\"\n    },\n    {\n        \"label\": \"Eastern Orthodox\",\n        \"value\": \"eastern_orthodox\"\n    },\n    {\n        \"label\": \"Episcopalian\",\n        \"value\": \"episcopalian\"\n    },\n    {\n        \"label\": \"Evangelical Covenant\",\n        \"value\": \"evangelical_covenant\"\n    },\n    {\n        \"label\": \"Fourth Way\",\n        \"value\": \"fourth_way\"\n    },\n    {\n        \"label\": \"Free Daism\",\n        \"value\": \"free_daism\"\n    },\n    {\n        \"label\": \"Friends\",\n        \"value\": \"friends\"\n    },\n    {\n        \"label\": \"Full Gospel\",\n        \"value\": \"full_gospel\"\n    },\n    {\n        \"label\": \"Gnosis\",\n        \"value\": \"gnosis\"\n    },\n    {\n        \"label\": \"Hinduism\",\n        \"value\": \"hinduism\"\n    },\n    {\n        \"label\": \"Humanism\",\n        \"value\": \"humanism\"\n    },\n    {\n        \"label\": \"Independent\",\n        \"value\": \"independent\"\n    },\n    {\n        \"label\": \"Islam\",\n        \"value\": \"islam\"\n    },\n    {\n        \"label\": \"Jainism\",\n        \"value\": \"jainism\"\n    },\n    {\n        \"label\": \"Jehovah's Witnesses\",\n        \"value\": \"jehovahs_witnesses\"\n    },\n    {\n        \"label\": \"Judaism\",\n        \"value\": \"judaism\"\n    },\n    {\n        \"label\": \"Latter Day Saints\",\n        \"value\": \"latter_day_saints\"\n    },\n    {\n        \"label\": \"Lutheran\",\n        \"value\": \"lutheran\"\n    },\n    {\n        \"label\": \"Mahayana\",\n        \"value\": \"mahayana\"\n    },\n    {\n        \"label\": \"Meditation\",\n        \"value\": \"meditation\"\n    },\n    {\n        \"label\": \"Messianic Judaism\",\n        \"value\": \"messianic_judaism\"\n    },\n    {\n        \"label\": \"Methodist\",\n        \"value\": \"methodist\"\n    },\n    {\n        \"label\": \"Mitraism\",\n        \"value\": \"mitraism\"\n    },\n    {\n        \"label\": \"Native American\",\n        \"value\": \"native_american\"\n    },\n    {\n        \"label\": \"Nazarene\",\n        \"value\": \"nazarene\"\n    },\n    {\n        \"label\": \"New Age\",\n        \"value\": \"new_age\"\n    },\n    {\n        \"label\": \"non-Roman Catholic\",\n        \"value\": \"non-roman_catholic\"\n    },\n    {\n        \"label\": \"Occult\",\n        \"value\": \"occult\"\n    },\n    {\n        \"label\": \"Orthodox\",\n        \"value\": \"orthodox\"\n    },\n    {\n        \"label\": \"Paganism\",\n        \"value\": \"paganism\"\n    },\n    {\n        \"label\": \"Pentecostal\",\n        \"value\": \"pentecostal\"\n    },\n    {\n        \"label\": \"Presbyterian\",\n        \"value\": \"presbyterian\"\n    },\n    {\n        \"label\": \"Process, The\",\n        \"value\": \"process_the\"\n    },\n    {\n        \"label\": \"Protestant\",\n        \"value\": \"protestant\"\n    },\n    {\n        \"label\": \"Protestant, No Denomination\",\n        \"value\": \"protestant_no_denomination\"\n    },\n    {\n        \"label\": \"Reformed\",\n        \"value\": \"reformed\"\n    },\n    {\n        \"label\": \"Reformed/Presbyterian\",\n        \"value\": \"reformed_presbyterian\"\n    },\n    {\n        \"label\": \"Roman Catholic Church\",\n        \"value\": \"roman_catholic_church\"\n    },\n    {\n        \"label\": \"Salvation Army\",\n        \"value\": \"salvation_army\"\n    },\n    {\n        \"label\": \"Satanism\",\n        \"value\": \"satanism\"\n    },\n    {\n        \"label\": \"Scientology\",\n        \"value\": \"scientology\"\n    },\n    {\n        \"label\": \"Shamanism\",\n        \"value\": \"shamanism\"\n    },\n    {\n        \"label\": \"Shiite (Islam)\",\n        \"value\": \"shiite_islam\"\n    },\n    {\n        \"label\": \"Shinto\",\n        \"value\": \"shinto\"\n    },\n    {\n        \"label\": \"Sikism\",\n        \"value\": \"sikism\"\n    },\n    {\n        \"label\": \"Spiritualism\",\n        \"value\": \"spiritualism\"\n    },\n    {\n        \"label\": \"Sunni (Islam)\",\n        \"value\": \"sunni_islam\"\n    },\n    {\n        \"label\": \"Taoism\",\n        \"value\": \"taoism\"\n    },\n    {\n        \"label\": \"Theravada\",\n        \"value\": \"theravada\"\n    },\n    {\n        \"label\": \"Unitarian Universalist\",\n        \"value\": \"unitarian_universalist\"\n    },\n    {\n        \"label\": \"Unitarian-Universalism\",\n        \"value\": \"unitarian-universalism\"\n    },\n    {\n        \"label\": \"United Church of Christ\",\n        \"value\": \"united_church_of_christ\"\n    },\n    {\n        \"label\": \"Universal Life Church\",\n        \"value\": \"universal_life_church\"\n    },\n    {\n        \"label\": \"Vajrayana (Tibetan)\",\n        \"value\": \"vajrayana_tibetan\"\n    },\n    {\n        \"label\": \"Veda\",\n        \"value\": \"veda\"\n    },\n    {\n        \"label\": \"Voodoo\",\n        \"value\": \"voodoo\"\n    },\n    {\n        \"label\": \"Wicca\",\n        \"value\": \"wicca\"\n    },\n    {\n        \"label\": \"Yaohushua\",\n        \"value\": \"yaohushua\"\n    },\n    {\n        \"label\": \"Zen Buddhism\",\n        \"value\": \"zen_buddhism\"\n    },\n    {\n        \"label\": \"Zoroastrianism\",\n        \"value\": \"zoroastrianism\"\n    }\n]"
+						},
+						{
+							"name": "state",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/portal/api/profile/utils.php?option=state",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"portal",
+										"api",
+										"profile",
+										"utils.php"
+									],
+									"query": [
+										{
+											"key": "option",
+											"value": "state",
+											"description": "sex | titles | religious_affiliation | marital | state"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 24 Feb 2025 10:53:45 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.1.25"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.1.25"
+								},
+								{
+									"key": "Expires",
+									"value": "Thu, 19 Nov 1981 08:52:00 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-store, no-cache, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1806"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"label\": \"Alaska\",\n        \"value\": \"AK\"\n    },\n    {\n        \"label\": \"Alabama\",\n        \"value\": \"AL\"\n    },\n    {\n        \"label\": \"Arkansas\",\n        \"value\": \"AR\"\n    },\n    {\n        \"label\": \"Arizona\",\n        \"value\": \"AZ\"\n    },\n    {\n        \"label\": \"California\",\n        \"value\": \"CA\"\n    },\n    {\n        \"label\": \"Colorado\",\n        \"value\": \"CO\"\n    },\n    {\n        \"label\": \"Connecticut\",\n        \"value\": \"CT\"\n    },\n    {\n        \"label\": \"District of Columbia\",\n        \"value\": \"DC\"\n    },\n    {\n        \"label\": \"Delaware\",\n        \"value\": \"DE\"\n    },\n    {\n        \"label\": \"Florida\",\n        \"value\": \"FL\"\n    },\n    {\n        \"label\": \"Georgia\",\n        \"value\": \"GA\"\n    },\n    {\n        \"label\": \"Hawaii\",\n        \"value\": \"HI\"\n    },\n    {\n        \"label\": \"Iowa\",\n        \"value\": \"IA\"\n    },\n    {\n        \"label\": \"Idaho\",\n        \"value\": \"ID\"\n    },\n    {\n        \"label\": \"Illinois\",\n        \"value\": \"IL\"\n    },\n    {\n        \"label\": \"Indiana\",\n        \"value\": \"IN\"\n    },\n    {\n        \"label\": \"Kansas\",\n        \"value\": \"KS\"\n    },\n    {\n        \"label\": \"Kentucky\",\n        \"value\": \"KY\"\n    },\n    {\n        \"label\": \"Louisiana\",\n        \"value\": \"LA\"\n    },\n    {\n        \"label\": \"Massachusetts\",\n        \"value\": \"MA\"\n    },\n    {\n        \"label\": \"Maryland\",\n        \"value\": \"MD\"\n    },\n    {\n        \"label\": \"Maine\",\n        \"value\": \"ME\"\n    },\n    {\n        \"label\": \"Michigan\",\n        \"value\": \"MI\"\n    },\n    {\n        \"label\": \"Minnesota\",\n        \"value\": \"MN\"\n    },\n    {\n        \"label\": \"Missouri\",\n        \"value\": \"MO\"\n    },\n    {\n        \"label\": \"Mississippi\",\n        \"value\": \"MS\"\n    },\n    {\n        \"label\": \"Montana\",\n        \"value\": \"MT\"\n    },\n    {\n        \"label\": \"North Carolina\",\n        \"value\": \"NC\"\n    },\n    {\n        \"label\": \"North Dakota\",\n        \"value\": \"ND\"\n    },\n    {\n        \"label\": \"Nebraska\",\n        \"value\": \"NE\"\n    },\n    {\n        \"label\": \"New Hampshire\",\n        \"value\": \"NH\"\n    },\n    {\n        \"label\": \"New Jersey\",\n        \"value\": \"NJ\"\n    },\n    {\n        \"label\": \"New Mexico\",\n        \"value\": \"NM\"\n    },\n    {\n        \"label\": \"Nevada\",\n        \"value\": \"NV\"\n    },\n    {\n        \"label\": \"New York\",\n        \"value\": \"NY\"\n    },\n    {\n        \"label\": \"Ohio\",\n        \"value\": \"OH\"\n    },\n    {\n        \"label\": \"Oklahoma\",\n        \"value\": \"OK\"\n    },\n    {\n        \"label\": \"Oregon\",\n        \"value\": \"OR\"\n    },\n    {\n        \"label\": \"Pennsylvania\",\n        \"value\": \"PA\"\n    },\n    {\n        \"label\": \"Puerto Rico\",\n        \"value\": \"PR\"\n    },\n    {\n        \"label\": \"Rhode Island\",\n        \"value\": \"RI\"\n    },\n    {\n        \"label\": \"South Carolina\",\n        \"value\": \"SC\"\n    },\n    {\n        \"label\": \"South Dakota\",\n        \"value\": \"SD\"\n    },\n    {\n        \"label\": \"Tennessee\",\n        \"value\": \"TN\"\n    },\n    {\n        \"label\": \"Texas\",\n        \"value\": \"TX\"\n    },\n    {\n        \"label\": \"Utah\",\n        \"value\": \"UT\"\n    },\n    {\n        \"label\": \"Virginia\",\n        \"value\": \"VA\"\n    },\n    {\n        \"label\": \"Vermont\",\n        \"value\": \"VT\"\n    },\n    {\n        \"label\": \"Washington\",\n        \"value\": \"WA\"\n    },\n    {\n        \"label\": \"Wisconsin\",\n        \"value\": \"WI\"\n    },\n    {\n        \"label\": \"West Virginia\",\n        \"value\": \"WV\"\n    },\n    {\n        \"label\": \"Wyoming\",\n        \"value\": \"WY\"\n    }\n]"
+						},
+						{
+							"name": "race",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/portal/api/profile/utils.php?option=race",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"portal",
+										"api",
+										"profile",
+										"utils.php"
+									],
+									"query": [
+										{
+											"key": "option",
+											"value": "race",
+											"description": "sex | titles | religious_affiliation | marital | state | race"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 24 Feb 2025 10:54:15 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.1.25"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.1.25"
+								},
+								{
+									"key": "Expires",
+									"value": "Thu, 19 Nov 1981 08:52:00 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-store, no-cache, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Content-Length",
+									"value": "367"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"label\": \"American Indian or Alaska Native\",\n        \"value\": \"amer_ind_or_alaska_native\"\n    },\n    {\n        \"label\": \"Asian\",\n        \"value\": \"Asian\"\n    },\n    {\n        \"label\": \"Black or African American\",\n        \"value\": \"black_or_afri_amer\"\n    },\n    {\n        \"label\": \"Declined To Specify\",\n        \"value\": \"declne_to_specfy\"\n    },\n    {\n        \"label\": \"Native Hawaiian or Other Pacific Islander\",\n        \"value\": \"native_hawai_or_pac_island\"\n    },\n    {\n        \"label\": \"White\",\n        \"value\": \"white\"\n    }\n]"
+						},
+						{
+							"name": "ethnicity",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/portal/api/profile/utils.php?option=ethnicity",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"portal",
+										"api",
+										"profile",
+										"utils.php"
+									],
+									"query": [
+										{
+											"key": "option",
+											"value": "ethnicity",
+											"description": "sex | titles | religious_affiliation | marital | state | race"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 24 Feb 2025 10:55:56 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.1.25"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.1.25"
+								},
+								{
+									"key": "Expires",
+									"value": "Thu, 19 Nov 1981 08:52:00 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-store, no-cache, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Content-Length",
+									"value": "178"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"label\": \"Declined To Specify\",\n        \"value\": \"declne_to_specfy\"\n    },\n    {\n        \"label\": \"Hispanic or Latino\",\n        \"value\": \"hisp_or_latin\"\n    },\n    {\n        \"label\": \"Not Hispanic or Latino\",\n        \"value\": \"not_hisp_or_latin\"\n    }\n]"
+						},
+						{
+							"name": "all",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/portal/api/profile/utils.php?option=sex|titles|religious_affiliation|marital|state|race|ethnicity&is_multiple=true",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"portal",
+										"api",
+										"profile",
+										"utils.php"
+									],
+									"query": [
+										{
+											"key": "option",
+											"value": "sex|titles|religious_affiliation|marital|state|race|ethnicity",
+											"description": "sex | titles | religious_affiliation | marital | state | race | ethnicity"
+										},
+										{
+											"key": "is_multiple",
+											"value": "true",
+											"description": "yes | no"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 24 Feb 2025 11:07:09 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.1.25"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.1.25"
+								},
+								{
+									"key": "Expires",
+									"value": "Thu, 19 Nov 1981 08:52:00 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-store, no-cache, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Content-Length",
+									"value": "6877"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"sex\": [\n        {\n            \"label\": \"Female\",\n            \"value\": \"Female\"\n        },\n        {\n            \"label\": \"Male\",\n            \"value\": \"Male\"\n        },\n        {\n            \"label\": \"Unknown\",\n            \"value\": \"UNK\"\n        }\n    ],\n    \"titles\": [\n        {\n            \"label\": \"Dr.\",\n            \"value\": \"Dr.\"\n        },\n        {\n            \"label\": \"Mr.\",\n            \"value\": \"Mr.\"\n        },\n        {\n            \"label\": \"Mrs.\",\n            \"value\": \"Mrs.\"\n        },\n        {\n            \"label\": \"Ms.\",\n            \"value\": \"Ms.\"\n        }\n    ],\n    \"religious_affiliation\": [\n        {\n            \"label\": \"Adventist\",\n            \"value\": \"adventist\"\n        },\n        {\n            \"label\": \"African Religions\",\n            \"value\": \"african_religions\"\n        },\n        {\n            \"label\": \"Afro-Caribbean Religions\",\n            \"value\": \"afro-caribbean_religions\"\n        },\n        {\n            \"label\": \"Agnosticism\",\n            \"value\": \"agnosticism\"\n        },\n        {\n            \"label\": \"Anglican\",\n            \"value\": \"anglican\"\n        },\n        {\n            \"label\": \"Animism\",\n            \"value\": \"animism\"\n        },\n        {\n            \"label\": \"Assembly of God\",\n            \"value\": \"assembly_of_god\"\n        },\n        {\n            \"label\": \"Atheism\",\n            \"value\": \"atheism\"\n        },\n        {\n            \"label\": \"Babi &amp; Baha'I faiths\",\n            \"value\": \"babi_bahai_faiths\"\n        },\n        {\n            \"label\": \"Baptist\",\n            \"value\": \"baptist\"\n        },\n        {\n            \"label\": \"Bon\",\n            \"value\": \"bon\"\n        },\n        {\n            \"label\": \"Brethren\",\n            \"value\": \"brethren\"\n        },\n        {\n            \"label\": \"Cao Dai\",\n            \"value\": \"cao_dai\"\n        },\n        {\n            \"label\": \"Celticism\",\n            \"value\": \"celticism\"\n        },\n        {\n            \"label\": \"Christian Scientist\",\n            \"value\": \"christian_scientist\"\n        },\n        {\n            \"label\": \"Christian (non-Catholic, non-specific)\",\n            \"value\": \"christiannoncatholicnonspecifc\"\n        },\n        {\n            \"label\": \"Church of Christ\",\n            \"value\": \"church_of_christ\"\n        },\n        {\n            \"label\": \"Church of God\",\n            \"value\": \"church_of_god\"\n        },\n        {\n            \"label\": \"Confucianism\",\n            \"value\": \"confucianism\"\n        },\n        {\n            \"label\": \"Congregational\",\n            \"value\": \"congregational\"\n        },\n        {\n            \"label\": \"Cyberculture Religions\",\n            \"value\": \"cyberculture_religions\"\n        },\n        {\n            \"label\": \"Disciples of Christ\",\n            \"value\": \"disciples_of_christ\"\n        },\n        {\n            \"label\": \"Divination\",\n            \"value\": \"divination\"\n        },\n        {\n            \"label\": \"Eastern Orthodox\",\n            \"value\": \"eastern_orthodox\"\n        },\n        {\n            \"label\": \"Episcopalian\",\n            \"value\": \"episcopalian\"\n        },\n        {\n            \"label\": \"Evangelical Covenant\",\n            \"value\": \"evangelical_covenant\"\n        },\n        {\n            \"label\": \"Fourth Way\",\n            \"value\": \"fourth_way\"\n        },\n        {\n            \"label\": \"Free Daism\",\n            \"value\": \"free_daism\"\n        },\n        {\n            \"label\": \"Friends\",\n            \"value\": \"friends\"\n        },\n        {\n            \"label\": \"Full Gospel\",\n            \"value\": \"full_gospel\"\n        },\n        {\n            \"label\": \"Gnosis\",\n            \"value\": \"gnosis\"\n        },\n        {\n            \"label\": \"Hinduism\",\n            \"value\": \"hinduism\"\n        },\n        {\n            \"label\": \"Humanism\",\n            \"value\": \"humanism\"\n        },\n        {\n            \"label\": \"Independent\",\n            \"value\": \"independent\"\n        },\n        {\n            \"label\": \"Islam\",\n            \"value\": \"islam\"\n        },\n        {\n            \"label\": \"Jainism\",\n            \"value\": \"jainism\"\n        },\n        {\n            \"label\": \"Jehovah's Witnesses\",\n            \"value\": \"jehovahs_witnesses\"\n        },\n        {\n            \"label\": \"Judaism\",\n            \"value\": \"judaism\"\n        },\n        {\n            \"label\": \"Latter Day Saints\",\n            \"value\": \"latter_day_saints\"\n        },\n        {\n            \"label\": \"Lutheran\",\n            \"value\": \"lutheran\"\n        },\n        {\n            \"label\": \"Mahayana\",\n            \"value\": \"mahayana\"\n        },\n        {\n            \"label\": \"Meditation\",\n            \"value\": \"meditation\"\n        },\n        {\n            \"label\": \"Messianic Judaism\",\n            \"value\": \"messianic_judaism\"\n        },\n        {\n            \"label\": \"Methodist\",\n            \"value\": \"methodist\"\n        },\n        {\n            \"label\": \"Mitraism\",\n            \"value\": \"mitraism\"\n        },\n        {\n            \"label\": \"Native American\",\n            \"value\": \"native_american\"\n        },\n        {\n            \"label\": \"Nazarene\",\n            \"value\": \"nazarene\"\n        },\n        {\n            \"label\": \"New Age\",\n            \"value\": \"new_age\"\n        },\n        {\n            \"label\": \"non-Roman Catholic\",\n            \"value\": \"non-roman_catholic\"\n        },\n        {\n            \"label\": \"Occult\",\n            \"value\": \"occult\"\n        },\n        {\n            \"label\": \"Orthodox\",\n            \"value\": \"orthodox\"\n        },\n        {\n            \"label\": \"Paganism\",\n            \"value\": \"paganism\"\n        },\n        {\n            \"label\": \"Pentecostal\",\n            \"value\": \"pentecostal\"\n        },\n        {\n            \"label\": \"Presbyterian\",\n            \"value\": \"presbyterian\"\n        },\n        {\n            \"label\": \"Process, The\",\n            \"value\": \"process_the\"\n        },\n        {\n            \"label\": \"Protestant\",\n            \"value\": \"protestant\"\n        },\n        {\n            \"label\": \"Protestant, No Denomination\",\n            \"value\": \"protestant_no_denomination\"\n        },\n        {\n            \"label\": \"Reformed\",\n            \"value\": \"reformed\"\n        },\n        {\n            \"label\": \"Reformed/Presbyterian\",\n            \"value\": \"reformed_presbyterian\"\n        },\n        {\n            \"label\": \"Roman Catholic Church\",\n            \"value\": \"roman_catholic_church\"\n        },\n        {\n            \"label\": \"Salvation Army\",\n            \"value\": \"salvation_army\"\n        },\n        {\n            \"label\": \"Satanism\",\n            \"value\": \"satanism\"\n        },\n        {\n            \"label\": \"Scientology\",\n            \"value\": \"scientology\"\n        },\n        {\n            \"label\": \"Shamanism\",\n            \"value\": \"shamanism\"\n        },\n        {\n            \"label\": \"Shiite (Islam)\",\n            \"value\": \"shiite_islam\"\n        },\n        {\n            \"label\": \"Shinto\",\n            \"value\": \"shinto\"\n        },\n        {\n            \"label\": \"Sikism\",\n            \"value\": \"sikism\"\n        },\n        {\n            \"label\": \"Spiritualism\",\n            \"value\": \"spiritualism\"\n        },\n        {\n            \"label\": \"Sunni (Islam)\",\n            \"value\": \"sunni_islam\"\n        },\n        {\n            \"label\": \"Taoism\",\n            \"value\": \"taoism\"\n        },\n        {\n            \"label\": \"Theravada\",\n            \"value\": \"theravada\"\n        },\n        {\n            \"label\": \"Unitarian Universalist\",\n            \"value\": \"unitarian_universalist\"\n        },\n        {\n            \"label\": \"Unitarian-Universalism\",\n            \"value\": \"unitarian-universalism\"\n        },\n        {\n            \"label\": \"United Church of Christ\",\n            \"value\": \"united_church_of_christ\"\n        },\n        {\n            \"label\": \"Universal Life Church\",\n            \"value\": \"universal_life_church\"\n        },\n        {\n            \"label\": \"Vajrayana (Tibetan)\",\n            \"value\": \"vajrayana_tibetan\"\n        },\n        {\n            \"label\": \"Veda\",\n            \"value\": \"veda\"\n        },\n        {\n            \"label\": \"Voodoo\",\n            \"value\": \"voodoo\"\n        },\n        {\n            \"label\": \"Wicca\",\n            \"value\": \"wicca\"\n        },\n        {\n            \"label\": \"Yaohushua\",\n            \"value\": \"yaohushua\"\n        },\n        {\n            \"label\": \"Zen Buddhism\",\n            \"value\": \"zen_buddhism\"\n        },\n        {\n            \"label\": \"Zoroastrianism\",\n            \"value\": \"zoroastrianism\"\n        }\n    ],\n    \"marital\": [\n        {\n            \"label\": \"Divorced\",\n            \"value\": \"divorced\"\n        },\n        {\n            \"label\": \"Domestic Partner\",\n            \"value\": \"domestic partner\"\n        },\n        {\n            \"label\": \"Married\",\n            \"value\": \"married\"\n        },\n        {\n            \"label\": \"Separated\",\n            \"value\": \"separated\"\n        },\n        {\n            \"label\": \"Single\",\n            \"value\": \"single\"\n        },\n        {\n            \"label\": \"Widowed\",\n            \"value\": \"widowed\"\n        }\n    ],\n    \"state\": [\n        {\n            \"label\": \"Alaska\",\n            \"value\": \"AK\"\n        },\n        {\n            \"label\": \"Alabama\",\n            \"value\": \"AL\"\n        },\n        {\n            \"label\": \"Arkansas\",\n            \"value\": \"AR\"\n        },\n        {\n            \"label\": \"Arizona\",\n            \"value\": \"AZ\"\n        },\n        {\n            \"label\": \"California\",\n            \"value\": \"CA\"\n        },\n        {\n            \"label\": \"Colorado\",\n            \"value\": \"CO\"\n        },\n        {\n            \"label\": \"Connecticut\",\n            \"value\": \"CT\"\n        },\n        {\n            \"label\": \"District of Columbia\",\n            \"value\": \"DC\"\n        },\n        {\n            \"label\": \"Delaware\",\n            \"value\": \"DE\"\n        },\n        {\n            \"label\": \"Florida\",\n            \"value\": \"FL\"\n        },\n        {\n            \"label\": \"Georgia\",\n            \"value\": \"GA\"\n        },\n        {\n            \"label\": \"Hawaii\",\n            \"value\": \"HI\"\n        },\n        {\n            \"label\": \"Iowa\",\n            \"value\": \"IA\"\n        },\n        {\n            \"label\": \"Idaho\",\n            \"value\": \"ID\"\n        },\n        {\n            \"label\": \"Illinois\",\n            \"value\": \"IL\"\n        },\n        {\n            \"label\": \"Indiana\",\n            \"value\": \"IN\"\n        },\n        {\n            \"label\": \"Kansas\",\n            \"value\": \"KS\"\n        },\n        {\n            \"label\": \"Kentucky\",\n            \"value\": \"KY\"\n        },\n        {\n            \"label\": \"Louisiana\",\n            \"value\": \"LA\"\n        },\n        {\n            \"label\": \"Massachusetts\",\n            \"value\": \"MA\"\n        },\n        {\n            \"label\": \"Maryland\",\n            \"value\": \"MD\"\n        },\n        {\n            \"label\": \"Maine\",\n            \"value\": \"ME\"\n        },\n        {\n            \"label\": \"Michigan\",\n            \"value\": \"MI\"\n        },\n        {\n            \"label\": \"Minnesota\",\n            \"value\": \"MN\"\n        },\n        {\n            \"label\": \"Missouri\",\n            \"value\": \"MO\"\n        },\n        {\n            \"label\": \"Mississippi\",\n            \"value\": \"MS\"\n        },\n        {\n            \"label\": \"Montana\",\n            \"value\": \"MT\"\n        },\n        {\n            \"label\": \"North Carolina\",\n            \"value\": \"NC\"\n        },\n        {\n            \"label\": \"North Dakota\",\n            \"value\": \"ND\"\n        },\n        {\n            \"label\": \"Nebraska\",\n            \"value\": \"NE\"\n        },\n        {\n            \"label\": \"New Hampshire\",\n            \"value\": \"NH\"\n        },\n        {\n            \"label\": \"New Jersey\",\n            \"value\": \"NJ\"\n        },\n        {\n            \"label\": \"New Mexico\",\n            \"value\": \"NM\"\n        },\n        {\n            \"label\": \"Nevada\",\n            \"value\": \"NV\"\n        },\n        {\n            \"label\": \"New York\",\n            \"value\": \"NY\"\n        },\n        {\n            \"label\": \"Ohio\",\n            \"value\": \"OH\"\n        },\n        {\n            \"label\": \"Oklahoma\",\n            \"value\": \"OK\"\n        },\n        {\n            \"label\": \"Oregon\",\n            \"value\": \"OR\"\n        },\n        {\n            \"label\": \"Pennsylvania\",\n            \"value\": \"PA\"\n        },\n        {\n            \"label\": \"Puerto Rico\",\n            \"value\": \"PR\"\n        },\n        {\n            \"label\": \"Rhode Island\",\n            \"value\": \"RI\"\n        },\n        {\n            \"label\": \"South Carolina\",\n            \"value\": \"SC\"\n        },\n        {\n            \"label\": \"South Dakota\",\n            \"value\": \"SD\"\n        },\n        {\n            \"label\": \"Tennessee\",\n            \"value\": \"TN\"\n        },\n        {\n            \"label\": \"Texas\",\n            \"value\": \"TX\"\n        },\n        {\n            \"label\": \"Utah\",\n            \"value\": \"UT\"\n        },\n        {\n            \"label\": \"Virginia\",\n            \"value\": \"VA\"\n        },\n        {\n            \"label\": \"Vermont\",\n            \"value\": \"VT\"\n        },\n        {\n            \"label\": \"Washington\",\n            \"value\": \"WA\"\n        },\n        {\n            \"label\": \"Wisconsin\",\n            \"value\": \"WI\"\n        },\n        {\n            \"label\": \"West Virginia\",\n            \"value\": \"WV\"\n        },\n        {\n            \"label\": \"Wyoming\",\n            \"value\": \"WY\"\n        }\n    ],\n    \"race\": [\n        {\n            \"label\": \"American Indian or Alaska Native\",\n            \"value\": \"amer_ind_or_alaska_native\"\n        },\n        {\n            \"label\": \"Asian\",\n            \"value\": \"Asian\"\n        },\n        {\n            \"label\": \"Black or African American\",\n            \"value\": \"black_or_afri_amer\"\n        },\n        {\n            \"label\": \"Declined To Specify\",\n            \"value\": \"declne_to_specfy\"\n        },\n        {\n            \"label\": \"Native Hawaiian or Other Pacific Islander\",\n            \"value\": \"native_hawai_or_pac_island\"\n        },\n        {\n            \"label\": \"White\",\n            \"value\": \"white\"\n        }\n    ],\n    \"ethnicity\": [\n        {\n            \"label\": \"Declined To Specify\",\n            \"value\": \"declne_to_specfy\"\n        },\n        {\n            \"label\": \"Hispanic or Latino\",\n            \"value\": \"hisp_or_latin\"\n        },\n        {\n            \"label\": \"Not Hispanic or Latino\",\n            \"value\": \"not_hisp_or_latin\"\n        }\n    ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Patient",
+			"item": [
+				{
+					"name": "test",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER_URL}}/portal/patient/api/patient",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"portal",
+								"patient",
+								"api",
+								"patient"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
