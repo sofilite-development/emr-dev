@@ -856,33 +856,6 @@ function getCodeText($code)
         $docuaiUrl = $_ENV['DOCUAI_BASE_URL'] . "/api/medical-records/summary";
         $docuAiSecret = $_ENV['DOCUAI_API_KAY'];
 
-
-        // $ch = curl_init($docuaiUrl);
-        
-        // curl_setopt_array($ch, [
-        //     CURLOPT_RETURNTRANSFER => true,
-        //     CURLOPT_POST => true,
-        //     CURLOPT_HTTPHEADER => [
-        //         "X-Api-Key: $docuAiSecret",
-        //         "Content-Type: application/json"
-        //     ],
-        //     CURLOPT_POSTFIELDS => $jsonDataForSummery,
-        //     CURLOPT_SSL_VERIFYPEER => false, // Add if using https
-        //     CURLOPT_TIMEOUT => 30 // Set timeout
-        // ]);
-        
-
-        // $response = curl_exec($ch);
-        // $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        
-        // curl_close($ch);
-        
-        // if ($httpCode !== 200) {
-        //     echo json_encode(["error" => "Request failed!", "status" => $httpCode]);
-        //     exit;
-        // }
-        // echo $response;
-        
         ?>
 
         <script>
@@ -895,7 +868,13 @@ function getCodeText($code)
 
                 const docuaiUrl = "<?php echo $docuaiUrl; ?>";
                 const docuAiSecret = "<?php echo $docuAiSecret; ?>";
-                const requestData = <?php echo json_encode($jsonDataForSummery); ?>;
+                const requestData = JSON.parse(<?php echo json_encode($jsonDataForSummery); ?>);
+
+                const data = JSON.stringify({
+                    patientId: requestData?.patient_informatiom?.id,
+                    encounter: requestData?.encounter,
+                    dictation: requestData?.dictation,
+                });
 
                 $.ajax({
                     type: "POST",
@@ -905,7 +884,7 @@ function getCodeText($code)
                         "X-Api-Key": docuAiSecret,
                         "Content-Type": "application/json"
                     },
-                    data: requestData,
+                    data: data,
                     beforeSend: function () {
                         $("#loading").show(); // Ensure spinner is visible before sending request
                     },
