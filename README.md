@@ -1,25 +1,3 @@
-![Syntax Status](https://github.com/openemr/openemr/workflows/Syntax/badge.svg?branch=master)
-![Styling Status](https://github.com/openemr/openemr/workflows/Styling/badge.svg?branch=master)
-![Testing Status](https://github.com/openemr/openemr/workflows/Test/badge.svg?branch=master)
-
-[![Backers on Open Collective](https://opencollective.com/openemr/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/openemr/sponsors/badge.svg)](#sponsors)
-
-# OpenEMR
-
-[OpenEMR](https://open-emr.org) is a Free and Open Source electronic health records and medical practice management application. It features fully integrated electronic health records, practice management, scheduling, electronic billing, internationalization, free support, a vibrant community, and a whole lot more. It runs on Windows, Linux, Mac OS X, and many other platforms.
-
-### Contributing
-
-OpenEMR is a leader in healthcare open source software and comprises a large and diverse community of software developers, medical providers and educators with a very healthy mix of both volunteers and professionals. [Join us and learn how to start contributing today!](https://open-emr.org/wiki/index.php/FAQ#How_do_I_begin_to_volunteer_for_the_OpenEMR_project.3F)
-
-> Already comfortable with git? Check out [CONTRIBUTING.md](CONTRIBUTING.md) for quick setup instructions and requirements for contributing to OpenEMR by resolving a bug or adding an awesome feature 😊.
-
-### Support
-
-Community and Professional support can be found [here](https://open-emr.org/wiki/index.php/OpenEMR_Support_Guide).
-
-Extensive documentation and forums can be found on the [OpenEMR website](https://open-emr.org) that can help you to become more familiar about the project 📖.
-
 ### Reporting Issues and Bugs
 
 Report these on the [Issue Tracker](https://github.com/openemr/openemr/issues). If you are unsure if it is an issue/bug, then always feel free to use the [Forum](https://community.open-emr.org/) and [Chat](https://www.open-emr.org/chat/) to discuss about the issue 🪲.
@@ -50,21 +28,42 @@ npm install
 npm run build
 composer dump-autoload -o
 ```
+Add a file if not exist `sites/default/sqlconf.php` by database credentials
+```shell
 
-### Contributors
+<?php
+//  OpenEMR
+//  MySQL Config
 
-This project exists thanks to all the people who have contributed. [[Contribute]](CONTRIBUTING.md).
-<a href="https://github.com/openemr/openemr/graphs/contributors"><img src="https://opencollective.com/openemr/contributors.svg?width=890" /></a>
+global $disable_utf8_flag;
+$disable_utf8_flag = false;
+
+$host    = 'localhost';
+$port    = '3306';
+$login    = 'root';
+$pass    = '123456';
+$dbase    = 'openemr';
+$db_encoding    = 'utf8mb4';
+
+$sqlconf = array();
+global $sqlconf;
+$sqlconf["host"] = $host;
+$sqlconf["port"] = $port;
+$sqlconf["login"] = $login;
+$sqlconf["pass"] = $pass;
+$sqlconf["dbase"] = $dbase;
+$sqlconf["db_encoding"] = $db_encoding;
+
+//////////////////////////
+//////////////////////////
+//////////////////////////
+//////DO NOT TOUCH THIS///
+$config = 1; /////////////
+//////////////////////////
+//////////////////////////
+//////////////////////////
 
 
-### Sponsors
-
-Thanks to our [ONC Certification Major Sponsors](https://www.open-emr.org/wiki/index.php/OpenEMR_Certification_Stage_III_Meaningful_Use#Major_sponsors)!
-
-
-### License
-
-[GNU GPL](LICENSE)
-
+```
 
 - https://chatgpt.com/share/67c36212-aadc-8012-b6cc-274fe844178a
