@@ -57,14 +57,14 @@ if (!defined('IS_WINDOWS')) {
 // Auto collect the full absolute directory path for openemr.
 $webserver_root = dirname(__FILE__, 2);
 if (IS_WINDOWS) {
- //convert windows path separators
+    //convert windows path separators
     $webserver_root = str_replace("\\", "/", $webserver_root);
 }
 
 // Collect the apache server document root (and convert to windows slashes, if needed)
 $server_document_root = realpath($_SERVER['DOCUMENT_ROOT']);
 if (IS_WINDOWS) {
- //convert windows path separators
+    //convert windows path separators
     $server_document_root = str_replace("\\", "/", $server_document_root);
 }
 
@@ -175,13 +175,13 @@ if (empty($_SESSION['site_id']) || !empty($_GET['site'])) {
     }
 
     if (isset($_SESSION['site_id']) && ($_SESSION['site_id'] != $tmp)) {
-      // This is to prevent using session to penetrate other OpenEMR instances within same multisite module
+        // This is to prevent using session to penetrate other OpenEMR instances within same multisite module
         session_unset(); // clear session, clean logout
         if (isset($landingpage) && !empty($landingpage)) {
-          // OpenEMR Patient Portal use
+            // OpenEMR Patient Portal use
             header('Location: index.php?site=' . urlencode($tmp));
         } else {
-          // Main OpenEMR use
+            // Main OpenEMR use
             header('Location: ../login/login.php?site=' . urlencode($tmp)); // Assuming in the interface/main directory
         }
 
@@ -326,19 +326,19 @@ $GLOBALS['sell_non_drug_products'] = 0;
 
 $glrow = sqlQueryNoLog("SHOW TABLES LIKE 'globals'");
 if (!empty($glrow)) {
-  // Collect user specific settings from user_settings table.
-  //
+    // Collect user specific settings from user_settings table.
+    //
     $gl_user = array();
-  // Collect the user id first
+    // Collect the user id first
     $temp_authuserid = '';
     if (!empty($_SESSION['authUserID'])) {
-      //Set the user id from the session variable
+        //Set the user id from the session variable
         $temp_authuserid = $_SESSION['authUserID'];
     } else {
         if (!empty($_POST['authUser'])) {
             $temp_sql_ret = sqlQueryNoLog("SELECT `id` FROM `users` WHERE BINARY `username` = ?", array($_POST['authUser']));
             if (!empty($temp_sql_ret['id'])) {
-              //Set the user id from the login variable
+                //Set the user id from the login variable
                 $temp_authuserid = $temp_sql_ret['id'];
             }
         }
@@ -347,30 +347,30 @@ if (!empty($glrow)) {
     if (!empty($temp_authuserid)) {
         $glres_user = sqlStatementNoLog(
             "SELECT `setting_label`, `setting_value` " .
-            "FROM `user_settings` " .
-            "WHERE `setting_user` = ? " .
-            "AND `setting_label` LIKE 'global:%'",
+                "FROM `user_settings` " .
+                "WHERE `setting_user` = ? " .
+                "AND `setting_label` LIKE 'global:%'",
             array($temp_authuserid)
         );
         for ($iter = 0; $row = sqlFetchArray($glres_user); $iter++) {
-          //remove global_ prefix from label
+            //remove global_ prefix from label
             $row['setting_label'] = substr($row['setting_label'], 7);
             $gl_user[$iter] = $row;
         }
     }
 
-  // Set global parameters from the database globals table.
-  // Some parameters require custom handling.
-  //
+    // Set global parameters from the database globals table.
+    // Some parameters require custom handling.
+    //
     $GLOBALS['language_menu_show'] = array();
     $glres = sqlStatementNoLog(
         "SELECT gl_name, gl_index, gl_value FROM globals " .
-        "ORDER BY gl_name, gl_index"
+            "ORDER BY gl_name, gl_index"
     );
     while ($glrow = sqlFetchArray($glres)) {
         $gl_name  = $glrow['gl_name'];
         $gl_value = $glrow['gl_value'];
-      // Adjust for user specific settings
+        // Adjust for user specific settings
         if (!empty($gl_user)) {
             foreach ($gl_user as $setting) {
                 if ($gl_name == $setting['setting_label']) {
@@ -395,7 +395,7 @@ if (!empty($glrow)) {
             // does patient have a portal theme selected?
             $current_theme = sqlQueryNoLog(
                 "SELECT `setting_value` FROM `patient_settings` " .
-                "WHERE setting_patient = ? AND `setting_label` = ?",
+                    "WHERE setting_patient = ? AND `setting_label` = ?",
                 array($_SESSION['pid'] ?? 0, 'portal_theme')
             )['setting_value'] ?? null;
             $gl_value = $current_theme ?? null ?: $gl_value;
@@ -421,14 +421,14 @@ if (!empty($glrow)) {
                 $GLOBALS['sell_non_drug_products'] = 2;
             }
         } elseif ($gl_name == 'gbl_time_zone') {
-          // The default PHP time zone is set here if it was specified, and is used
-          // as source data for the MySQL time zone here and in some other places
-          // where MySQL connections are opened.
+            // The default PHP time zone is set here if it was specified, and is used
+            // as source data for the MySQL time zone here and in some other places
+            // where MySQL connections are opened.
             if ($gl_value) {
                 date_default_timezone_set($gl_value);
             }
 
-          // Synchronize MySQL time zone with PHP time zone.
+            // Synchronize MySQL time zone with PHP time zone.
             sqlStatementNoLog("SET time_zone = ?", array((new DateTime())->format("P")));
         } else {
             $GLOBALS[$gl_name] = $gl_value;
@@ -479,7 +479,7 @@ if (!empty($glrow)) {
         $default_lang_id = sqlQueryNoLog('SELECT lang_id FROM lang_languages WHERE lang_description = ?', array($GLOBALS['language_default'] ?? ''));
 
         if (getLanguageDir($default_lang_id['lang_id'] ?? '') === 'rtl' && !strpos($GLOBALS['css_header'], 'rtl')) {
-// @todo eliminate 1 SQL query
+            // @todo eliminate 1 SQL query
             $rtl_override = true;
         }
     }
@@ -521,15 +521,15 @@ if (!empty($glrow)) {
     unset($temp_css_theme_name, $new_theme, $rtl_override, $rtl_portal_override, $portal_temp_css_theme_name);
     // end of RTL section
 
-  //
-  // End of globals table processing.
+    //
+    // End of globals table processing.
 } else {
-  // Temporary stuff to handle the case where the globals table does not
-  // exist yet.  This will happen in sql_upgrade.php on upgrading to the
-  // first release containing this table.
+    // Temporary stuff to handle the case where the globals table does not
+    // exist yet.  This will happen in sql_upgrade.php on upgrading to the
+    // first release containing this table.
     $GLOBALS['language_menu_login'] = true;
     $GLOBALS['language_menu_showall'] = true;
-    $GLOBALS['language_menu_show'] = array('English (Standard)','Swedish');
+    $GLOBALS['language_menu_show'] = array('English (Standard)', 'Swedish');
     $GLOBALS['language_default'] = "English (Standard)";
     $GLOBALS['translate_layout'] = true;
     $GLOBALS['translate_lists'] = true;
@@ -722,3 +722,7 @@ if (!empty($GLOBALS['user_debug']) && ((int) $GLOBALS['user_debug'] > 1)) {
     error_reporting(error_reporting() & ~E_WARNING & ~E_NOTICE & ~E_USER_WARNING & ~E_USER_DEPRECATED);
     ini_set('display_errors', 1);
 }
+
+// Environment variables
+// $GLOBALS['DOCUAI_BASE_URL'] = $_ENV('DOCUAI_BASE_URL');
+// $GLOBALS['DOCUAI_API_KAY'] = $_ENV('DOCUAI_API_KAY');

@@ -33,7 +33,7 @@ License :
 <entities>
     <entity>
         <name>ICD9-CM</name>
-        <oid>2.16.840.1.113883.6.2</oid>        
+        <oid>2.16.840.1.113883.6.2</oid>
     </entity>
     <entity>
         <name>ICD10</name>
@@ -50,13 +50,13 @@ License :
     <entity>
         <name>LOINC</name>
         <oid>2.16.840.1.113883.6.1</oid>
-    </entity>    
+    </entity>
     <entity>
-    <name>HL7 Administrative Gender</name>
+    <name>HL7Gender</name>
     <oid>2.16.840.1.113883.5.1</oid>
     </entity>
     <entity>
     <name>VHA</name>
     <oid>2.16.840.1.113883.6.233</oid>
-    </entity>   
+    </entity>
 </entities>
