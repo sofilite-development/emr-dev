@@ -23,12 +23,12 @@ switch ($action) {
         }
         $current_date2 = date('Y-m-d');
         $apptLimit = 10;
-        $appts = fetchNextXAppts($current_date2, $pid, $apptLimit);
+        $upcomingappts = fetchNextXAppts($current_date2, $pid, $apptLimit);
         $past_appts = fetchXPastAppts($pid, 10);
 
         echo json_encode([
             'past_appointments' => $past_appts,
-            'upcoming_appointments' => $appts
+            'upcoming_appointments' => $upcomingappts
         ]);
         break;
 

@@ -266,22 +266,21 @@ function hexToRgba($hex, $opacity)
 
 function getSingleAppointment($appointmentId)
 {
-    $appointment = sqlQuery("SELECT * FROM openemr_postcalendar_events WHERE pc_eid = ?", [$appointmentId]);
-    $formattedAppointment = [];
-    foreach ($appointment as $key => $value) {
-        $trimmedKey = trim($key);
-        if (is_string($value)) {
-            $formattedAppointment[$trimmedKey] = trim($value);
-        } elseif (is_null($value)) {
-            $formattedAppointment[$trimmedKey] = null;
-        } else {
-            $formattedAppointment[$trimmedKey] = $value;
-        }
-    }
+    $query = "SELECT 
+                e.pc_eventDate, e.pc_endDate, e.pc_startTime, e.pc_endTime, e.pc_duration, e.pc_recurrtype, 
+                e.pc_recurrspec, e.pc_recurrfreq, e.pc_catid, e.pc_eid, e.pc_gid, e.pc_title, e.pc_hometext, 
+                e.pc_apptstatus, p.fname, p.mname, p.lname, p.DOB, p.pid, p.pubpid, p.phone_home, p.phone_cell, 
+                p.hipaa_allowsms, p.hipaa_voice, p.hipaa_allowemail, p.email, u.fname AS ufname, u.mname AS umname, 
+                u.lname AS ulname, u.id AS uprovider_id, f.name, c.pc_catname, c.pc_catid, e.pc_facility 
+              FROM openemr_postcalendar_events AS e
+              LEFT OUTER JOIN facility AS f ON e.pc_facility = f.id
+              LEFT OUTER JOIN patient_data AS p ON p.pid = e.pc_pid
+              LEFT OUTER JOIN users AS u ON u.id = e.pc_aid
+              LEFT OUTER JOIN openemr_postcalendar_categories AS c ON c.pc_catid = e.pc_catid
+              WHERE e.pc_eid = ?";
 
-    // Handle UUID if it's binary data
-    if (isset($formattedAppointment['uuid']) && !ctype_print($formattedAppointment['uuid'])) {
-        $formattedAppointment['uuid'] = base64_encode($formattedAppointment['uuid']);
-    }
-    return $formattedAppointment;
+    $sqlBindArray = array($appointmentId);
+
+    $res = sqlStatement($query, $sqlBindArray);
+    return sqlFetchArray($res);
 }
