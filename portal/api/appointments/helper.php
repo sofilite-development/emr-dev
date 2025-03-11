@@ -267,5 +267,21 @@ function hexToRgba($hex, $opacity)
 function getSingleAppointment($appointmentId)
 {
     $appointment = sqlQuery("SELECT * FROM openemr_postcalendar_events WHERE pc_eid = ?", [$appointmentId]);
-    return $appointment;
+    $formattedAppointment = [];
+    foreach ($appointment as $key => $value) {
+        $trimmedKey = trim($key);
+        if (is_string($value)) {
+            $formattedAppointment[$trimmedKey] = trim($value);
+        } elseif (is_null($value)) {
+            $formattedAppointment[$trimmedKey] = null;
+        } else {
+            $formattedAppointment[$trimmedKey] = $value;
+        }
+    }
+
+    // Handle UUID if it's binary data
+    if (isset($formattedAppointment['uuid']) && !ctype_print($formattedAppointment['uuid'])) {
+        $formattedAppointment['uuid'] = base64_encode($formattedAppointment['uuid']);
+    }
+    return $formattedAppointment;
 }
