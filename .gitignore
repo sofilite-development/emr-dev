@@ -30,3 +30,4 @@ coverage/js-unit
 ./sites/default/sqlconf.php
 
 /sites/uploads/signatures/
+sites/default/documents/edi/history/*
