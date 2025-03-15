@@ -143,7 +143,8 @@ if ($userData = sqlQuery($sql, array($auth['pid']))) { // if query gets executed
     if (empty($userData)) {
         $logit->portalLog('login attempt', '', ($_POST['uname'] . ':not active patient'), '', '0');
         OpenEMR\Common\Session\SessionUtil::portalSessionCookieDestroy();
-        header('Location: ' . $landingpage . '&w');
+        // header('Location: ' . $landingpage . '&w');
+        echo json_encode($response);
         exit();
     }
 
@@ -224,43 +225,32 @@ if ($userData = sqlQuery($sql, array($auth['pid']))) { // if query gets executed
 }
 
 
-if ($is_api) {
-    // Function to sanitize data
-    function sanitizeData($data)
-    {
-        if (is_array($data)) {
-            return array_map('sanitizeData', $data);
-        } elseif (is_string($data)) {
-            return mb_convert_encoding($data, 'UTF-8', 'UTF-8');
-        } else {
-            return $data;
-        }
+function sanitizeData($data)
+{
+    if (is_array($data)) {
+        return array_map('sanitizeData', $data);
+    } elseif (is_string($data)) {
+        return mb_convert_encoding($data, 'UTF-8', 'UTF-8');
+    } else {
+        return $data;
     }
-
-    $responseData = [
-        'status'       => 'success',
-        'message'      => 'Login successful.',
-        'patient_data' => sanitizeData($userData)
-    ];
-
-    $response = json_encode($responseData);
-    if ($response === false) {
-        die("JSON encoding error: " . json_last_error_msg());
-    }
-    header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-    header("Cache-Control: no-cache");
-    header("Pragma: no-cache");
-    header("Content-Type: application/json");
-
-    echo $response;
-    exit();
-} else {
-    header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-    header("Cache-Control: no-cache");
-    header("Pragma: no-cache");
-    header('Location: ./home.php');
-    exit();
 }
+
+$responseData = [
+    'status'       => 'success',
+    'message'      => 'Login successful.',
+    'patient_data' => sanitizeData($userData)
+];
+
+$response = json_encode($responseData);
+if ($response === false) {
+    die("JSON encoding error: " . json_last_error_msg());
+}
+header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+header("Cache-Control: no-cache");
+header("Pragma: no-cache");
+echo $response;
+exit();
 
 
 function updateUserCredentials($auth, $password_update, $postData)
