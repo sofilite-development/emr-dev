@@ -79,8 +79,8 @@ DEFINE("COL_POR_PWD_STAT", "portal_pwd_status");
 DEFINE("COL_POR_ONETIME", "portal_onetime");
 
 $response = [
-    'status'       => "401",
-    'message'      => 'Invalid credentials.',
+    'status'       => 401,
+    'message'      => 'Invalid credentials',
 ];
 
 header("Content-Type: application/json");
@@ -152,12 +152,8 @@ if ($userData = sqlQuery($sql, array($auth['pid']))) { // if query gets executed
         // Patient has not authorized portal, so escape
         $logit->portalLog('login attempt', '', ($_POST['uname'] . ':allow portal turned off'), '', '0');
         OpenEMR\Common\Session\SessionUtil::portalSessionCookieDestroy();
-        $responseData = [
-            'status'       => '404',
-            'message'      => 'Patient has not access on portal',
-        ];
-        $response = json_encode($responseData);
-        // header('Location: ' . $landingpage . '&w');
+        $response["status"] = 404;
+        $response["message"] = "Patient has not access on portal";
         echo json_encode($response);
         exit();
     }
@@ -236,20 +232,18 @@ function sanitizeData($data)
     }
 }
 
-$responseData = [
-    'status'       => 'success',
-    'message'      => 'Login successful.',
-    'patient_data' => sanitizeData($userData)
-];
+$response["message"] = "Login successful";
+$response["status"] = 200;
+$response["patient_data"] = sanitizeData($userData);
 
-$response = json_encode($responseData);
-if ($response === false) {
+$responseData = json_encode($response);
+if ($responseData === false) {
     die("JSON encoding error: " . json_last_error_msg());
 }
 header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 header("Cache-Control: no-cache");
 header("Pragma: no-cache");
-echo $response;
+echo $responseData;
 exit();
 
 
