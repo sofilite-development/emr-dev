@@ -78,6 +78,12 @@ DEFINE("COL_POR_LOGINUSER", "portal_login_username");
 DEFINE("COL_POR_PWD_STAT", "portal_pwd_status");
 DEFINE("COL_POR_ONETIME", "portal_onetime");
 
+$response = [
+    'status'       => "401",
+    'message'      => 'Invalid credentials.',
+];
+
+header("Content-Type: application/json");
 
 // normal login
 $sql = "SELECT " . implode(",", array(
@@ -94,8 +100,10 @@ $auth = privQuery($sql, array($_POST['uname']));
 if ($auth === false) {
     $logit->portalLog('login attempt', '', ($_POST['uname'] . ':invalid username'), '', '0');
     OpenEMR\Common\Session\SessionUtil::portalSessionCookieDestroy();
-    header('Location: ' . $landingpage . '&w&u');
+    echo json_encode($response);
     exit();
+    // header('Location: ' . $landingpage . '&w&u');
+    // exit();
 }
 
 if (AuthHash::passwordVerify($_POST['pass'], $auth[COL_POR_PWD])) {
@@ -119,10 +127,10 @@ if (AuthHash::passwordVerify($_POST['pass'], $auth[COL_POR_PWD])) {
 } else {
     $logit->portalLog('login attempt', '', ($_POST['uname'] . ':invalid password'), '', '0');
     OpenEMR\Common\Session\SessionUtil::portalSessionCookieDestroy();
-    header('Location: ' . $landingpage . '&w&p');
+    // header('Location: ' . $landingpage . '&w&p');
+    echo json_encode($response);
     exit();
 }
-
 
 
 
@@ -143,14 +151,21 @@ if ($userData = sqlQuery($sql, array($auth['pid']))) { // if query gets executed
         // Patient has not authorized portal, so escape
         $logit->portalLog('login attempt', '', ($_POST['uname'] . ':allow portal turned off'), '', '0');
         OpenEMR\Common\Session\SessionUtil::portalSessionCookieDestroy();
-        header('Location: ' . $landingpage . '&w');
+        $responseData = [
+            'status'       => '404',
+            'message'      => 'Patient has not access on portal',
+        ];
+        $response = json_encode($responseData);
+        // header('Location: ' . $landingpage . '&w');
+        echo json_encode($response);
         exit();
     }
 
     if ($auth['pid'] != $userData['pid']) {
         // Not sure if this is even possible, but should escape if this happens
         OpenEMR\Common\Session\SessionUtil::portalSessionCookieDestroy();
-        header('Location: ' . $landingpage . '&w');
+        // header('Location: ' . $landingpage . '&w');
+        echo json_encode($response);
         exit();
     }
 
@@ -159,8 +174,12 @@ if ($userData = sqlQuery($sql, array($auth['pid']))) { // if query gets executed
         if (!$authorizedPortal) {
             // Need to enter a new password in the index.php script
             $_SESSION['password_update'] = 1;
-            header('Location: ' . $landingpage);
-            exit();
+            updatePortalPwdStatus(
+                $auth['id']
+            );
+            $authorizedPortal = true;
+            // header('Location: ' . $landingpage);
+            // exit();
         }
     }
 
@@ -193,26 +212,17 @@ if ($userData = sqlQuery($sql, array($auth['pid']))) { // if query gets executed
     } else {
         $logit->portalLog('login', '', ($_POST['uname'] . ':not authorized'), '', '0');
         OpenEMR\Common\Session\SessionUtil::portalSessionCookieDestroy();
-        header('Location: ' . $landingpage . '&w');
+        // header('Location: ' . $landingpage . '&w');
+        echo json_encode($response);
         exit();
     }
 } else { // problem with query
     OpenEMR\Common\Session\SessionUtil::portalSessionCookieDestroy();
-    header('Location: ' . $landingpage . '&w');
+    // header('Location: ' . $landingpage . '&w');
+    echo json_encode($response);
     exit();
 }
 
-// now that we are authorized, we need to check for the redirect, sanitize it (or eliminate it if we can't), and then redirect
-
-if (!empty($_REQUEST['redirect'])) {
-    // for now we are only going to allow redirects to locations in the module directories, we can open this up more
-    // in future requests once we consider the threat vectors
-    $safeRedirect = \OpenEMR\Core\ModulesApplication::filterSafeLocalModuleFiles([$_REQUEST['redirect']]);
-    if (!empty($safeRedirect)) {
-        header('Location: ' . $safeRedirect[0]);
-        exit();
-    }
-}
 
 if ($is_api) {
     // Function to sanitize data
@@ -250,4 +260,48 @@ if ($is_api) {
     header("Pragma: no-cache");
     header('Location: ./home.php');
     exit();
+}
+
+
+function updateUserCredentials($auth, $password_update, $postData)
+{
+    if ($password_update) {
+        $code_new = $postData['pass_new'] ?? '';
+        $code_new_confirm = $postData['pass_new_confirm'] ?? '';
+        $login_uname = $postData['login_uname'] ?? '';
+
+        if (!empty($code_new) && !empty($code_new_confirm) && ($code_new === $code_new_confirm)) {
+            $authHash = new AuthHash('auth');
+            $new_hash = $authHash->passwordHash($code_new);
+
+            if (empty($new_hash)) {
+                // Something is seriously wrong
+                error_log('OpenEMR Error: Unable to create a hash for the password update.');
+                die("OpenEMR Error: Unable to create a hash for the password update.");
+            }
+
+            // Update the username and password in the database
+            privStatement(
+                "UPDATE " . TBL_PAT_ACC_ON . " SET " . COL_POR_LOGINUSER . "=?, " . COL_POR_PWD . "=?, " . COL_POR_PWD_STAT . "=1 WHERE id=?",
+                array(
+                    $login_uname,
+                    $new_hash,
+                    $auth[COL_ID]
+                )
+            );
+
+            return true; // Indicates a successful update
+        }
+    }
+    return false; // Indicates update failure or not needed
+}
+
+function updatePortalPwdStatus($userId)
+{
+    privStatement(
+        "UPDATE " . TBL_PAT_ACC_ON . " SET " . COL_POR_PWD_STAT . "=1 WHERE id=?",
+        array($userId)
+    );
+
+    return true;
 }
