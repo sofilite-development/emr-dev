@@ -82,6 +82,7 @@ function getAllergies($pid)
 
     $allergies = [];
     while ($row = sqlFetchArray($result)) {
+        unset($row["uuid"]);
         $allergies[] = $row;
     }
 

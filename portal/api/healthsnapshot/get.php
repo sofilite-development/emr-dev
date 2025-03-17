@@ -12,26 +12,54 @@ if (!$pid) {
     exit();
 }
 
+$type = $_GET["type"] ?? null;
+if ($type == "") {
+    $type = null;
+}
 $response = [];
 
-$response = getHealthSnapshot($pid);
+$response = getHealthSnapshot($pid, $type);
 
 echo json_encode($response);
 
 /**
  * Fetch Health Snapshot for a Patient
  */
-function getHealthSnapshot($pid)
+function getHealthSnapshot($pid, $requestFor)
 {
-    global $sql;
+    $response = [];
+    $response['patientID'] = $pid;
 
-    return [
-        'patientID' => $pid,
-        'immunizationRecords' => getImmunizationRecords($pid),
-        'medications' => getMedications($pid),
-        'prescriptions' => getPrescriptions($pid),
-        'allergies' => getAllergies($pid),
-        'labResults' => getLabResults($pid),
-        'problems' => getProblems($pid),
-    ];
+    switch ($requestFor) {
+        case "immunizationRecords":
+            $response["immunizationRecords"] = getImmunizationRecords($pid);
+            break;
+        case "problems":
+            $response["problems"] = getProblems($pid);
+            break;
+        case "labResults":
+            $response["labResults"] = getLabResults($pid);
+            break;
+        case "medications":
+            $response["medications"] = getMedications($pid);
+            break;
+        case "allergies":
+            $response["allergies"] = getAllergies($pid);
+            break;
+        case "prescriptions":
+            $response["prescriptions"] = getPrescriptions($pid);
+            break;
+        default:
+            $response =  [
+                ...$response,
+                'immunizationRecords' => getImmunizationRecords($pid),
+                'medications' => getMedications($pid),
+                'prescriptions' => getPrescriptions($pid),
+                'allergies' => getAllergies($pid),
+                'labResults' => getLabResults($pid),
+                'problems' => getProblems($pid),
+            ];
+    }
+
+    return $response;
 }
