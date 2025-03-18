@@ -800,58 +800,80 @@ function getCodeText($code)
 
 
         <?php
-        $encounterData = [];
-        $dictationData = [];
-        $orderData = [];
-
-        // patient information
-        $query = sqlStatement('SELECT id, title, fname, lname, mname, DOB, street, postal_code, city, sex, race, ethnicity, religion, family_size FROM patient_data WHERE id = ?', array($thispid));
-        $patientInformation = sqlFetchArray($query);
-
-        // Encounters
-        $query = sqlStatement('
-            SELECT id, facility, reason, discharge_disposition, encounter_type_code, encounter_type_description 
+        function getLatestEncounterWithDictation(
+            $pid,
+        ) {
+            // get the most recent encounter
+            $lastEncounter = sqlQuery("
+            SELECT id, facility, reason, discharge_disposition, 
+            encounter_type_code, encounter_type_description, 
+            pid, encounter, date
             FROM form_encounter 
-            WHERE pid = ?', array($thispid));
+            WHERE pid = ? 
+            ORDER BY date DESC
+            LIMIT 1",
+                array($pid)
+            );
 
-        while ($row = sqlFetchArray($query)) {
-            $encounterData[] = $row;
+            if (empty($lastEncounter)) {
+                return array('error' => 'No encounters found');
+            }
+
+            $encounter_id = $lastEncounter['encounter'];
+
+
+            $dictations = sqlStatement("
+            SELECT f.id AS form_id, f.date, f.pid, f.form_name, 
+            f.encounter, f.user, f.groupname, f.formdir,
+            fd.id AS dictation_id, fd.dictation, fd.additional_notes 
+            FROM forms f
+            LEFT JOIN form_dictation fd ON fd.id = f.form_id 
+            WHERE f.pid = ? 
+            AND f.encounter = ? 
+            AND f.formdir = 'dictation'
+            AND f.deleted = 0",
+                array($pid, $encounter_id)
+            );
+
+            $dictationData = array();
+            while ($row = sqlFetchArray($dictations)) {
+                $dictationData[] = $row;
+            }
+
+            // Get procedure orders for this encounter
+            $procedures = sqlStatement("
+            SELECT po.procedure_order_id, po.patient_id, 
+            po.encounter_id, po.patient_instructions,
+            po.date_ordered, po.order_status
+            FROM procedure_order po
+            JOIN forms f ON f.encounter = po.encounter_id
+            WHERE po.patient_id = ? 
+            AND po.encounter_id = ?
+            AND f.deleted = 0",
+                array($pid, $encounter_id)
+            );
+
+            $procedureData = array();
+            while ($row = sqlFetchArray($procedures)) {
+                $procedureData[] = $row;
+            }
+
+            // Combine all data
+            $result = array(
+                'patientId' => $pid,
+                'encounter' => $lastEncounter,
+                'dictation' => $dictationData,
+                // 'procedure_orders' => $procedureData
+            );
+
+            return $result;
         }
 
-        // Dictations 
-        $query = sqlStatement('
-            SELECT id, dictation, additional_notes 
-            FROM form_dictation 
-            WHERE pid = ?', array($thispid));
+        $result = getLatestEncounterWithDictation($thispid);
 
-        while ($row = sqlFetchArray($query)) {
-            $dictationData[] = $row;
-        }
 
-        // Procedure order 
-        $query = sqlStatement('
-            SELECT procedure_order_id, patient_instructions, clinical_hx 
-            FROM procedure_order
-            WHERE patient_id = ?', array($thispid));
 
-        while ($row = sqlFetchArray($query)) {
-            $orderData[] = $row;
-        }
-
-        // Structure the final JSON
-        $data = [
-            "patient_informatiom" => $patientInformation,
-            "encounter" => $encounterData,
-            "dictation" => $dictationData,
-            "procedure_order" => $orderData
-        ];
-
-        if (empty(array_filter($data))) {
-            echo json_encode(["error" => "No data available"]);
-            exit;
-        }
-
-        $jsonDataForSummery = json_encode($data, JSON_PRETTY_PRINT);
+        $jsonDataForSummery = json_encode($result, JSON_PRETTY_PRINT);
 
         $docuaiUrl = $_ENV['DOCUAI_BASE_URL'] . "/api/medical-records/summary";
         $docuAiSecret = $_ENV['DOCUAI_API_KAY'];
@@ -868,13 +890,24 @@ function getCodeText($code)
 
                 const docuaiUrl = "<?php echo $docuaiUrl; ?>";
                 const docuAiSecret = "<?php echo $docuAiSecret; ?>";
-                const requestData = JSON.parse(<?php echo json_encode($jsonDataForSummery); ?>);
+                const encounterData = JSON.parse(<?php echo json_encode($jsonDataForSummery); ?>);
 
-                const data = JSON.stringify({
-                    patientId: requestData?.patient_informatiom?.id,
-                    encounter: requestData?.encounter,
-                    dictation: requestData?.dictation,
-                });
+                const data = {
+                    patientId: encounterData?.encounter?.pid,
+                    dictation: encounterData?.dictation?.map((item) => ({
+                        id: item?.dictation_id,
+                        dictation: item?.dictation,
+                        additional_notes: item?.additional_notes
+                    })),
+                    encounter: {
+                        id: encounterData?.encounter?.id,
+                        facility: encounterData?.encounter.facility,
+                        reason: encounterData?.encounter?.reason,
+                        discharge_disposition: encounterData?.encounter?.discharge_disposition,
+                        encounter_type_code: encounterData?.encounter?.encounter_type_code,
+                        encounter_type_description: encounterData?.encounter?.encounter_type_description,
+                    },
+                };
 
                 $.ajax({
                     type: "POST",
