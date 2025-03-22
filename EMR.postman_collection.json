@@ -1164,6 +1164,12 @@
 									"key": "pid",
 									"value": "1",
 									"disabled": true
+								},
+								{
+									"key": "type",
+									"value": "immunizationRecords",
+									"description": "problems | labResults | allergies| prescriptions | medications | immunizationRecords",
+									"disabled": true
 								}
 							]
 						}
@@ -1241,6 +1247,85 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"patientID\": 1,\n    \"immunizationRecords\": [],\n    \"medications\": [\n        {\n            \"id\": 1,\n            \"medication\": \"Metformin\",\n            \"start_date\": \"2025-01-27 17:40:00\",\n            \"stop_date\": \"2025-02-25 17:40:00\",\n            \"diagnosis\": \"\",\n            \"comments\": \"\",\n            \"active\": true\n        }\n    ],\n    \"prescriptions\": [],\n    \"allergies\": [],\n    \"labResults\": [],\n    \"problems\": [\n        {\n            \"title\": \"Dry Eye\",\n            \"reported_date\": \"2025-02-13 12:02:00\",\n            \"start_date\": \"2025-02-11 17:30:00\",\n            \"end_date\": null\n        },\n        {\n            \"title\": \"BCC\",\n            \"reported_date\": \"2025-02-13 12:02:10\",\n            \"start_date\": \"2025-02-12 19:00:00\",\n            \"end_date\": \"2025-02-20 19:30:00\"\n        }\n    ]\n}"
+						},
+						{
+							"name": "get all",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/portal/api/healthsnapshot/get.php",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"portal",
+										"api",
+										"healthsnapshot",
+										"get.php"
+									],
+									"query": [
+										{
+											"key": "pid",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "type",
+											"value": "immunizationRecords",
+											"description": "problems | labResults | allergies| prescriptions | medications | immunizationRecords",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 17 Mar 2025 07:07:16 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.1.25"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.1.25"
+								},
+								{
+									"key": "Expires",
+									"value": "Thu, 19 Nov 1981 08:52:00 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-store, no-cache, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Content-Length",
+									"value": "2479"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"patientID\": 1,\n    \"immunizationRecords\": [\n        {\n            \"id\": 1,\n            \"uuid\": null,\n            \"patient_id\": 1,\n            \"administered_date\": \"2025-03-17\",\n            \"immunization_id\": 0,\n            \"cvx_code\": \"8\",\n            \"manufacturer\": \"\",\n            \"lot_number\": \"\",\n            \"administered_by_id\": 1,\n            \"administered_by\": null,\n            \"education_date\": \"2025-03-17\",\n            \"vis_date\": \"2025-03-17\",\n            \"note\": \"\",\n            \"create_date\": \"2025-03-17 07:21:09\",\n            \"update_date\": \"0000-00-00 00:00:00\",\n            \"created_by\": 1,\n            \"updated_by\": 1,\n            \"amount_administered\": 0,\n            \"amount_administered_unit\": \"0\",\n            \"expiration_date\": null,\n            \"route\": \"0\",\n            \"administration_site\": \"\",\n            \"added_erroneously\": 0,\n            \"external_id\": null,\n            \"completion_status\": \"\",\n            \"information_source\": \"\",\n            \"refusal_reason\": \"\",\n            \"ordering_provider\": 1,\n            \"reason_code\": \"\",\n            \"reason_description\": \"\",\n            \"code_text\": \"hepatitis B vaccine, pediatric or pediatric/adolescent dosage\",\n            \"administered_formatted\": \"03/17/2025\",\n            \"route_of_administration\": \"\",\n            \"title\": null,\n            \"fname\": \"Administrator\",\n            \"mname\": null,\n            \"lname\": \"Administrator\",\n            \"npi\": null,\n            \"street\": null,\n            \"streetb\": null,\n            \"city\": null,\n            \"state\": null,\n            \"zip\": null,\n            \"phonew1\": null,\n            \"name\": \"Your Clinic Name Here\",\n            \"phone\": \"000-000-0000\",\n            \"route_code\": null\n        }\n    ],\n    \"medications\": [\n        {\n            \"id\": 1,\n            \"medication\": \"Metformin\",\n            \"start_date\": \"2025-01-27 17:40:00\",\n            \"stop_date\": \"2025-02-25 17:40:00\",\n            \"diagnosis\": \"\",\n            \"comments\": \"\",\n            \"active\": true\n        },\n        {\n            \"id\": 4,\n            \"medication\": \"Norvasc\",\n            \"start_date\": \"2025-02-24 12:14:00\",\n            \"stop_date\": \"2025-03-25 12:14:00\",\n            \"diagnosis\": \"ICD10:H04.123\",\n            \"comments\": \"comments \",\n            \"active\": true\n        }\n    ],\n    \"prescriptions\": [],\n    \"allergies\": [\n        {\n            \"id\": 6,\n            \"date\": \"2025-03-17 07:03:13\",\n            \"type\": \"allergy\",\n            \"subtype\": \"\",\n            \"title\": \"penicillin\",\n            \"udi\": null,\n            \"udi_data\": null,\n            \"begdate\": \"2025-03-10 12:18:00\",\n            \"enddate\": null,\n            \"returndate\": null,\n            \"occurrence\": 0,\n            \"classification\": 0,\n            \"referredby\": \"\",\n            \"extrainfo\": null,\n            \"diagnosis\": \"\",\n            \"activity\": 1,\n            \"comments\": \"comments notest\",\n            \"pid\": 1,\n            \"user\": \"admin_emr_user\",\n            \"groupname\": \"Default\",\n            \"outcome\": 0,\n            \"destination\": \"\",\n            \"reinjury_id\": 0,\n            \"injury_part\": \"\",\n            \"injury_type\": \"\",\n            \"injury_grade\": \"\",\n            \"reaction\": \"nausea\",\n            \"verification\": \"unconfirmed\",\n            \"external_allergyid\": null,\n            \"erx_source\": \"0\",\n            \"erx_uploaded\": \"0\",\n            \"modifydate\": \"2025-03-17 07:19:48\",\n            \"severity_al\": \"unassigned\",\n            \"external_id\": null,\n            \"list_option_id\": \"penicillin\"\n        }\n    ],\n    \"labResults\": [],\n    \"problems\": [\n        {\n            \"title\": \"SCC\",\n            \"reported_date\": \"2025-03-17 07:03:25\",\n            \"start_date\": \"2024-09-23 12:17:00\",\n            \"end_date\": \"2025-03-25 12:17:00\"\n        },\n        {\n            \"title\": \"Dry Eye\",\n            \"reported_date\": \"2025-02-13 12:02:00\",\n            \"start_date\": \"2025-02-11 17:30:00\",\n            \"end_date\": null\n        },\n        {\n            \"title\": \"BCC\",\n            \"reported_date\": \"2025-02-13 12:02:10\",\n            \"start_date\": \"2025-02-12 19:00:00\",\n            \"end_date\": \"2025-02-20 19:30:00\"\n        }\n    ]\n}"
 						}
 					]
 				}

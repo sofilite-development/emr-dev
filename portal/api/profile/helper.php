@@ -1,3 +1,4 @@
+
 <?php
 function getPatientProfileData($pid, $given = "*")
 {
@@ -15,6 +16,27 @@ function getPatientProfileData($pid, $given = "*")
     foreach ($fields as $field) {
         $data[$field] = !empty($result[$field]) ? utf8_encode($result[$field]) : $result[$field];
     }
+
+    if ($data["providerID"]) {
+        $provider = getProviderName($data["providerID"]);
+        if ($provider) {
+            $data["provider"] = $provider;
+        }
+    }
+
+    if ($data["state"]) {
+        $stateQuery = sqlStatement(
+            "SELECT * FROM list_options WHERE option_id = ? AND list_id = ? AND activity = 1",
+            [$data["state"], "state"]
+        );
+
+        $state = sqlFetchArray($stateQuery);
+
+        if ($state) {
+            $data["stateName"] = $state["title"];
+        }
+    }
+
 
     return $data;
 }
