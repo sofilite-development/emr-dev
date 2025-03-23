@@ -5,11 +5,15 @@ require_once("$srcdir/patient.inc.php");
 require_once(__DIR__ . '/../../../library/appointments.inc.php');
 require_once(__DIR__ . '/helper.php');
 
+
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['error' => 'Invalid request method']);
     exit();
 }
-$inputData = $_POST;
+
+$inputData = json_decode(file_get_contents('php://input'), true);
+
 if (!$inputData) {
     echo json_encode(['error' => 'Invalid JSON payload']);
     exit();
@@ -34,7 +38,7 @@ $auditvals = [
     'status' => $inputData['status'] ?? "new",
     'narrative' => $inputData['narrative'] ?? "",
     'table_action' => $inputData['table_action'] ?? "",
-    'table_args' => serialize(json_encode($userData)),
+    'table_args' => serialize($userData),
     'action_user' => $inputData['action_user'] ?? "",
     'action_taken_time' => $inputData['action_taken_time'] ?? "",
     'checksum' => $inputData['checksum'] ?? ""
