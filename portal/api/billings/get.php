@@ -6,8 +6,7 @@ require_once(__DIR__ . '/helper.php');
 
 $pid = $_SESSION['pid'];
 
-$flag = isset($_GET['flag']);
-
+$flag = $_GET['flag'];
 try {
     if ($flag === "all") {
         $billings = getAllPatientBilling($pid);

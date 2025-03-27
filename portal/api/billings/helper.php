@@ -27,6 +27,51 @@ function getPatientBilling($pid, $from_date, $to_date)
     return $rows;
 }
 
+function getGroupedPatientBilling($pid, $from_date, $to_date)
+{
+    if (!$pid) {
+        return [];
+    }
+
+    $sql = "SELECT 
+                b.code_type, b.code, b.code_text, b.pid, b.provider_id,
+                b.billed, b.payer_id, b.units, b.fee, b.bill_date, b.id,
+                ins.name AS payer_name,
+                fe.encounter, fe.date, fe.reason, fe.provider_id
+            FROM form_encounter AS fe
+            LEFT JOIN billing AS b ON b.pid = fe.pid AND b.encounter = fe.encounter
+            LEFT JOIN insurance_companies AS ins ON b.payer_id = ins.id
+            LEFT OUTER JOIN code_types AS c ON c.ct_key = b.code_type
+            WHERE fe.date >= ? AND fe.date <= ? AND fe.pid = ?
+            AND c.ct_proc = '1' AND b.activity > 0
+            ORDER BY fe.date, fe.id";
+
+    $res = sqlStatement($sql, [$from_date . ' 00:00:00', $to_date . ' 23:59:59', $pid]);
+    $grouped = [];
+
+    while ($row = sqlFetchArray($res)) {
+        $enc_key = $row['encounter'] . '_' . substr($row['date'], 0, 10);
+
+        if (!isset($grouped[$enc_key])) {
+            $grouped[$enc_key] = [
+                'encounter' => $row['encounter'],
+                'date' => $row['date'],
+                'reason' => $row['reason'],
+                'provider_id' => $row['provider_id'],
+                'totals' => ['units' => 0, 'charges' => 0.00],
+                'items' => []
+            ];
+        }
+
+        $grouped[$enc_key]['items'][] = $row;
+        $grouped[$enc_key]['totals']['units'] += (int) $row['units'];
+        $grouped[$enc_key]['totals']['charges'] += (float) $row['fee'];
+    }
+
+    return array_values($grouped);
+}
+
+
 function getLastMonthBilling($pid)
 {
     if (!$pid) {
@@ -37,7 +82,7 @@ function getLastMonthBilling($pid)
     $from_date = date("Y-m-01", strtotime("first day of last month"));
     $to_date = date("Y-m-t", strtotime("last day of last month"));
 
-    return getPatientBilling($pid, $from_date, $to_date);
+    return getGroupedPatientBilling($pid, $from_date, $to_date);
 }
 
 function getLast7DaysBilling($pid)
@@ -49,7 +94,7 @@ function getLast7DaysBilling($pid)
     $today = date('Y-m-d');
     $sevenDaysAgo = date('Y-m-d', strtotime('-6 days')); // include today = 7 days total
 
-    return getPatientBilling($pid, $sevenDaysAgo, $today);
+    return getGroupedPatientBilling($pid, $sevenDaysAgo, $today);
 }
 
 function getAllPatientBilling($pid)
@@ -62,5 +107,5 @@ function getAllPatientBilling($pid)
     $from_date = '1900-01-01';
     $to_date = date('Y-m-d');
 
-    return getPatientBilling($pid, $from_date, $to_date);
+    return getGroupedPatientBilling($pid, $from_date, $to_date);
 }
