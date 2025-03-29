@@ -49,6 +49,8 @@ function getGroupedPatientBilling($pid, $from_date, $to_date)
     $res = sqlStatement($sql, [$from_date . ' 00:00:00', $to_date . ' 23:59:59', $pid]);
     $grouped = [];
 
+    $grandTotal = 0;
+
     while ($row = sqlFetchArray($res)) {
         $enc_key = $row['encounter'] . '_' . substr($row['date'], 0, 10);
 
@@ -66,9 +68,10 @@ function getGroupedPatientBilling($pid, $from_date, $to_date)
         $grouped[$enc_key]['items'][] = $row;
         $grouped[$enc_key]['totals']['units'] += (int) $row['units'];
         $grouped[$enc_key]['totals']['charges'] += (float) $row['fee'];
+        $grandTotal += (float) $row['fee'];
     }
 
-    return array_values($grouped);
+    return ['grandTotal' => $grandTotal, 'encounters' => array_values($grouped)];
 }
 
 
@@ -108,4 +111,47 @@ function getAllPatientBilling($pid)
     $to_date = date('Y-m-d');
 
     return getGroupedPatientBilling($pid, $from_date, $to_date);
+}
+
+function getEncounterBilling($pid, $encounterId)
+{
+    if (!$pid || !$encounterId) {
+        return [];
+    }
+
+    $sql = "SELECT 
+                b.code_type, b.code, b.code_text, b.pid, b.provider_id,
+                b.billed, b.payer_id, b.units, b.fee, b.bill_date, b.id,
+                ins.name AS payer_name,
+                fe.encounter, fe.date, fe.reason, fe.provider_id
+            FROM form_encounter AS fe
+            LEFT JOIN billing AS b ON b.pid = fe.pid AND b.encounter = fe.encounter
+            LEFT JOIN insurance_companies AS ins ON b.payer_id = ins.id
+            LEFT OUTER JOIN code_types AS c ON c.ct_key = b.code_type
+            WHERE fe.pid = ? AND fe.encounter = ?
+            AND c.ct_proc = '1' AND b.activity > 0
+            ORDER BY b.id";
+
+    $result = sqlStatement($sql, [$pid, $encounterId]);
+    $items = [];
+    $totals = ['units' => 0, 'charges' => 0.00];
+    $reason  = "";
+    $date  = "";
+
+    while ($row = sqlFetchArray($result)) {
+        $items[] = $row;
+        $totals['units'] += (int) $row['units'];
+        $totals['charges'] += (float) $row['fee'];
+        $reason = $row["reason"];
+        $date = $row['date'];
+    }
+
+    return [
+        'encounter' => $encounterId,
+        'pid' => $pid,
+        'totals' => $totals,
+        'items' => $items,
+        "reason" => $reason,
+        "date" => $date
+    ];
 }
