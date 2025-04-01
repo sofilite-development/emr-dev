@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Encounter form for entering procedure orders.
  *
@@ -22,7 +23,10 @@ require_once("$srcdir/forms.inc.php");
 require_once("$srcdir/options.inc.php");
 require_once(__DIR__ . "/../../orders/qoe.inc.php");
 require_once(__DIR__ . "/../../../custom/code_types.inc.php");
+require_once(__DIR__ . '/../../../library/RabbitMQService.php');
 
+
+use OpenEMR\Library\RabbitMQService;
 use OpenEMR\Common\Csrf\CsrfUtils;
 use OpenEMR\Common\Forms\ReasonStatusCodes;
 use OpenEMR\Core\Header;
@@ -50,6 +54,8 @@ if ($_POST['bn_save_ereq'] ?? null) { //labcorp
 }
 
 $patient = sqlQueryNoLog("SELECT * FROM `patient_data` WHERE `pid` = ?", array($pid));
+ $provider = sqlQuery("SELECT npi FROM users WHERE id = ?", array($_SESSION['authUserID']));
+// $provider = sqlQueryNoLog("SELECT * FROM `users` WHERE `id` = ?", array($pid));
 
 global $gbl_lab, $gbl_lab_title, $gbl_client_acct;
 
@@ -207,9 +213,35 @@ if (($_POST['bn_save'] ?? null) || !empty($_POST['bn_xmit']) || !empty($_POST['b
         $gbl_lab = get_lab_name($ppid);
         $tmp = $_POST['procedure_type_names'] ?: $formid;
         $lab_title = $gbl_lab_title . "-$tmp";
-        addForm($encounter, $lab_title, $formid, "procedure_order", $pid, $userauthorized);
+        $data = addForm($encounter, $lab_title, $formid, "procedure_order", $pid, $userauthorized);
         $mode = 'update';
         $viewmode = true;
+
+        try{
+          $orderData = array(
+                'order_id' => $data,
+                'patientMrnId' =>  js_escape($patient['pid']), // Safely escaped for JS
+                'origin' => "EMR" , // String literals should also be escaped
+                'providerNpi' => $provider['npi'] ?? "",
+                'date_ordered' =>  $_POST['form_date_ordered'],
+                'tests' => [],
+                'cptCodes' => [],
+                'comment' => $_POST['form_clinical_hx'],
+                'resultState' => null,
+                'panels' => [],
+
+                // clinical
+                'samples' => [],
+                'cptDiagnosisComment' => [],
+            );
+
+            $rabbitMQ = new RabbitMQService();
+            $rabbitMQ->sendMessage ($orderData, 'order_created', );
+            $rabbitMQ->close();
+            
+        }catch(Exception $e){
+         error_log("Failed to queue order message: " . $e->getMessage());
+        }
     }
 
     $log_file = $GLOBALS["OE_SITE_DIR"] . "/documents/labs/" . check_file_dir_name(get_lab_name($ppid)) . "/logs/" . check_file_dir_name($formid) . "_order_log.log";
@@ -886,6 +918,10 @@ if (!empty($row['lab_id'])) {
             <?php } ?>
             $(".wait").removeClass('d-none');
             top.restoreSession();
+
+             // Get form ID from hidden input
+            let formId = $("input[name='id']").val();
+            
             return true;
         }
 
