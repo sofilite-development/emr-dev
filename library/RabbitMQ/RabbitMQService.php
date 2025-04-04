@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenEMR\Library;
+namespace OpenEMR\Library\RabbitMQ;
 
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -55,12 +55,13 @@ class RabbitMQService
     public function receiveMessages(string $queueName, callable $callback)
     {
         $this->channel->queue_declare($queueName, false, true, false, false);
+        $this->channel->queue_bind($queueName, $this->exchange, $queueName);
 
         $this->channel->basic_consume(
             $queueName,    // queue name
             '',           // consumer tag
             false,        // no local
-            true,         // no ack
+            false,         // no ack
             false,        // exclusive
             false,        // no wait
             $callback     // callback function

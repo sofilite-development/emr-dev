@@ -23,10 +23,10 @@ require_once("$srcdir/forms.inc.php");
 require_once("$srcdir/options.inc.php");
 require_once(__DIR__ . "/../../orders/qoe.inc.php");
 require_once(__DIR__ . "/../../../custom/code_types.inc.php");
-require_once(__DIR__ . '/../../../library/RabbitMQService.php');
+require_once(__DIR__ . '/../../../library/RabbitMQ/RabbitMQService.php');
 
 
-use OpenEMR\Library\RabbitMQService;
+use OpenEMR\Library\RabbitMQ\RabbitMQService;
 use OpenEMR\Common\Csrf\CsrfUtils;
 use OpenEMR\Common\Forms\ReasonStatusCodes;
 use OpenEMR\Core\Header;
@@ -222,6 +222,7 @@ if (($_POST['bn_save'] ?? null) || !empty($_POST['bn_xmit']) || !empty($_POST['b
                 'order_id' => $data,
                 'patientMrnId' =>  js_escape($patient['pid']), // Safely escaped for JS
                 'origin' => "EMR" , // String literals should also be escaped
+                'dob'=> $patient["DOB"],
                 'providerNpi' => $provider['npi'] ?? "",
                 'date_ordered' =>  $_POST['form_date_ordered'],
                 'tests' => [],
