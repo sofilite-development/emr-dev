@@ -41,34 +41,36 @@ $res = sqlStatement($query);
 ?>
 <!DOCTYPE html>
 <html>
+
 <head>
-<?php Header::setupHeader(); ?>
+    <?php Header::setupHeader(); ?>
 
-<title><?php echo xlt('Procedure Providers'); ?></title>
+    <title><?php echo xlt('Procedure Providers'); ?></title>
 
-<script>
-// Callback from popups to refresh this display.
-function refreshme() {
-    document.forms[0].submit();
-}
+    <script>
+        // Callback from popups to refresh this display.
+        function refreshme() {
+            document.forms[0].submit();
+        }
 
-// Process click to pop up the add window.
-function doedclick_add() {
-    top.restoreSession();
-    var addTitle = '<i class="fa fa-plus" style="width:20px;" aria-hidden="true"></i> ' + <?php echo xlj("Add Mode"); ?>;
-    let scriptTitle = 'procedure_provider_edit.php?ppid=0&csrf_token_form=' + <?php echo js_url(CsrfUtils::collectCsrfToken()); ?>;
-    dlgopen(scriptTitle, '_blank', 800, 750, false, addTitle);
-}
+        // Process click to pop up the add window.
+        function doedclick_add() {
+            top.restoreSession();
+            var addTitle = '<i class="fa fa-plus" style="width:20px;" aria-hidden="true"></i> ' + <?php echo xlj("Add Mode"); ?>;
+            let scriptTitle = 'procedure_provider_edit.php?ppid=0&csrf_token_form=' + <?php echo js_url(CsrfUtils::collectCsrfToken()); ?>;
+            dlgopen(scriptTitle, '_blank', 800, 750, false, addTitle);
+        }
 
-// Process click to pop up the edit window.
-function doedclick_edit(ppid) {
-    top.restoreSession();
-    var editTitle = '<i class="fa fa-pencil-alt" style="width:20px;" aria-hidden="true"></i> ' + <?php echo xlj("Edit Mode"); ?> + ' ';
-    let scriptTitle = 'procedure_provider_edit.php?ppid=' + ppid + '&csrf_token_form=' + <?php echo js_url(CsrfUtils::collectCsrfToken()); ?>;
-    dlgopen(scriptTitle, '_blank', 800, 750, false, editTitle);
-}
-</script>
+        // Process click to pop up the edit window.
+        function doedclick_edit(ppid) {
+            top.restoreSession();
+            var editTitle = '<i class="fa fa-pencil-alt" style="width:20px;" aria-hidden="true"></i> ' + <?php echo xlj("Edit Mode"); ?> + ' ';
+            let scriptTitle = 'procedure_provider_edit.php?ppid=' + ppid + '&csrf_token_form=' + <?php echo js_url(CsrfUtils::collectCsrfToken()); ?>;
+            dlgopen(scriptTitle, '_blank', 800, 750, false, editTitle);
+        }
+    </script>
 </head>
+
 <body>
     <?php
     if ($GLOBALS['enable_help'] == 1) {
@@ -83,14 +85,15 @@ function doedclick_edit(ppid) {
         <div class="row">
             <div class="col-sm-12">
                 <div class="page-title">
-                    <h2><?php echo xlt('Procedure Providers');?><?php echo $help_icon; ?></h2>
+                    <h2><?php echo xlt('Procedure Providers'); ?><?php echo $help_icon; ?></h2>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-sm">
                 <div class="btn-group">
-                    <button type="button" class="btn btn-primary btn-add" onclick="doedclick_add()"><?php echo xlt('Add New{{Provider}}');?></button>
+                    <button type="button" class="btn btn-primary btn-add"
+                        onclick="doedclick_add()"><?php echo xlt('Add New{{Provider}}'); ?></button>
                 </div>
             </div>
         </div>
@@ -100,13 +103,15 @@ function doedclick_edit(ppid) {
                     <div class="form-check-inline mt-3">
                         <input type='checkbox' class="form-check-input mr-2 " id="form_inactive" name='form_inactive'
                             value='1' onclick='submit()' <?php echo ($form_inactive) ? 'checked ' : ''; ?>>
-                        <label class="form-check-label bold" for="form_inactive" ><?php echo xlt('Include Inactive Providers'); ?></label>
+                        <label class="form-check-label bold"
+                            for="form_inactive"><?php echo xlt('Include Inactive Providers'); ?></label>
                     </div>
                     <div class="table-responsive mt-2">
                         <table class="table table-striped table-hover">
                             <thead>
                                 <tr>
-                                    <th title='<?php echo xla('Click to view or edit'); ?>'><?php echo xlt('Name'); ?></th>
+                                    <th title='<?php echo xla('Click to view or edit'); ?>'><?php echo xlt('Name'); ?>
+                                    </th>
                                     <th><?php echo xlt('NPI'); ?></th>
                                     <th><?php echo xlt('Protocol'); ?></th>
                                     <th class="text-center"><?php echo xlt('Edit'); ?></th>
@@ -146,4 +151,5 @@ function doedclick_edit(ppid) {
     }
     ?>
 </body>
+
 </html>
