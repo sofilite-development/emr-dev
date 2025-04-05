@@ -534,13 +534,12 @@ function generate_order_report($orderid, $input_form = false, $genstyles = true,
                     "SELECT * FROM processed_order WHERE order_id = ?",
                     array($orderid)
                 );
+                ?>
+                
+                <?php
 
-                // if ($processed) {
-                //     echo xlt('Yes');
-                // } else {
-                //     echo xlt('No');
-                // }
                 if ($processed) {
+
                     ?>
 
                     <tr>
@@ -603,8 +602,6 @@ function generate_order_report($orderid, $input_form = false, $genstyles = true,
                                     const orderId = <?php echo $orderid; ?>;
                                     const processedData = <?php echo json_encode($processed['order_data']); ?>;
                                     const parsedData = typeof processedData === 'string' ? JSON.parse(processedData) : processedData;
-
-                                    // console.log({parsedData})
 
                                     let tableContent = '';
 

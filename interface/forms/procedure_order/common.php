@@ -219,7 +219,7 @@ if (($_POST['bn_save'] ?? null) || !empty($_POST['bn_xmit']) || !empty($_POST['b
 
         try{
           $orderData = array(
-                'order_id' => $data,
+                'order_id' => $formid,
                 'patientMrnId' =>  js_escape($patient['pid']), // Safely escaped for JS
                 'origin' => "EMR" , // String literals should also be escaped
                 'dob'=> $patient["DOB"],
