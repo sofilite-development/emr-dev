@@ -1399,7 +1399,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{SERVER_URL}}/portal/api/profile/get.php?pid=1",
+							"raw": "{{SERVER_URL}}/portal/api/profile/get.php",
 							"host": [
 								"{{SERVER_URL}}"
 							],
@@ -1408,12 +1408,6 @@
 								"api",
 								"profile",
 								"get.php"
-							],
-							"query": [
-								{
-									"key": "pid",
-									"value": "1"
-								}
 							]
 						}
 					},
@@ -1679,7 +1673,7 @@
 							]
 						},
 						"url": {
-							"raw": "{{SERVER_URL}}/portal/api/profile/update.php?pid=1",
+							"raw": "{{SERVER_URL}}/portal/api/profile/update.php",
 							"host": [
 								"{{SERVER_URL}}"
 							],
@@ -1692,7 +1686,8 @@
 							"query": [
 								{
 									"key": "pid",
-									"value": "1"
+									"value": "1",
+									"disabled": true
 								}
 							]
 						}
@@ -2467,6 +2462,35 @@
 							"body": "{\n    \"sex\": [\n        {\n            \"label\": \"Female\",\n            \"value\": \"Female\"\n        },\n        {\n            \"label\": \"Male\",\n            \"value\": \"Male\"\n        },\n        {\n            \"label\": \"Unknown\",\n            \"value\": \"UNK\"\n        }\n    ],\n    \"titles\": [\n        {\n            \"label\": \"Dr.\",\n            \"value\": \"Dr.\"\n        },\n        {\n            \"label\": \"Mr.\",\n            \"value\": \"Mr.\"\n        },\n        {\n            \"label\": \"Mrs.\",\n            \"value\": \"Mrs.\"\n        },\n        {\n            \"label\": \"Ms.\",\n            \"value\": \"Ms.\"\n        }\n    ],\n    \"religious_affiliation\": [\n        {\n            \"label\": \"Adventist\",\n            \"value\": \"adventist\"\n        },\n        {\n            \"label\": \"African Religions\",\n            \"value\": \"african_religions\"\n        },\n        {\n            \"label\": \"Afro-Caribbean Religions\",\n            \"value\": \"afro-caribbean_religions\"\n        },\n        {\n            \"label\": \"Agnosticism\",\n            \"value\": \"agnosticism\"\n        },\n        {\n            \"label\": \"Anglican\",\n            \"value\": \"anglican\"\n        },\n        {\n            \"label\": \"Animism\",\n            \"value\": \"animism\"\n        },\n        {\n            \"label\": \"Assembly of God\",\n            \"value\": \"assembly_of_god\"\n        },\n        {\n            \"label\": \"Atheism\",\n            \"value\": \"atheism\"\n        },\n        {\n            \"label\": \"Babi &amp; Baha'I faiths\",\n            \"value\": \"babi_bahai_faiths\"\n        },\n        {\n            \"label\": \"Baptist\",\n            \"value\": \"baptist\"\n        },\n        {\n            \"label\": \"Bon\",\n            \"value\": \"bon\"\n        },\n        {\n            \"label\": \"Brethren\",\n            \"value\": \"brethren\"\n        },\n        {\n            \"label\": \"Cao Dai\",\n            \"value\": \"cao_dai\"\n        },\n        {\n            \"label\": \"Celticism\",\n            \"value\": \"celticism\"\n        },\n        {\n            \"label\": \"Christian Scientist\",\n            \"value\": \"christian_scientist\"\n        },\n        {\n            \"label\": \"Christian (non-Catholic, non-specific)\",\n            \"value\": \"christiannoncatholicnonspecifc\"\n        },\n        {\n            \"label\": \"Church of Christ\",\n            \"value\": \"church_of_christ\"\n        },\n        {\n            \"label\": \"Church of God\",\n            \"value\": \"church_of_god\"\n        },\n        {\n            \"label\": \"Confucianism\",\n            \"value\": \"confucianism\"\n        },\n        {\n            \"label\": \"Congregational\",\n            \"value\": \"congregational\"\n        },\n        {\n            \"label\": \"Cyberculture Religions\",\n            \"value\": \"cyberculture_religions\"\n        },\n        {\n            \"label\": \"Disciples of Christ\",\n            \"value\": \"disciples_of_christ\"\n        },\n        {\n            \"label\": \"Divination\",\n            \"value\": \"divination\"\n        },\n        {\n            \"label\": \"Eastern Orthodox\",\n            \"value\": \"eastern_orthodox\"\n        },\n        {\n            \"label\": \"Episcopalian\",\n            \"value\": \"episcopalian\"\n        },\n        {\n            \"label\": \"Evangelical Covenant\",\n            \"value\": \"evangelical_covenant\"\n        },\n        {\n            \"label\": \"Fourth Way\",\n            \"value\": \"fourth_way\"\n        },\n        {\n            \"label\": \"Free Daism\",\n            \"value\": \"free_daism\"\n        },\n        {\n            \"label\": \"Friends\",\n            \"value\": \"friends\"\n        },\n        {\n            \"label\": \"Full Gospel\",\n            \"value\": \"full_gospel\"\n        },\n        {\n            \"label\": \"Gnosis\",\n            \"value\": \"gnosis\"\n        },\n        {\n            \"label\": \"Hinduism\",\n            \"value\": \"hinduism\"\n        },\n        {\n            \"label\": \"Humanism\",\n            \"value\": \"humanism\"\n        },\n        {\n            \"label\": \"Independent\",\n            \"value\": \"independent\"\n        },\n        {\n            \"label\": \"Islam\",\n            \"value\": \"islam\"\n        },\n        {\n            \"label\": \"Jainism\",\n            \"value\": \"jainism\"\n        },\n        {\n            \"label\": \"Jehovah's Witnesses\",\n            \"value\": \"jehovahs_witnesses\"\n        },\n        {\n            \"label\": \"Judaism\",\n            \"value\": \"judaism\"\n        },\n        {\n            \"label\": \"Latter Day Saints\",\n            \"value\": \"latter_day_saints\"\n        },\n        {\n            \"label\": \"Lutheran\",\n            \"value\": \"lutheran\"\n        },\n        {\n            \"label\": \"Mahayana\",\n            \"value\": \"mahayana\"\n        },\n        {\n            \"label\": \"Meditation\",\n            \"value\": \"meditation\"\n        },\n        {\n            \"label\": \"Messianic Judaism\",\n            \"value\": \"messianic_judaism\"\n        },\n        {\n            \"label\": \"Methodist\",\n            \"value\": \"methodist\"\n        },\n        {\n            \"label\": \"Mitraism\",\n            \"value\": \"mitraism\"\n        },\n        {\n            \"label\": \"Native American\",\n            \"value\": \"native_american\"\n        },\n        {\n            \"label\": \"Nazarene\",\n            \"value\": \"nazarene\"\n        },\n        {\n            \"label\": \"New Age\",\n            \"value\": \"new_age\"\n        },\n        {\n            \"label\": \"non-Roman Catholic\",\n            \"value\": \"non-roman_catholic\"\n        },\n        {\n            \"label\": \"Occult\",\n            \"value\": \"occult\"\n        },\n        {\n            \"label\": \"Orthodox\",\n            \"value\": \"orthodox\"\n        },\n        {\n            \"label\": \"Paganism\",\n            \"value\": \"paganism\"\n        },\n        {\n            \"label\": \"Pentecostal\",\n            \"value\": \"pentecostal\"\n        },\n        {\n            \"label\": \"Presbyterian\",\n            \"value\": \"presbyterian\"\n        },\n        {\n            \"label\": \"Process, The\",\n            \"value\": \"process_the\"\n        },\n        {\n            \"label\": \"Protestant\",\n            \"value\": \"protestant\"\n        },\n        {\n            \"label\": \"Protestant, No Denomination\",\n            \"value\": \"protestant_no_denomination\"\n        },\n        {\n            \"label\": \"Reformed\",\n            \"value\": \"reformed\"\n        },\n        {\n            \"label\": \"Reformed/Presbyterian\",\n            \"value\": \"reformed_presbyterian\"\n        },\n        {\n            \"label\": \"Roman Catholic Church\",\n            \"value\": \"roman_catholic_church\"\n        },\n        {\n            \"label\": \"Salvation Army\",\n            \"value\": \"salvation_army\"\n        },\n        {\n            \"label\": \"Satanism\",\n            \"value\": \"satanism\"\n        },\n        {\n            \"label\": \"Scientology\",\n            \"value\": \"scientology\"\n        },\n        {\n            \"label\": \"Shamanism\",\n            \"value\": \"shamanism\"\n        },\n        {\n            \"label\": \"Shiite (Islam)\",\n            \"value\": \"shiite_islam\"\n        },\n        {\n            \"label\": \"Shinto\",\n            \"value\": \"shinto\"\n        },\n        {\n            \"label\": \"Sikism\",\n            \"value\": \"sikism\"\n        },\n        {\n            \"label\": \"Spiritualism\",\n            \"value\": \"spiritualism\"\n        },\n        {\n            \"label\": \"Sunni (Islam)\",\n            \"value\": \"sunni_islam\"\n        },\n        {\n            \"label\": \"Taoism\",\n            \"value\": \"taoism\"\n        },\n        {\n            \"label\": \"Theravada\",\n            \"value\": \"theravada\"\n        },\n        {\n            \"label\": \"Unitarian Universalist\",\n            \"value\": \"unitarian_universalist\"\n        },\n        {\n            \"label\": \"Unitarian-Universalism\",\n            \"value\": \"unitarian-universalism\"\n        },\n        {\n            \"label\": \"United Church of Christ\",\n            \"value\": \"united_church_of_christ\"\n        },\n        {\n            \"label\": \"Universal Life Church\",\n            \"value\": \"universal_life_church\"\n        },\n        {\n            \"label\": \"Vajrayana (Tibetan)\",\n            \"value\": \"vajrayana_tibetan\"\n        },\n        {\n            \"label\": \"Veda\",\n            \"value\": \"veda\"\n        },\n        {\n            \"label\": \"Voodoo\",\n            \"value\": \"voodoo\"\n        },\n        {\n            \"label\": \"Wicca\",\n            \"value\": \"wicca\"\n        },\n        {\n            \"label\": \"Yaohushua\",\n            \"value\": \"yaohushua\"\n        },\n        {\n            \"label\": \"Zen Buddhism\",\n            \"value\": \"zen_buddhism\"\n        },\n        {\n            \"label\": \"Zoroastrianism\",\n            \"value\": \"zoroastrianism\"\n        }\n    ],\n    \"marital\": [\n        {\n            \"label\": \"Divorced\",\n            \"value\": \"divorced\"\n        },\n        {\n            \"label\": \"Domestic Partner\",\n            \"value\": \"domestic partner\"\n        },\n        {\n            \"label\": \"Married\",\n            \"value\": \"married\"\n        },\n        {\n            \"label\": \"Separated\",\n            \"value\": \"separated\"\n        },\n        {\n            \"label\": \"Single\",\n            \"value\": \"single\"\n        },\n        {\n            \"label\": \"Widowed\",\n            \"value\": \"widowed\"\n        }\n    ],\n    \"state\": [\n        {\n            \"label\": \"Alaska\",\n            \"value\": \"AK\"\n        },\n        {\n            \"label\": \"Alabama\",\n            \"value\": \"AL\"\n        },\n        {\n            \"label\": \"Arkansas\",\n            \"value\": \"AR\"\n        },\n        {\n            \"label\": \"Arizona\",\n            \"value\": \"AZ\"\n        },\n        {\n            \"label\": \"California\",\n            \"value\": \"CA\"\n        },\n        {\n            \"label\": \"Colorado\",\n            \"value\": \"CO\"\n        },\n        {\n            \"label\": \"Connecticut\",\n            \"value\": \"CT\"\n        },\n        {\n            \"label\": \"District of Columbia\",\n            \"value\": \"DC\"\n        },\n        {\n            \"label\": \"Delaware\",\n            \"value\": \"DE\"\n        },\n        {\n            \"label\": \"Florida\",\n            \"value\": \"FL\"\n        },\n        {\n            \"label\": \"Georgia\",\n            \"value\": \"GA\"\n        },\n        {\n            \"label\": \"Hawaii\",\n            \"value\": \"HI\"\n        },\n        {\n            \"label\": \"Iowa\",\n            \"value\": \"IA\"\n        },\n        {\n            \"label\": \"Idaho\",\n            \"value\": \"ID\"\n        },\n        {\n            \"label\": \"Illinois\",\n            \"value\": \"IL\"\n        },\n        {\n            \"label\": \"Indiana\",\n            \"value\": \"IN\"\n        },\n        {\n            \"label\": \"Kansas\",\n            \"value\": \"KS\"\n        },\n        {\n            \"label\": \"Kentucky\",\n            \"value\": \"KY\"\n        },\n        {\n            \"label\": \"Louisiana\",\n            \"value\": \"LA\"\n        },\n        {\n            \"label\": \"Massachusetts\",\n            \"value\": \"MA\"\n        },\n        {\n            \"label\": \"Maryland\",\n            \"value\": \"MD\"\n        },\n        {\n            \"label\": \"Maine\",\n            \"value\": \"ME\"\n        },\n        {\n            \"label\": \"Michigan\",\n            \"value\": \"MI\"\n        },\n        {\n            \"label\": \"Minnesota\",\n            \"value\": \"MN\"\n        },\n        {\n            \"label\": \"Missouri\",\n            \"value\": \"MO\"\n        },\n        {\n            \"label\": \"Mississippi\",\n            \"value\": \"MS\"\n        },\n        {\n            \"label\": \"Montana\",\n            \"value\": \"MT\"\n        },\n        {\n            \"label\": \"North Carolina\",\n            \"value\": \"NC\"\n        },\n        {\n            \"label\": \"North Dakota\",\n            \"value\": \"ND\"\n        },\n        {\n            \"label\": \"Nebraska\",\n            \"value\": \"NE\"\n        },\n        {\n            \"label\": \"New Hampshire\",\n            \"value\": \"NH\"\n        },\n        {\n            \"label\": \"New Jersey\",\n            \"value\": \"NJ\"\n        },\n        {\n            \"label\": \"New Mexico\",\n            \"value\": \"NM\"\n        },\n        {\n            \"label\": \"Nevada\",\n            \"value\": \"NV\"\n        },\n        {\n            \"label\": \"New York\",\n            \"value\": \"NY\"\n        },\n        {\n            \"label\": \"Ohio\",\n            \"value\": \"OH\"\n        },\n        {\n            \"label\": \"Oklahoma\",\n            \"value\": \"OK\"\n        },\n        {\n            \"label\": \"Oregon\",\n            \"value\": \"OR\"\n        },\n        {\n            \"label\": \"Pennsylvania\",\n            \"value\": \"PA\"\n        },\n        {\n            \"label\": \"Puerto Rico\",\n            \"value\": \"PR\"\n        },\n        {\n            \"label\": \"Rhode Island\",\n            \"value\": \"RI\"\n        },\n        {\n            \"label\": \"South Carolina\",\n            \"value\": \"SC\"\n        },\n        {\n            \"label\": \"South Dakota\",\n            \"value\": \"SD\"\n        },\n        {\n            \"label\": \"Tennessee\",\n            \"value\": \"TN\"\n        },\n        {\n            \"label\": \"Texas\",\n            \"value\": \"TX\"\n        },\n        {\n            \"label\": \"Utah\",\n            \"value\": \"UT\"\n        },\n        {\n            \"label\": \"Virginia\",\n            \"value\": \"VA\"\n        },\n        {\n            \"label\": \"Vermont\",\n            \"value\": \"VT\"\n        },\n        {\n            \"label\": \"Washington\",\n            \"value\": \"WA\"\n        },\n        {\n            \"label\": \"Wisconsin\",\n            \"value\": \"WI\"\n        },\n        {\n            \"label\": \"West Virginia\",\n            \"value\": \"WV\"\n        },\n        {\n            \"label\": \"Wyoming\",\n            \"value\": \"WY\"\n        }\n    ],\n    \"race\": [\n        {\n            \"label\": \"American Indian or Alaska Native\",\n            \"value\": \"amer_ind_or_alaska_native\"\n        },\n        {\n            \"label\": \"Asian\",\n            \"value\": \"Asian\"\n        },\n        {\n            \"label\": \"Black or African American\",\n            \"value\": \"black_or_afri_amer\"\n        },\n        {\n            \"label\": \"Declined To Specify\",\n            \"value\": \"declne_to_specfy\"\n        },\n        {\n            \"label\": \"Native Hawaiian or Other Pacific Islander\",\n            \"value\": \"native_hawai_or_pac_island\"\n        },\n        {\n            \"label\": \"White\",\n            \"value\": \"white\"\n        }\n    ],\n    \"ethnicity\": [\n        {\n            \"label\": \"Declined To Specify\",\n            \"value\": \"declne_to_specfy\"\n        },\n        {\n            \"label\": \"Hispanic or Latino\",\n            \"value\": \"hisp_or_latin\"\n        },\n        {\n            \"label\": \"Not Hispanic or Latino\",\n            \"value\": \"not_hisp_or_latin\"\n        }\n    ]\n}"
 						}
 					]
+				},
+				{
+					"name": "settings",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"current_password\": \"@1Patient\",\r\n    \"new_password\": \"@1Patient\",\r\n    \"new_username\": \"admin_emr_user\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SERVER_URL}}/portal/api/profile/settings.php",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"portal",
+								"api",
+								"profile",
+								"settings.php"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -2492,6 +2516,400 @@
 						}
 					},
 					"response": []
+				}
+			]
+		},
+		{
+			"name": "billing",
+			"item": [
+				{
+					"name": "list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER_URL}}/portal/api/billings/get.php?flag=all",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"portal",
+								"api",
+								"billings",
+								"get.php"
+							],
+							"query": [
+								{
+									"key": "flag",
+									"value": "all"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "New Request",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/portal/api/billings/get.php?flag=all",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"portal",
+										"api",
+										"billings",
+										"get.php"
+									],
+									"query": [
+										{
+											"key": "flag",
+											"value": "all"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Sat, 29 Mar 2025 08:43:59 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.1.25"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.1.25"
+								},
+								{
+									"key": "Expires",
+									"value": "Thu, 19 Nov 1981 08:52:00 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-store, no-cache, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Content-Length",
+									"value": "2270"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"billings\": {\n        \"grandTotal\": 289,\n        \"encounters\": [\n            {\n                \"encounter\": 2,\n                \"date\": \"2025-02-12 07:33:00\",\n                \"reason\": \"test\",\n                \"provider_id\": 1,\n                \"totals\": {\n                    \"units\": 4,\n                    \"charges\": 222\n                },\n                \"items\": [\n                    {\n                        \"code_type\": \"CPT4\",\n                        \"code\": \"12001\",\n                        \"code_text\": \"Simple repair of superficial wounds of scalp, neck, axillae, external genitalia, trunk, and/or extremities (excluding hands and feet); 2.5 cm or less.\",\n                        \"pid\": 1,\n                        \"provider_id\": 1,\n                        \"billed\": 0,\n                        \"payer_id\": 0,\n                        \"units\": 1,\n                        \"fee\": \"100.00\",\n                        \"bill_date\": null,\n                        \"id\": 3,\n                        \"payer_name\": null,\n                        \"encounter\": 2,\n                        \"date\": \"2025-02-12 07:33:00\",\n                        \"reason\": \"test\"\n                    },\n                    {\n                        \"code_type\": \"CPT4\",\n                        \"code\": \"36415\",\n                        \"code_text\": \"Collection of venous blood by venipuncture.\",\n                        \"pid\": 1,\n                        \"provider_id\": 1,\n                        \"billed\": 0,\n                        \"payer_id\": 0,\n                        \"units\": 1,\n                        \"fee\": \"3.00\",\n                        \"bill_date\": null,\n                        \"id\": 4,\n                        \"payer_name\": null,\n                        \"encounter\": 2,\n                        \"date\": \"2025-02-12 07:33:00\",\n                        \"reason\": \"test\"\n                    },\n                    {\n                        \"code_type\": \"CPT4\",\n                        \"code\": \"99203\",\n                        \"code_text\": \"Office or other outpatient visit for the evaluation and management of a new patient, typically 30 minutes.\",\n                        \"pid\": 1,\n                        \"provider_id\": 1,\n                        \"billed\": 0,\n                        \"payer_id\": 0,\n                        \"units\": 1,\n                        \"fee\": \"110.00\",\n                        \"bill_date\": null,\n                        \"id\": 5,\n                        \"payer_name\": null,\n                        \"encounter\": 2,\n                        \"date\": \"2025-02-12 07:33:00\",\n                        \"reason\": \"test\"\n                    },\n                    {\n                        \"code_type\": \"CPT4\",\n                        \"code\": \"93010\",\n                        \"code_text\": \"Electrocardiogram (ECG); interpretation and report only.\",\n                        \"pid\": 1,\n                        \"provider_id\": 1,\n                        \"billed\": 0,\n                        \"payer_id\": 0,\n                        \"units\": 1,\n                        \"fee\": \"9.00\",\n                        \"bill_date\": null,\n                        \"id\": 6,\n                        \"payer_name\": null,\n                        \"encounter\": 2,\n                        \"date\": \"2025-02-12 07:33:00\",\n                        \"reason\": \"test\"\n                    }\n                ]\n            },\n            {\n                \"encounter\": 6,\n                \"date\": \"2025-03-06 00:00:00\",\n                \"reason\": \"Oii sdfasfsafasdf awfasdfas fdsaf\",\n                \"provider_id\": 1,\n                \"totals\": {\n                    \"units\": 2,\n                    \"charges\": 67\n                },\n                \"items\": [\n                    {\n                        \"code_type\": \"CPT4\",\n                        \"code\": \"90658\",\n                        \"code_text\": \"Influenza virus vaccine, quadrivalent (IIV4), split virus, 0.5 mL dosage, for intramuscular use.\",\n                        \"pid\": 1,\n                        \"provider_id\": 1,\n                        \"billed\": 0,\n                        \"payer_id\": 0,\n                        \"units\": 1,\n                        \"fee\": \"17.00\",\n                        \"bill_date\": null,\n                        \"id\": 1,\n                        \"payer_name\": null,\n                        \"encounter\": 6,\n                        \"date\": \"2025-03-06 00:00:00\",\n                        \"reason\": \"Oii sdfasfsafasdf awfasdfas fdsaf\"\n                    },\n                    {\n                        \"code_type\": \"CPT4\",\n                        \"code\": \"93000\",\n                        \"code_text\": \"Electrocardiogram (ECG) with at least 12 leads; includes interpretation and report.\",\n                        \"pid\": 1,\n                        \"provider_id\": 1,\n                        \"billed\": 0,\n                        \"payer_id\": 0,\n                        \"units\": 1,\n                        \"fee\": \"50.00\",\n                        \"bill_date\": null,\n                        \"id\": 2,\n                        \"payer_name\": null,\n                        \"encounter\": 6,\n                        \"date\": \"2025-03-06 00:00:00\",\n                        \"reason\": \"Oii sdfasfsafasdf awfasdfas fdsaf\"\n                    }\n                ]\n            }\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "single details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER_URL}}/portal/api/billings/get_single.php?encounter=6",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"portal",
+								"api",
+								"billings",
+								"get_single.php"
+							],
+							"query": [
+								{
+									"key": "encounter",
+									"value": "6"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "singke",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/portal/api/billings/get_single.php?encounter=6",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"portal",
+										"api",
+										"billings",
+										"get_single.php"
+									],
+									"query": [
+										{
+											"key": "encounter",
+											"value": "6"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Sat, 29 Mar 2025 08:44:01 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.1.25"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.1.25"
+								},
+								{
+									"key": "Expires",
+									"value": "Thu, 19 Nov 1981 08:52:00 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-store, no-cache, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Content-Length",
+									"value": "852"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=99"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"bill\": {\n        \"encounter\": \"6\",\n        \"pid\": 1,\n        \"totals\": {\n            \"units\": 2,\n            \"charges\": 67\n        },\n        \"items\": [\n            {\n                \"code_type\": \"CPT4\",\n                \"code\": \"90658\",\n                \"code_text\": \"Influenza virus vaccine, quadrivalent (IIV4), split virus, 0.5 mL dosage, for intramuscular use.\",\n                \"pid\": 1,\n                \"provider_id\": 1,\n                \"billed\": 0,\n                \"payer_id\": 0,\n                \"units\": 1,\n                \"fee\": \"17.00\",\n                \"bill_date\": null,\n                \"id\": 1,\n                \"payer_name\": null,\n                \"encounter\": 6,\n                \"date\": \"2025-03-06 00:00:00\",\n                \"reason\": \"Oii sdfasfsafasdf awfasdfas fdsaf\"\n            },\n            {\n                \"code_type\": \"CPT4\",\n                \"code\": \"93000\",\n                \"code_text\": \"Electrocardiogram (ECG) with at least 12 leads; includes interpretation and report.\",\n                \"pid\": 1,\n                \"provider_id\": 1,\n                \"billed\": 0,\n                \"payer_id\": 0,\n                \"units\": 1,\n                \"fee\": \"50.00\",\n                \"bill_date\": null,\n                \"id\": 2,\n                \"payer_name\": null,\n                \"encounter\": 6,\n                \"date\": \"2025-03-06 00:00:00\",\n                \"reason\": \"Oii sdfasfsafasdf awfasdfas fdsaf\"\n            }\n        ],\n        \"reason\": \"Oii sdfasfsafasdf awfasdfas fdsaf\",\n        \"date\": \"2025-03-06 00:00:00\"\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Visits",
+			"item": [
+				{
+					"name": "all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER_URL}}/portal/api/visits/get.php",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"portal",
+								"api",
+								"visits",
+								"get.php"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "New Request",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/portal/api/visits/get.php",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"portal",
+										"api",
+										"visits",
+										"get.php"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Fri, 04 Apr 2025 12:01:49 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.1.25"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.1.25"
+								},
+								{
+									"key": "Expires",
+									"value": "Thu, 19 Nov 1981 08:52:00 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-store, no-cache, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Content-Length",
+									"value": "314"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": 2,\n        \"encounter\": 6,\n        \"date\": \"2025-03-06 00:00:00\",\n        \"reason\": \"Oii sdfasfsafasdf awfasdfas fdsaf\",\n        \"provider\": \"Administrator Administrator\",\n        \"category\": \"Established Patient\"\n    },\n    {\n        \"id\": 1,\n        \"encounter\": 2,\n        \"date\": \"2025-02-12 07:33:00\",\n        \"reason\": \"test\",\n        \"provider\": \"Administrator Administrator\",\n        \"category\": \"Established Patient\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "get by encounter id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER_URL}}/portal/api/visits/get.php?encounterId=1",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"portal",
+								"api",
+								"visits",
+								"get.php"
+							],
+							"query": [
+								{
+									"key": "encounterId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "all Copy",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/portal/api/visits/get.php?encounterId=2",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"portal",
+										"api",
+										"visits",
+										"get.php"
+									],
+									"query": [
+										{
+											"key": "encounterId",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Fri, 04 Apr 2025 12:21:12 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.1.25"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.1.25"
+								},
+								{
+									"key": "Expires",
+									"value": "Thu, 19 Nov 1981 08:52:00 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-store, no-cache, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Content-Length",
+									"value": "458"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 2,\n    \"encounter\": 6,\n    \"date\": \"2025-03-06 00:00:00\",\n    \"reason\": \"Oii sdfasfsafasdf awfasdfas fdsaf\",\n    \"facility\": \"Your Clinic Name Here\",\n    \"category\": \"Established Patient\",\n    \"provider\": \"Administrator Administrator\",\n    \"billing_facility\": 3,\n    \"sensitivity\": null,\n    \"referral_source\": \"\",\n    \"class_code\": \"AMB\",\n    \"pos_code\": null,\n    \"encounter_type\": null,\n    \"encounter_type_description\": null,\n    \"referring_provider_id\": 0,\n    \"ordering_provider_id\": 0,\n    \"discharge_disposition\": null,\n    \"in_collection\": null\n}"
+						}
+					]
 				}
 			]
 		}
