@@ -13,7 +13,7 @@ if (!$pid) {
 }
 
 // Get encounters data
-$encounters = $encounterId ? getEncounterById($encounterId) : getAllEncounters($pid);
+$encounters = $encounterId ? getEncounterById($encounterId, $pid) : getAllEncounters($pid);
 
 $response = json_encode($encounters, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PARTIAL_OUTPUT_ON_ERROR);
 if ($response === false) {

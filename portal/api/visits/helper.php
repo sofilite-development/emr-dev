@@ -27,23 +27,22 @@ function getAllEncounters($pid)
     return $encounters;
 }
 
-function getEncounterById($encounterId)
+function getEncounterById($encounterId, $pid) //date, vitals, notes, lab order, lab results
 {
-    $sql = "SELECT fe.*, u.fname, u.lname, f.name as facility_name,
-                   cat.pc_catname
+    // Base encounter details
+    $sql = "SELECT fe.*, u.fname, u.lname, f.name as facility_name, cat.pc_catname
             FROM form_encounter AS fe
             LEFT JOIN users AS u ON fe.provider_id = u.id
             LEFT JOIN facility AS f ON fe.facility_id = f.id
             LEFT JOIN openemr_postcalendar_categories AS cat ON fe.pc_catid = cat.pc_catid
             WHERE fe.id = ?";
-
     $result = sqlQuery($sql, [$encounterId]);
 
     if (!$result) {
         return null;
     }
 
-    return [
+    $encounter = [
         'id' => $result['id'],
         'encounter' => $result['encounter'],
         'date' => $result['date'],
@@ -63,4 +62,75 @@ function getEncounterById($encounterId)
         'discharge_disposition' => $result['discharge_disposition'],
         'in_collection' => $result['in_collection'],
     ];
+
+    $vitalsForm = sqlQuery("SELECT form_id FROM forms WHERE encounter = ? AND formdir = 'vitals' AND deleted = 0", [$result['encounter']]);
+    if ($vitalsForm) {
+        $vitals = sqlQuery("SELECT * FROM form_vitals WHERE id = ?", [$vitalsForm['form_id']]);
+        $encounter['vitals'] = $vitals ?: null;
+    } else {
+        $encounter['vitals'] = null;
+    }
+
+    // Get lab orders
+    $labOrders = sqlStatement("SELECT * FROM procedure_order WHERE encounter_id = ? AND activity = 1", [$result['encounter']]);
+    $encounter['lab_orders'] = [];
+    while ($row = sqlFetchArray($labOrders)) {
+        // get results of laborders
+        $orderResults = sqlQuery(
+            "SELECT * FROM processed_order WHERE order_id = ?",
+            array($row['procedure_order_id'])
+        );
+        $row["result"] = $orderResults;
+
+        $encounter['lab_orders'][] = $row;
+    }
+
+    $clinicalNotes = sqlStatement(
+        "SELECT id, date, codetext, description, clinical_notes_type, clinical_notes_category 
+         FROM form_clinical_notes 
+         WHERE encounter = ? AND activity = 1",
+        [$result['encounter']]
+    );
+
+    $encounter['clinical_notes'] = [];
+    while ($row = sqlFetchArray($clinicalNotes)) {
+        $typeKey = $row['clinical_notes_type'];
+        $catKey = $row['clinical_notes_category'];
+
+        $encounter['clinical_notes'][] = [
+            'id' => $row['id'],
+            'date' => $row['date'],
+            'type' => [
+                'key' => $typeKey,
+                'label' => $typeLabels[$typeKey] ?? ucfirst(str_replace('_', ' ', $typeKey))
+            ],
+            'category' => [
+                'key' => $catKey,
+                'label' => $categoryLabels[$catKey] ?? ucfirst(str_replace('_', ' ', $catKey))
+            ],
+            'title' => $row['codetext'],
+            'description' => $row['description'],
+        ];
+    }
+
+    $dictations = sqlStatement(
+        "
+            SELECT f.id AS form_id, f.date, f.pid, f.form_name, 
+            f.encounter, f.user, f.groupname, f.formdir,
+            fd.id AS dictation_id, fd.dictation, fd.additional_notes 
+            FROM forms f
+            LEFT JOIN form_dictation fd ON fd.id = f.form_id 
+            WHERE f.pid = ? 
+            AND f.encounter = ? 
+            AND f.formdir = 'dictation'
+            AND f.deleted = 0",
+        array($pid, $result['encounter'])
+    );
+
+    $encounter['dictations'] = [];
+    while ($row = sqlFetchArray($dictations)) {
+        $encounter['dictations'][] = $row;
+    }
+
+    return $encounter;
 }
