@@ -43,7 +43,7 @@
 								},
 								{
 									"key": "pass",
-									"value": "@1Patient",
+									"value": "@1Pateint",
 									"type": "text"
 								},
 								{
@@ -2818,7 +2818,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{SERVER_URL}}/portal/api/visits/get.php?encounterId=1",
+							"raw": "{{SERVER_URL}}/portal/api/visits/get.php?encounterId=2",
 							"host": [
 								"{{SERVER_URL}}"
 							],
@@ -2831,7 +2831,7 @@
 							"query": [
 								{
 									"key": "encounterId",
-									"value": "1"
+									"value": "2"
 								}
 							]
 						}
@@ -2908,6 +2908,78 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"id\": 2,\n    \"encounter\": 6,\n    \"date\": \"2025-03-06 00:00:00\",\n    \"reason\": \"Oii sdfasfsafasdf awfasdfas fdsaf\",\n    \"facility\": \"Your Clinic Name Here\",\n    \"category\": \"Established Patient\",\n    \"provider\": \"Administrator Administrator\",\n    \"billing_facility\": 3,\n    \"sensitivity\": null,\n    \"referral_source\": \"\",\n    \"class_code\": \"AMB\",\n    \"pos_code\": null,\n    \"encounter_type\": null,\n    \"encounter_type_description\": null,\n    \"referring_provider_id\": 0,\n    \"ordering_provider_id\": 0,\n    \"discharge_disposition\": null,\n    \"in_collection\": null\n}"
+						},
+						{
+							"name": "get by encounter id",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/portal/api/visits/get.php?encounterId=2",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"portal",
+										"api",
+										"visits",
+										"get.php"
+									],
+									"query": [
+										{
+											"key": "encounterId",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Sun, 13 Apr 2025 09:57:53 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.1.25"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.1.25"
+								},
+								{
+									"key": "Expires",
+									"value": "Thu, 19 Nov 1981 08:52:00 GMT"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-store, no-cache, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Content-Length",
+									"value": "4040"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5, max=100"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 2,\n    \"encounter\": 6,\n    \"date\": \"2025-03-06 00:00:00\",\n    \"reason\": \"mehedi tst\",\n    \"facility\": \"Your Clinic Name Here\",\n    \"category\": \"Established Patient\",\n    \"provider\": \"Administrator Administrator\",\n    \"billing_facility\": 3,\n    \"sensitivity\": \"\",\n    \"referral_source\": \"\",\n    \"class_code\": \"AMB\",\n    \"pos_code\": null,\n    \"encounter_type\": null,\n    \"encounter_type_description\": null,\n    \"referring_provider_id\": 0,\n    \"ordering_provider_id\": 0,\n    \"discharge_disposition\": null,\n    \"in_collection\": 0,\n    \"vitals\": {\n        \"id\": 7,\n        \"uuid\": null,\n        \"date\": \"2025-04-13 09:13:43\",\n        \"pid\": 1,\n        \"user\": \"admin_emr_user\",\n        \"groupname\": \"Default\",\n        \"authorized\": 0,\n        \"activity\": 1,\n        \"bps\": \"45\",\n        \"bpd\": \"41\",\n        \"weight\": \"220.462262\",\n        \"height\": \"6.000000\",\n        \"temperature\": \"144.000000\",\n        \"temp_method\": \"Rectal\",\n        \"pulse\": \"141.000000\",\n        \"respiration\": \"4.000000\",\n        \"note\": \"Ullamco iure veniam\",\n        \"BMI\": \"4305.138064\",\n        \"BMI_status\": \"Obesity III\",\n        \"waist_circ\": \"1.500000\",\n        \"head_circ\": \"4.800000\",\n        \"oxygen_saturation\": \"55.00\",\n        \"oxygen_flow_rate\": \"47.000000\",\n        \"external_id\": null,\n        \"ped_weight_height\": \"0.00\",\n        \"ped_bmi\": \"0.00\",\n        \"ped_head_circ\": \"0.00\",\n        \"inhaled_oxygen_concentration\": \"441.00\",\n        \"last_updated\": \"2025-04-13 09:13:43\"\n    },\n    \"lab_orders\": [\n        {\n            \"procedure_order_id\": 1,\n            \"uuid\": null,\n            \"provider_id\": 1,\n            \"patient_id\": 1,\n            \"encounter_id\": 6,\n            \"date_collected\": null,\n            \"date_ordered\": \"2025-04-13 00:00:00\",\n            \"order_priority\": \"\",\n            \"order_status\": \"\",\n            \"patient_instructions\": \"\",\n            \"activity\": 1,\n            \"control_id\": \"\",\n            \"lab_id\": 0,\n            \"specimen_type\": \"\",\n            \"specimen_location\": \"\",\n            \"specimen_volume\": \"\",\n            \"date_transmitted\": null,\n            \"clinical_hx\": \"ATA\",\n            \"external_id\": null,\n            \"history_order\": \"\",\n            \"order_diagnosis\": \"ICD10:C44.191;ICD10:H04.123;ICD10:C44.191;\",\n            \"billing_type\": \"T\",\n            \"specimen_fasting\": \"\",\n            \"order_psc\": 0,\n            \"order_abn\": \"not_required\",\n            \"collector_id\": 0,\n            \"account\": \"\",\n            \"account_facility\": 0,\n            \"provider_number\": null,\n            \"procedure_order_type\": \"procedure\",\n            \"result\": false\n        },\n        {\n            \"procedure_order_id\": 2,\n            \"uuid\": null,\n            \"provider_id\": 1,\n            \"patient_id\": 1,\n            \"encounter_id\": 6,\n            \"date_collected\": null,\n            \"date_ordered\": \"2025-04-13 00:00:00\",\n            \"order_priority\": \"\",\n            \"order_status\": \"\",\n            \"patient_instructions\": \"\",\n            \"activity\": 1,\n            \"control_id\": \"\",\n            \"lab_id\": 0,\n            \"specimen_type\": \"\",\n            \"specimen_location\": \"\",\n            \"specimen_volume\": \"\",\n            \"date_transmitted\": null,\n            \"clinical_hx\": \"nwe history\",\n            \"external_id\": null,\n            \"history_order\": \"\",\n            \"order_diagnosis\": \"ICD10:C44.191;ICD10:H04.123;ICD10:C44.191;\",\n            \"billing_type\": \"T\",\n            \"specimen_fasting\": \"\",\n            \"order_psc\": 0,\n            \"order_abn\": \"not_required\",\n            \"collector_id\": 0,\n            \"account\": \"\",\n            \"account_facility\": 0,\n            \"provider_number\": null,\n            \"procedure_order_type\": \"procedure\",\n            \"result\": false\n        },\n        {\n            \"procedure_order_id\": 3,\n            \"uuid\": null,\n            \"provider_id\": 1,\n            \"patient_id\": 1,\n            \"encounter_id\": 6,\n            \"date_collected\": \"2025-04-13 15:00:00\",\n            \"date_ordered\": \"2025-04-13 00:00:00\",\n            \"order_priority\": \"\",\n            \"order_status\": \"\",\n            \"patient_instructions\": \"my history\",\n            \"activity\": 1,\n            \"control_id\": \"\",\n            \"lab_id\": 0,\n            \"specimen_type\": \"\",\n            \"specimen_location\": \"\",\n            \"specimen_volume\": \"\",\n            \"date_transmitted\": null,\n            \"clinical_hx\": \"clicnkial\",\n            \"external_id\": null,\n            \"history_order\": \"\",\n            \"order_diagnosis\": \"ICD10:C44.191;ICD10:H04.123;ICD10:C44.191;;CPT4:85025;CPT4:93010;CPT4:99203\",\n            \"billing_type\": \"T\",\n            \"specimen_fasting\": \"\",\n            \"order_psc\": 0,\n            \"order_abn\": \"not_required\",\n            \"collector_id\": 0,\n            \"account\": \"\",\n            \"account_facility\": 0,\n            \"provider_number\": null,\n            \"procedure_order_type\": \"procedure\",\n            \"result\": false\n        }\n    ],\n    \"clinical_notes\": [\n        {\n            \"id\": 1,\n            \"date\": \"2025-04-13\",\n            \"type\": {\n                \"key\": \"general_note\",\n                \"label\": \"General note\"\n            },\n            \"category\": {\n                \"key\": \"cardiology\",\n                \"label\": \"Cardiology\"\n            },\n            \"title\": \"General Note\",\n            \"description\": \"tst\"\n        },\n        {\n            \"id\": 2,\n            \"date\": \"2025-04-14\",\n            \"type\": {\n                \"key\": \"procedure_note\",\n                \"label\": \"Procedure note\"\n            },\n            \"category\": {\n                \"key\": \"pathology\",\n                \"label\": \"Pathology\"\n            },\n            \"title\": \"Procedure Note\",\n            \"description\": \"daha\"\n        }\n    ],\n    \"dictations\": [\n        {\n            \"form_id\": 16,\n            \"date\": \"2025-04-13 10:16:11\",\n            \"pid\": 1,\n            \"form_name\": \"Speech Dictation\",\n            \"encounter\": 6,\n            \"user\": \"admin_emr_user\",\n            \"groupname\": \"Default\",\n            \"formdir\": \"dictation\",\n            \"dictation_id\": 8,\n            \"dictation\": \"dication note\",\n            \"additional_notes\": \"additional naotes\"\n        },\n        {\n            \"form_id\": 17,\n            \"date\": \"2025-04-13 11:57:43\",\n            \"pid\": 1,\n            \"form_name\": \"Speech Dictation\",\n            \"encounter\": 6,\n            \"user\": \"admin_emr_user\",\n            \"groupname\": \"Default\",\n            \"formdir\": \"dictation\",\n            \"dictation_id\": 9,\n            \"dictation\": \"new dictation\",\n            \"additional_notes\": \"new add notes\"\n        }\n    ]\n}"
 						}
 					]
 				}
@@ -2941,6 +3013,12 @@
 			"key": "SERVER_URL",
 			"value": "http://localhost:8081",
 			"type": "string"
+		},
+		{
+			"key": "SERVER_URL",
+			"value": "http://localhost:8081",
+			"type": "string",
+			"disabled": true
 		}
 	]
 }
