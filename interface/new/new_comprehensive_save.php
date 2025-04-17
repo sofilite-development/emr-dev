@@ -13,10 +13,15 @@
  */
 
 require_once("../globals.php");
+require_once("../../library/RabbitMQ/RabbitMQService.php");
 
 use OpenEMR\Common\Csrf\CsrfUtils;
 use OpenEMR\Services\ContactService;
 use OpenEMR\Events\Patient\PatientBeforeCreatedAuxEvent;
+use OpenEMR\Common\Uuid\UuidRegistry;
+use OpenEMR\Library\RabbitMQ\RabbitMQService;
+
+
 
 if (!CsrfUtils::verifyCsrfToken($_POST["csrf_token_form"])) {
     CsrfUtils::csrfNotVerified();
@@ -27,7 +32,7 @@ $alertmsg = '';
 if (!empty($_POST["form_pubpid"])) {
     $form_pubpid = trim($_POST["form_pubpid"]);
     $result = sqlQuery("SELECT count(*) AS count FROM patient_data WHERE " .
-    "pubpid = ?", array($form_pubpid));
+        "pubpid = ?", array($form_pubpid));
     if ($result['count']) {
         // Error, not unique.
         $alertmsg = xl('Warning: Patient ID is not unique!');
@@ -45,21 +50,21 @@ $newdata = array();
 $newdata['patient_data'] = array();
 $newdata['employer_data'] = array();
 $fres = sqlStatement("SELECT * FROM layout_options " .
-  "WHERE form_id = 'DEM' AND (uor > 0 OR field_id = 'pubpid') AND field_id != '' " .
-  "ORDER BY group_id, seq");
+    "WHERE form_id = 'DEM' AND (uor > 0 OR field_id = 'pubpid') AND field_id != '' " .
+    "ORDER BY group_id, seq");
 $addressFieldsToSave = array();
 while ($frow = sqlFetchArray($fres)) {
     $data_type = $frow['data_type'];
-    $field_id  = $frow['field_id'];
-  // $value     = '';
-    $colname   = $field_id;
-    $tblname   = 'patient_data';
+    $field_id = $frow['field_id'];
+    // $value     = '';
+    $colname = $field_id;
+    $tblname = 'patient_data';
     if (strpos($field_id, 'em_') === 0) {
         $colname = substr($field_id, 3);
         $tblname = 'employer_data';
     }
 
-  //get value only if field exist in $_POST (prevent deleting of field with disabled attribute)
+    //get value only if field exist in $_POST (prevent deleting of field with disabled attribute)
     // TODO: why is this a different conditional than demographics_save.php...
     if ($data_type == 54) { // address list
         $addressFieldsToSave[$field_id] = get_layout_form_value($frow);
@@ -69,9 +74,126 @@ while ($frow = sqlFetchArray($fres)) {
     }
 }
 
+/**
+ * Helper function to clean and validate UTF-8 strings
+ * @param mixed $string Input string to clean
+ * @return string Cleaned UTF-8 string
+ */
+function cleanUtf8($string)
+{
+    if ($string === null) {
+        return '';
+    }
+    // Convert to UTF-8 if it's not already
+    if (!mb_check_encoding($string, 'UTF-8')) {
+        $string = mb_convert_encoding($string, 'UTF-8', 'auto');
+    }
+    // Remove any invalid UTF-8 characters
+    $string = iconv('UTF-8', 'UTF-8//IGNORE', $string);
+    return $string;
+}
+
+function handleSendingMsgWithNewPatientData($pid)
+{
+    $rabbitMQ = new RabbitMQService();
+    try {
+
+        $patient = sqlQuery("SELECT * FROM patient_data WHERE pid = ?", array($pid));
+        if (!empty($patient)) {
+            $providerData = array();
+            $organizationData = array();
+            $provider = sqlQuery("SELECT * FROM users WHERE id = ?", array($patient['providerID']));
+            if (!empty($provider)) {
+                $providerData = array(
+                    'providerNpi' => cleanUtf8($provider['npi']),
+                    'firstName' => cleanUtf8($provider['lname']),
+                    'lastName' => cleanUtf8($provider['fname']),
+                    'middleName' => cleanUtf8($provider['mname']),
+                    'email' => cleanUtf8($provider['email']),
+                    'phone' => cleanUtf8($provider['phone']),
+                    'street' => cleanUtf8($provider['street']),
+                    'city' => cleanUtf8($provider['city']),
+                    'state' => cleanUtf8($provider['state']),
+                );
+                $organization = sqlQuery("SELECT * FROM facility WHERE id = ?", array($provider['facility_id']));
+                if (!empty($organization)) {
+                    $organizationData = array(
+                        'id' => cleanUtf8($organization['id']),
+                        'name' => cleanUtf8($organization['name']),
+                        'street' => cleanUtf8($organization['street']),
+                        'city' => cleanUtf8($organization['city']),
+                        'state' => cleanUtf8($organization['state']),
+                        'zip' => cleanUtf8($organization['postal_code']),
+                        'uuid' => UuidRegistry::uuidToString($organization['uuid']),
+                        'country' => cleanUtf8($organization['country_code']),
+                        'fax' => cleanUtf8($organization['fax']),
+                        'phone' => cleanUtf8($organization['phone']),
+                    );
+                }
+            }
+            $patientData = array(
+                'patientMrnId' => cleanUtf8($patient['pid']),
+                'title' => cleanUtf8($patient['title']),
+                'fname' => cleanUtf8($patient['fname']),
+                'lname' => cleanUtf8($patient['lname']),
+                'mname' => cleanUtf8($patient['mname']),
+                'dob' => cleanUtf8($patient['DOB']),
+                'email' => cleanUtf8($patient['email']),
+                'secondaryEmail' => cleanUtf8($patient['email_direct']),
+                'street' => cleanUtf8($patient['street']),
+                'postalCode' => cleanUtf8($patient['postal_code']),
+                'city' => cleanUtf8($patient['city']),
+                'state' => cleanUtf8($patient['state']),
+                'countryCode' => cleanUtf8($patient['country_code']),
+                'driversLicense' => cleanUtf8($patient['drivers_license']),
+                'homePhone' => cleanUtf8($patient['phone_home']),
+                'phoneBiz' => cleanUtf8($patient['phone_biz']),
+                'workPhone' => cleanUtf8($patient['phone_contact']),
+                'cellPhone' => cleanUtf8($patient['phone_cell']),
+                'pharmacyId' => cleanUtf8($patient['pharmacy_id']),
+                'status' => cleanUtf8($patient['status']),
+                'contactRelationship' => cleanUtf8($patient['contact_relationship']),
+                'date' => cleanUtf8($patient['date']),
+                'sex' => cleanUtf8($patient['sex']),
+                'race' => cleanUtf8($patient['race']),
+                'ethnicity' => cleanUtf8($patient['ethnicity']),
+                'provider' => $providerData,
+                'organization' => $organizationData,
+            );
+        }
+
+        $message = json_encode(
+            $patientData,
+            JSON_UNESCAPED_UNICODE |
+            JSON_UNESCAPED_SLASHES |
+            JSON_PARTIAL_OUTPUT_ON_ERROR
+        );
+
+        if ($message === false) {
+            error_log("Patient Data : " . print_r($patientData, true));
+            throw new Exception("Failed to encode patient data: " . json_last_error_msg());
+        }
+        // Debug output
+        error_log("Sending message to RabbitMQ: " . $message);
+
+        $rabbitMQ->sendMessage($message, 'patient_created', );
+        $rabbitMQ->close();
+
+
+    } catch (\Exception $e) {
+        error_log("Failed to send Patient Data to rabbitmq: " . $e->getMessage());
+        error_log("Patient Data that failed: " . print_r($patientData, true));
+        echo "Failed to send Patient Data to rabbitmq: " . $e->getMessage();
+    }
+}
+
 // Use the global helper to use the PatientService to create a new patient
 // The result contains the pid, so use that to set the global session pid
 $pid = updatePatientData(null, $newdata['patient_data'], true);
+if (!empty($pid)) {
+    handleSendingMsgWithNewPatientData($pid);
+}
+
 if (empty($pid)) {
     die("Internal error: setpid(" . text($pid) . ") failed!");
 }
@@ -206,20 +328,26 @@ if (!$GLOBALS['simplified_demographics']) {
         );
     }
 }
-?>
-<html>
-<body>
-<script>
-<?php
-if ($alertmsg) {
-    echo "alert(" . js_escape($alertmsg) . ");\n";
-}
 
-  echo "window.location='$rootdir/patient_file/summary/demographics.php?" .
-    "set_pid=" . attr_url($pid) . "&is_new=1';\n";
+
 ?>
-</script>
+
+
+
+<html>
+
+<body>
+    <script>
+        <?php
+        if ($alertmsg) {
+            echo "alert(" . js_escape($alertmsg) . ");\n";
+        }
+
+        echo "window.location='$rootdir/patient_file/summary/demographics.php?" .
+            "set_pid=" . attr_url($pid) . "&is_new=1';\n";
+        ?>
+    </script>
 
 </body>
-</html>
 
+</html>
