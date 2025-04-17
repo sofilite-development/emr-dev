@@ -1,5 +1,8 @@
 <?php
 
+use OpenEMR\Billing\BillingUtilities;
+
+
 function getAllEncounters($pid)
 {
     $sql = "SELECT fe.id, fe.date, fe.reason, fe.encounter, u.fname, u.lname, 
@@ -131,6 +134,8 @@ function getEncounterById($encounterId, $pid) //date, vitals, notes, lab order,Â
     while ($row = sqlFetchArray($dictations)) {
         $encounter['dictations'][] = $row;
     }
+    $bills = BillingUtilities::getBillingByEncounter($pid, $result['encounter'], "*");
+    $encounter["fees"] = $bills;
 
     return $encounter;
 }
