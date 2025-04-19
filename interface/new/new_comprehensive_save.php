@@ -74,24 +74,6 @@ while ($frow = sqlFetchArray($fres)) {
     }
 }
 
-/**
- * Helper function to clean and validate UTF-8 strings
- * @param mixed $string Input string to clean
- * @return string Cleaned UTF-8 string
- */
-function cleanUtf8($string)
-{
-    if ($string === null) {
-        return '';
-    }
-    // Convert to UTF-8 if it's not already
-    if (!mb_check_encoding($string, 'UTF-8')) {
-        $string = mb_convert_encoding($string, 'UTF-8', 'auto');
-    }
-    // Remove any invalid UTF-8 characters
-    $string = iconv('UTF-8', 'UTF-8//IGNORE', $string);
-    return $string;
-}
 
 function handleSendingMsgWithNewPatientData($pid)
 {
@@ -105,7 +87,7 @@ function handleSendingMsgWithNewPatientData($pid)
             $provider = sqlQuery("SELECT * FROM users WHERE id = ?", array($patient['providerID']));
             if (!empty($provider)) {
                 $providerData = array(
-                    'providerNpi' => cleanUtf8($provider['npi']),
+                    'npi' => cleanUtf8($provider['npi']),
                     'firstName' => cleanUtf8($provider['lname']),
                     'lastName' => cleanUtf8($provider['fname']),
                     'middleName' => cleanUtf8($provider['mname']),
@@ -173,9 +155,6 @@ function handleSendingMsgWithNewPatientData($pid)
             error_log("Patient Data : " . print_r($patientData, true));
             throw new Exception("Failed to encode patient data: " . json_last_error_msg());
         }
-        // Debug output
-        error_log("Sending message to RabbitMQ: " . $message);
-
         $rabbitMQ->sendMessage($message, 'patient_created', );
         $rabbitMQ->close();
 

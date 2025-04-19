@@ -125,16 +125,16 @@ function GetCallingScriptName()
 $GLOBALS['OE_SITES_BASE'] = "$webserver_root/sites";
 
 /*
-* If a session does not yet exist, then will start the core OpenEMR session.
-* If a session already exists, then this means portal or oauth2 or api is being used, which
-*   has already created a portal session/cookie, so will bypass setting of
-*   the core OpenEMR session/cookie.
-* $sessionAllowWrite = 1 | true | string then normal operation
-* $sessionAllowWrite = undefined | null | 0  session start for read only then auto
-*   immediate session_write_close.
-* Unless $sessionAllowWrite is true, ensure no session writes are used within the calling
-*   scope of this globals instance. Goal is to unlock session file as quickly as possible
-*   instead of waiting for calling script to complete before releasing flock.
+ * If a session does not yet exist, then will start the core OpenEMR session.
+ * If a session already exists, then this means portal or oauth2 or api is being used, which
+ *   has already created a portal session/cookie, so will bypass setting of
+ *   the core OpenEMR session/cookie.
+ * $sessionAllowWrite = 1 | true | string then normal operation
+ * $sessionAllowWrite = undefined | null | 0  session start for read only then auto
+ *   immediate session_write_close.
+ * Unless $sessionAllowWrite is true, ensure no session writes are used within the calling
+ *   scope of this globals instance. Goal is to unlock session file as quickly as possible
+ *   instead of waiting for calling script to complete before releasing flock.
  */
 $read_only = empty($sessionAllowWrite);
 if (session_status() === PHP_SESSION_NONE) {
@@ -240,12 +240,12 @@ $GLOBALS['login_screen'] = $GLOBALS['rootdir'] . "/login_screen.php";
 $GLOBALS['edi_271_file_path'] = $GLOBALS['OE_SITE_DIR'] . "/documents/edi/";
 
 //  Check necessary writable paths (add them if do not exist)
-if (! is_dir($GLOBALS['OE_SITE_DIR'] . '/documents/smarty/gacl')) {
+if (!is_dir($GLOBALS['OE_SITE_DIR'] . '/documents/smarty/gacl')) {
     if (!mkdir($concurrentDirectory = $GLOBALS['OE_SITE_DIR'] . '/documents/smarty/gacl', 0755, true) && !is_dir($concurrentDirectory)) {
         throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
     }
 }
-if (! is_dir($GLOBALS['OE_SITE_DIR'] . '/documents/smarty/main')) {
+if (!is_dir($GLOBALS['OE_SITE_DIR'] . '/documents/smarty/main')) {
     if (!mkdir($concurrentDirectory = $GLOBALS['OE_SITE_DIR'] . '/documents/smarty/main', 0755, true) && !is_dir($concurrentDirectory)) {
         throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
     }
@@ -253,7 +253,7 @@ if (! is_dir($GLOBALS['OE_SITE_DIR'] . '/documents/smarty/main')) {
 
 //  Set and check that necessary writeable path exist for mPDF tool
 $GLOBALS['MPDF_WRITE_DIR'] = $GLOBALS['OE_SITE_DIR'] . '/documents/mpdf/pdf_tmp';
-if (! is_dir($GLOBALS['MPDF_WRITE_DIR'])) {
+if (!is_dir($GLOBALS['MPDF_WRITE_DIR'])) {
     if (!mkdir($concurrentDirectory = $GLOBALS['MPDF_WRITE_DIR'], 0755, true) && !is_dir($concurrentDirectory)) {
         throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
     }
@@ -349,9 +349,9 @@ if (!empty($glrow)) {
     if (!empty($temp_authuserid)) {
         $glres_user = sqlStatementNoLog(
             "SELECT `setting_label`, `setting_value` " .
-                "FROM `user_settings` " .
-                "WHERE `setting_user` = ? " .
-                "AND `setting_label` LIKE 'global:%'",
+            "FROM `user_settings` " .
+            "WHERE `setting_user` = ? " .
+            "AND `setting_label` LIKE 'global:%'",
             array($temp_authuserid)
         );
         for ($iter = 0; $row = sqlFetchArray($glres_user); $iter++) {
@@ -367,10 +367,10 @@ if (!empty($glrow)) {
     $GLOBALS['language_menu_show'] = array();
     $glres = sqlStatementNoLog(
         "SELECT gl_name, gl_index, gl_value FROM globals " .
-            "ORDER BY gl_name, gl_index"
+        "ORDER BY gl_name, gl_index"
     );
     while ($glrow = sqlFetchArray($glres)) {
-        $gl_name  = $glrow['gl_name'];
+        $gl_name = $glrow['gl_name'];
         $gl_value = $glrow['gl_value'];
         // Adjust for user specific settings
         if (!empty($gl_user)) {
@@ -397,7 +397,7 @@ if (!empty($glrow)) {
             // does patient have a portal theme selected?
             $current_theme = sqlQueryNoLog(
                 "SELECT `setting_value` FROM `patient_settings` " .
-                    "WHERE setting_patient = ? AND `setting_label` = ?",
+                "WHERE setting_patient = ? AND `setting_label` = ?",
                 array($_SESSION['pid'] ?? 0, 'portal_theme')
             )['setting_value'] ?? null;
             $gl_value = $current_theme ?? null ?: $gl_value;
@@ -728,3 +728,25 @@ if (!empty($GLOBALS['user_debug']) && ((int) $GLOBALS['user_debug'] > 1)) {
 // Environment variables
 // $GLOBALS['DOCUAI_BASE_URL'] = $_ENV('DOCUAI_BASE_URL');
 // $GLOBALS['DOCUAI_API_KAY'] = $_ENV('DOCUAI_API_KAY');
+
+/**
+ * Helper function to clean and validate UTF-8 strings
+ * @param mixed $string Input string to clean
+ * @return string Cleaned UTF-8 string
+ */
+
+
+function cleanUtf8($string)
+{
+    if ($string === null) {
+        return '';
+    }
+    // Convert to UTF-8 if it's not already
+    if (!mb_check_encoding($string, 'UTF-8')) {
+        $string = mb_convert_encoding($string, 'UTF-8', 'auto');
+    }
+    // Remove any invalid UTF-8 characters
+    $string = iconv('UTF-8', 'UTF-8//IGNORE', $string);
+    return $string;
+}
+
