@@ -1,7 +1,7 @@
 <?php
+require_once("../../library/RabbitMQ/RabbitMQService.php");
 
 use OpenEMR\Library\RabbitMQ\RabbitMQService;
-use OpenEMR\Services\FacilityService;
 
 /**
  * This script assigns ACL 'Emergency login'.
@@ -242,7 +242,7 @@ if (isset($_POST["privatemode"]) && $_POST["privatemode"] == "user_admin") {
         if (!empty($_POST['clear_2fa'])) {
             sqlStatement("DELETE FROM login_mfa_registrations WHERE user_id = ?", array($_POST['id']));
         }
-
+        $success = false;
         if ($_POST["adminPass"] && $_POST["clearPass"]) {
             $authUtilsUpdatePassword = new AuthUtils();
             $success = $authUtilsUpdatePassword->updatePassword($_SESSION['authUserID'], $_POST['id'], $_POST['adminPass'], $_POST['clearPass']);
@@ -305,6 +305,15 @@ if (isset($_POST["privatemode"]) && $_POST["privatemode"] == "user_admin") {
 
         if (isset($_POST["supervisor_id"])) {
             sqlStatement("update users set supervisor_id = ? where id = ? ", array((int) $_POST["supervisor_id"], $_POST["id"]));
+        }
+
+        if (isset($_POST["email"])) {
+            if (empty($_POST["email"])) {
+                $email = null;
+            } else {
+                $email = $_POST["email"];
+            }
+            sqlStatement("update users set email = ? where id = ? ", array($email, $_POST["id"]));
         }
         if (isset($_POST["google_signin_email"])) {
             if (empty($_POST["google_signin_email"])) {
@@ -392,7 +401,6 @@ if (isset($_POST["mode"])) {
         }
 
 
-
         if ($doit == true) {
             // google_signin_email has unique key constraint, needs to be handled differently
             $googleSigninEmail = "NULL";
@@ -425,6 +433,7 @@ if (isset($_POST["mode"])) {
                 "', federaldrugid = '" . add_escape_custom(trim((isset($_POST['federaldrugid']) ? $_POST['federaldrugid'] : ''))) .
                 "', upin = '" . add_escape_custom(trim((isset($_POST['upin']) ? $_POST['upin'] : ''))) .
                 "', npi  = '" . add_escape_custom(trim((isset($_POST['npi']) ? $_POST['npi'] : ''))) .
+                "', email = '" . add_escape_custom(trim((isset($_POST['email']) ? $_POST['email'] : ''))) .
                 "', taxonomy = '" . add_escape_custom(trim((isset($_POST['taxonomy']) ? $_POST['taxonomy'] : ''))) .
                 "', facility_id = '" . add_escape_custom(trim((isset($_POST['facility_id']) ? $_POST['facility_id'] : ''))) .
                 "', billing_facility_id = '" . add_escape_custom(trim((isset($_POST['billing_facility_id']) ? $_POST['billing_facility_id'] : ''))) .
@@ -496,33 +505,40 @@ if (isset($_POST["mode"])) {
 
                 try {
                     // get the user that was just created
-                    $provider = sqlQuery("SELECT * FROM users WHERE id = ?", [trim($_POST['rumple'])]);
-                    $facilityService = new FacilityService();
+                    $newProvider = sqlQuery("SELECT * FROM users WHERE username = ?", [trim($_POST['rumple'])]);
+                    if (empty($newProvider)) {
+                        throw new Exception("Failed to retrieve newly created user data");
+                    }
 
-                    $facilityResult = $facilityService->getById($provider['facility_id']);
+                    $facilityResult = null;
+                    if (!empty($newProvider['facility_id'])) {
+                        $facilityResult = sqlQuery("SELECT * FROM facility WHERE id = ?", [$newProvider['facility_id']]);
+                    }
+
                     $providerData = array(
-                        'id' => $newProvider['id'],
-                        'username' => cleanUtf8($newProvider['username']),
-                        'firstName' => cleanUtf8($newProvider['fname']),
-                        'lastName' => cleanUtf8($newProvider['lname']),
-                        'middleName' => cleanUtf8($newProvider['mname']),
-                        'email' => cleanUtf8($newProvider['email']),
-                        'npi' => cleanUtf8($newProvider['npi']),
-                        'uuid' => UuidRegistry::uuidToString($newProvider['uuid']),
-                        'authorized' => cleanUtf8($newProvider['authorized']),
-                        'organizaiton' => !empty($facilityResult) ? array(
-                            'id' => cleanUtf8($facilityResult['id']),
-                            'name' => cleanUtf8($facilityResult['name']),
-                            'uuid' => UuidRegistry::uuidToString($facilityResult['uuid']),
-                            'phone' => cleanUtf8($facilityResult['phone']),
-                            'fax' => cleanUtf8($facilityResult['fax']),
-                            'city' => cleanUtf8($facilityResult['city']),
-                            'state' => cleanUtf8($facilityResult['state']),
-                            'zip' => cleanUtf8($facilityResult['postal_code']),
-                            'country' => cleanUtf8($facilityResult['country_code']),
-                            'street' => cleanUtf8($facilityResult['street']),
+                        'id' => $newProvider['id'] ?? '',
+                        'username' => cleanUtf8($newProvider['username'] ?? ''),
+                        'firstName' => cleanUtf8($newProvider['fname'] ?? ''),
+                        'lastName' => cleanUtf8($newProvider['lname'] ?? ''),
+                        'middleName' => cleanUtf8($newProvider['mname'] ?? ''),
+                        'email' => cleanUtf8($newProvider['email'] ?? ''),
+                        'npi' => cleanUtf8($newProvider['npi'] ?? ''),
+                        'uuid' => !empty($newProvider['uuid']) ? UuidRegistry::uuidToString($newProvider['uuid']) : '',
+                        'authorized' => cleanUtf8($newProvider['authorized'] ?? ''),
+                        'organization' => !empty($facilityResult) ? array(
+                            'id' => cleanUtf8($facilityResult['id'] ?? ''),
+                            'name' => cleanUtf8($facilityResult['name'] ?? ''),
+                            'uuid' => !empty($facilityResult['uuid']) ? UuidRegistry::uuidToString($facilityResult['uuid']) : '',
+                            'phone' => cleanUtf8($facilityResult['phone'] ?? ''),
+                            'fax' => cleanUtf8($facilityResult['fax'] ?? ''),
+                            'city' => cleanUtf8($facilityResult['city'] ?? ''),
+                            'state' => cleanUtf8($facilityResult['state'] ?? ''),
+                            'zip' => cleanUtf8($facilityResult['postal_code'] ?? ''),
+                            'country' => cleanUtf8($facilityResult['country_code'] ?? ''),
+                            'street' => cleanUtf8($facilityResult['street'] ?? ''),
                         ) : null
                     );
+
                     // send new user data to LabQ through RabbitMQ
                     $message = json_encode(
                         $providerData,

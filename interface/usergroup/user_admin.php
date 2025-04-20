@@ -365,6 +365,13 @@ $iter = $result[0];
                     <td><input type="text" name=mname style="width:150px;" value="<?php echo attr($iter["mname"]); ?>"></td>
                 </TR>
 
+                <tr>
+                    <td><span class=text><?php echo xlt('User Email'); ?>: </span></td>
+                    <td>
+                        <input type="email" aria-required="" name="email" id="email" style="width:200px;" class="form-control" value="<?php echo attr($iter["email"]); ?>">
+                    <span class="mandatory"></span></td>
+                </td>
+
                 <TR>
                     <td><span class=text><?php echo xlt('Last Name'); ?>: </span></td>
                     <td><input type="text" name=lname id=lname style="width:150px;" class="form-control" value="<?php echo attr($iter["lname"]); ?>"><span class="mandatory"></span></td>
