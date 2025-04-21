@@ -54,7 +54,7 @@ if ($_POST['bn_save_ereq'] ?? null) { //labcorp
 }
 
 $patient = sqlQueryNoLog("SELECT * FROM `patient_data` WHERE `pid` = ?", array($pid));
-$provider = sqlQuery("SELECT npi FROM users WHERE id = ?", array($_SESSION['authUserID']));
+$provider = sqlQuery("SELECT npi FROM users WHERE id = ?", array($patient['providerID']));
 // $provider = sqlQueryNoLog("SELECT * FROM `users` WHERE `id` = ?", array($pid));
 
 global $gbl_lab, $gbl_lab_title, $gbl_client_acct;
@@ -220,7 +220,7 @@ if (($_POST['bn_save'] ?? null) || !empty($_POST['bn_xmit']) || !empty($_POST['b
         try{
           $orderData = array(
                 'order_id' => $formid,
-                'patientMrnId' =>  js_escape($patient['pid']), // Safely escaped for JS
+                'patientMrnId' =>  $patient['pid'], // Safely escaped for JS
                 'origin' => "EMR" , // String literals should also be escaped
                 'dob'=> $patient["DOB"],
                 'providerNpi' => $provider['npi'] ?? "",
