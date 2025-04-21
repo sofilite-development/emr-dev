@@ -104,6 +104,7 @@ if (!empty($_POST['access_group']) && is_array($_POST['access_group'])) {
 
 /* To refresh and save variables in mail frame */
 if (isset($_POST["privatemode"]) && $_POST["privatemode"] == "user_admin") {
+    // USER UPDATE BLOCK
     if ($_POST["mode"] == "update") {
         $user_data = sqlFetchArray(sqlStatement("select * from users where id= ? ", array($_POST["id"])));
 
@@ -334,6 +335,67 @@ if (isset($_POST["privatemode"]) && $_POST["privatemode"] == "user_admin") {
             (isset($_POST['lname']) ? $_POST['lname'] : '')
         );
 
+
+        try {
+            // get the user that was just created
+            $updatedProvider = sqlQuery("SELECT * FROM users WHERE username = ?", [trim($user_data["username"])]);
+            if (empty($updatedProvider)) {
+                throw new Exception("Failed to retrieve newly created user data");
+            }
+
+            $facilityResult = null;
+            if (!empty($updatedProvider['facility_id'])) {
+                $facilityResult = sqlQuery("SELECT * FROM facility WHERE id = ?", [$updatedProvider['facility_id']]);
+            }
+
+            $providerData = array(
+                'id' => $updatedProvider['id'] ?? '',
+                'username' => cleanUtf8($updatedProvider['username'] ?? ''),
+                'firstName' => cleanUtf8($updatedProvider['fname'] ?? ''),
+                'lastName' => cleanUtf8($updatedProvider['lname'] ?? ''),
+                'middleName' => cleanUtf8($updatedProvider['mname'] ?? ''),
+                'email' => cleanUtf8($updatedProvider['email'] ?? ''),
+                'npi' => cleanUtf8($updatedProvider['npi'] ?? ''),
+                'uuid' => !empty($updatedProvider['uuid']) ? UuidRegistry::uuidToString($updatedProvider['uuid']) : '',
+                'authorized' => cleanUtf8($updatedProvider['authorized'] ?? ''),
+                'organization' => !empty($facilityResult) ? array(
+                    'id' => cleanUtf8($facilityResult['id'] ?? ''),
+                    'name' => cleanUtf8($facilityResult['name'] ?? ''),
+                    'uuid' => !empty($facilityResult['uuid']) ? UuidRegistry::uuidToString($facilityResult['uuid']) : '',
+                    'phone' => cleanUtf8($facilityResult['phone'] ?? ''),
+                    'fax' => cleanUtf8($facilityResult['fax'] ?? ''),
+                    'city' => cleanUtf8($facilityResult['city'] ?? ''),
+                    'state' => cleanUtf8($facilityResult['state'] ?? ''),
+                    'zip' => cleanUtf8($facilityResult['postal_code'] ?? ''),
+                    'country' => cleanUtf8($facilityResult['country_code'] ?? ''),
+                    'street' => cleanUtf8($facilityResult['street'] ?? ''),
+                ) : null
+            );
+
+            // send new user data to LabQ through RabbitMQ
+            $message = json_encode(
+                $providerData,
+                JSON_UNESCAPED_UNICODE |
+                JSON_UNESCAPED_SLASHES |
+                JSON_PARTIAL_OUTPUT_ON_ERROR
+            );
+
+            if ($message === false) {
+                error_log("Provider/User Data : " . print_r($patientData, true));
+                throw new Exception("Failed to encode Provider/User data: " . json_last_error_msg());
+            }
+
+            $rabbitMQ = new RabbitMQService();
+            $rabbitMQ->sendMessage($message, 'provider_updated', );
+            $rabbitMQ->close();
+
+
+        } catch (\Exception $e) {
+            error_log("Failed to send Provider Data to rabbitmq: " . $e->getMessage());
+            error_log("Provider Data that failed: " . print_r($_POST, true));
+            echo "Failed to send Provider Data to rabbitmq: " . $e->getMessage();
+        }
+
         // TODO: why are we sending $user_data here when its overwritten with just the 'username' of the user updated
         // instead of the entire user data?  This makes the pre event data not very useful w/o doing a database hit...
         $userUpdatedEvent = new UserUpdatedEvent($user_data, $_POST);
@@ -343,6 +405,7 @@ if (isset($_POST["privatemode"]) && $_POST["privatemode"] == "user_admin") {
 
 /* To refresh and save variables in mail frame  - Arb*/
 if (isset($_POST["mode"])) {
+    //NEW USER/PROVIDER CREATION BLOCK
     if ($_POST["mode"] == "new_user") {
         if (empty($_POST["authorized"]) || $_POST["authorized"] != "1") {
             $_POST["authorized"] = 0;
