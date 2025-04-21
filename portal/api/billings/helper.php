@@ -48,14 +48,19 @@ function getGroupedPatientBilling($pid, $from_date, $to_date)
 
     $res = sqlStatement($sql, [$from_date . ' 00:00:00', $to_date . ' 23:59:59', $pid]);
     $grouped = [];
-    $grandTotal = 0;
+
+    $grandTotal = [
+        'charges' => 0.00,
+        'paid' => 0.00,
+        'due' => 0.00
+    ];
 
     while ($row = sqlFetchArray($res)) {
         $encounterId = $row['encounter'];
         $enc_key = $encounterId . '_' . substr($row['date'], 0, 10);
 
         if (!isset($grouped[$enc_key])) {
-            // Get patient payments for this encounter only once
+            // Fetch total paid by patient for this encounter
             $paymentRow = sqlQuery(
                 "SELECT SUM(pay_amount) as total_paid FROM ar_activity 
                  WHERE deleted IS NULL AND pid = ? AND encounter = ? AND payer_type = 0",
@@ -83,16 +88,20 @@ function getGroupedPatientBilling($pid, $from_date, $to_date)
         $grouped[$enc_key]['totals']['charges'] += (float) $row['fee'];
     }
 
-    // Calculate dues and grand total after grouping
     foreach ($grouped as &$encGroup) {
         $charges = $encGroup['totals']['charges'];
         $paid = $encGroup['totals']['paid'];
-        $encGroup['totals']['due'] = max(0, $charges - $paid);
-        $grandTotal += $encGroup['totals']['due'];
+        $due = max(0, $charges - $paid);
+
+        $encGroup['totals']['due'] = $due;
+
+        $grandTotal['charges'] += $charges;
+        $grandTotal['paid'] += $paid;
+        $grandTotal['due'] += $due;
     }
 
     return [
-        'grandTotal' => round($grandTotal, 2),
+        'grand' => array_map(fn($val) => round($val, 2), $grandTotal),
         'encounters' => array_values($grouped)
     ];
 }
