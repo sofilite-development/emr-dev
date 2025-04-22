@@ -1,5 +1,6 @@
 <?php
 require_once(__DIR__ . "/../../../verify_session.php");
+require_once(__DIR__ . '/../helper.php');
 
 $secretKey = $_ENV['STRIPE_SECRET_KEY'];
 
@@ -10,7 +11,15 @@ $api_version = $_ENV['STRIPE_API_VERSION'];
 $currency = $_ENV['CURRENCY'];
 $publishableKey = $_ENV['STRIPE_PUBLISHABLE_KEY'];
 
+$pid = $_SESSION['pid'];
+$encounterId = $_GET['encounter_id'] ?? "";
+
 try {
+
+    $encounter = getEncounterBilling($pid, $encounterId);
+    $amountsEncounter = $encounter["totals"];
+    $dueAmount = $amountsEncounter["due"] * 100; //convert to cents
+
     // Step 1: Create Customer
     $customer = \Stripe\Customer::create();
 
@@ -22,7 +31,7 @@ try {
 
     // Step 3: Create Payment Intent
     $paymentIntent = \Stripe\PaymentIntent::create([
-        'amount' => 1256, // Amount in cents
+        'amount' => $dueAmount,
         'currency' => $currency,
         'customer' => $customer->id,
         'automatic_payment_methods' => ['enabled' => true],
