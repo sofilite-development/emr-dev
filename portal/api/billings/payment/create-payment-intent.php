@@ -62,6 +62,11 @@ try {
         'currency' => $currency,
         'customer' => $customer->id,
         'automatic_payment_methods' => ['enabled' => true],
+        'metadata' => [
+            'amount' => $encounter["totals"]["due"],
+            'encounter_id' => $encounterId,
+            'from' => "apk"
+        ]
     ]);
 
     // ✅ Step 4: Return credentials
