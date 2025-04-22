@@ -1,6 +1,8 @@
 <?php
+require_once(__DIR__ . '/../../../../library/payment.inc.php');
 
-function recordStripeFrontPaymentWithActivity($pid, $amount, $encounter = null, $method = 'credit_card', $desc = 'Stripe Portal Payment') {
+function recordStripeFrontPaymentWithActivity($pid, $amount, $encounter = null, $method = 'credit_card', $desc = 'Stripe Portal Payment')
+{
     if (!$pid || !$amount) return false;
 
     global $USERID;
@@ -30,7 +32,8 @@ function recordStripeFrontPaymentWithActivity($pid, $amount, $encounter = null, 
         $source,
         $encounter ? 0 : $amount,  // amount1 = 0 for encounter
         $encounter ? $amount : 0,  // amount2 = 0 for prepayment
-        $timestamp
+        $timestamp,
+        "portal-user"
     );
 
     // Step 3: If encounter exists, apply line items into ar_activity
