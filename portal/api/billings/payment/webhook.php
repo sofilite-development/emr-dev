@@ -36,9 +36,9 @@ try {
 }
 
 // ✅ Handle the event type
+$paymentIntent = $event->data->object;
 switch ($event->type) {
     case 'payment_intent.succeeded':
-        $paymentIntent = $event->data->object;
 
         $customerId = $paymentIntent->customer;
         $amount = $paymentIntent->amount_received;
@@ -57,6 +57,18 @@ switch ($event->type) {
         error_log("❌ Payment failed: " . $error);
         break;
 
+    case 'charge.succeeded': //here payment success 
+        $meta = (array)$paymentIntent->metadata;
+        $pid = $meta['patient_id'] ?? null;
+        $encounter = $meta['encounter_id'] ?? null;
+        $amount = $meta["amount"];
+
+        if ($pid && $amount > 0) {
+            require_once(__DIR__ . '/helper.php');
+            $result = recordStripeFrontPaymentWithActivity($pid, $amount, $encounter);
+            error_log("✅ Stripe payment posted to EMR, session_id=$result");
+        }
+        break;
     default:
         // Log unhandled event
         error_log("Unhandled event type: " . $event->type);

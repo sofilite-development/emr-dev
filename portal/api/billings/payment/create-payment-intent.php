@@ -63,9 +63,10 @@ try {
         'customer' => $customer->id,
         'automatic_payment_methods' => ['enabled' => true],
         'metadata' => [
-            'amount' => $encounter["totals"]["due"],
-            'encounter_id' => $encounterId,
-            'from' => "apk"
+            'amount' => (float) $encounter["totals"]["due"],
+            'encounter_id' => (int) $encounterId,
+            'from' => "apk",
+            "patient_id" => (int) $pid
         ]
     ]);
 
