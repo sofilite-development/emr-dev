@@ -1,35 +1,62 @@
 <?php
 require_once(__DIR__ . "/../../../verify_session.php");
 require_once(__DIR__ . '/../helper.php');
+require_once(__DIR__ . '/../../../../vendor/autoload.php'); // Ensure Stripe is loaded
 
-$secretKey = $_ENV['STRIPE_SECRET_KEY'];
-
-\Stripe\Stripe::setApiKey($secretKey);
 header('Content-Type: application/json');
 
-$api_version = $_ENV['STRIPE_API_VERSION'];
-$currency = $_ENV['CURRENCY'];
-$publishableKey = $_ENV['STRIPE_PUBLISHABLE_KEY'];
+// ✅ Load environment config
+$secretKey      = $_ENV['STRIPE_SECRET_KEY'] ?? '';
+$apiVersion     = $_ENV['STRIPE_API_VERSION'] ?? '2022-11-15';
+$currency       = $_ENV['CURRENCY'] ?? 'usd';
+$publishableKey = $_ENV['STRIPE_PUBLISHABLE_KEY'] ?? '';
 
-$pid = $_SESSION['pid'];
-$encounterId = $_GET['encounter_id'] ?? "";
+// ✅ Validate environment variables
+if (!$secretKey || !$publishableKey) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Stripe environment variables are not configured.']);
+    exit;
+}
+
+\Stripe\Stripe::setApiKey($secretKey);
+
+// ✅ Validate session and input
+$pid = $_SESSION['pid'] ?? null;
+$encounterId = $_GET['encounter_id'] ?? null;
+
+if (!$pid || !$encounterId) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Missing patient ID or encounter ID.']);
+    exit;
+}
+
+// ✅ Fetch encounter billing
+$encounter = getEncounterBilling($pid, $encounterId);
+if (!$encounter || !isset($encounter['totals']['due'])) {
+    http_response_code(404);
+    echo json_encode(['error' => 'Encounter billing info not found.']);
+    exit;
+}
+
+// ✅ Convert due to cents and validate
+$dueAmount = (int) ($encounter['totals']['due'] * 100);
+if ($dueAmount < 50) { // Stripe minimum is usually 0.50 USD
+    http_response_code(400);
+    echo json_encode(['error' => 'Payment amount is too low.']);
+    exit;
+}
 
 try {
-
-    $encounter = getEncounterBilling($pid, $encounterId);
-    $amountsEncounter = $encounter["totals"];
-    $dueAmount = $amountsEncounter["due"] * 100; //convert to cents
-
-    // Step 1: Create Customer
+    // ✅ Step 1: Create customer
     $customer = \Stripe\Customer::create();
 
-    // Step 2: Create Ephemeral Key
+    // ✅ Step 2: Create ephemeral key
     $ephemeralKey = \Stripe\EphemeralKey::create(
         ['customer' => $customer->id],
-        ['stripe_version' => $api_version]
+        ['stripe_version' => $apiVersion]
     );
 
-    // Step 3: Create Payment Intent
+    // ✅ Step 3: Create payment intent
     $paymentIntent = \Stripe\PaymentIntent::create([
         'amount' => $dueAmount,
         'currency' => $currency,
@@ -37,7 +64,7 @@ try {
         'automatic_payment_methods' => ['enabled' => true],
     ]);
 
-    // Step 4: Return credentials to frontend
+    // ✅ Step 4: Return credentials
     echo json_encode([
         'paymentIntent' => $paymentIntent->client_secret,
         'ephemeralKey' => $ephemeralKey->secret,
@@ -46,5 +73,8 @@ try {
     ]);
 } catch (\Stripe\Exception\ApiErrorException $e) {
     http_response_code(500);
-    echo json_encode(['error' => $e->getMessage()]);
+    echo json_encode(['error' => 'Stripe error: ' . $e->getMessage()]);
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Server error: ' . $e->getMessage()]);
 }
