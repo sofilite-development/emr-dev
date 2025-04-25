@@ -1593,7 +1593,6 @@ $reasonCodeStatii[ReasonStatusCodes::NONE]['description'] = xl("Select a status 
                                 const labQApiKey = "<?php echo $_ENV['LABQ_API_KEY']; ?>";
                                 let masterPanels = [];
                                 let panelsWithTests = [];
-                                // let finalTests = []; // send to LabQ
 
                                 async function fetchData() {
                                     const [masterPanelsRes] = await Promise.all([
@@ -1886,21 +1885,52 @@ $reasonCodeStatii[ReasonStatusCodes::NONE]['description'] = xl("Select a status 
                                         return findPanel?.tests?.length > 0 ? findPanel.tests : [];
                                     }
 
-                                    // console.log('Selected options:', e.detail.values);
+                                    // Store the current state of panels before updating
+                                    const existingPanelsState = {};
+                                    panelsWithTests.forEach(panel => {
+                                        existingPanelsState[panel.id] = {};
+                                        panel.tests.forEach(test => {
+                                            existingPanelsState[panel.id][test.id] = {
+                                                checked: test.checked,
+                                                comment: test.comment
+                                            };
+                                        });
+                                    });
+
+                                    // Rebuild panels with tests
                                     panelsWithTests = e.detail.values?.map(item => {
                                         return {
                                             id: item.value,
                                             name: item.label,
-                                            tests: getTests(item.value)?.length > 0 ? getTests(item.value)?.map((test) => ({
-                                                checked: false,
-                                                panelId: item.value,
-                                                id: String(test.id),
-                                                comment: "",
-                                                testCode: test.testCode,
-                                                image: "",
-                                            })) : []
+                                            tests: getTests(item.value)?.length > 0 ? getTests(item.value)?.map((test) => {
+                                                //Check if we have existing state for this test and use it
+                                                const existingState = existingPanelsState[item.value]?.[String(test.id)];
+                                                return {
+                                                    checked: existingState ? existingState.checked : false,
+                                                    panelId: item.value,
+                                                    id: String(test.id),
+                                                    comment: existingState ? existingState.comment : "",
+                                                    testCode: test.testCode,
+                                                    image: "",
+                                                };
+                                            }) : []
                                         }
                                     });
+
+                                    // panelsWithTests = e.detail.values?.map(item => {
+                                    //     return {
+                                    //         id: item.value,
+                                    //         name: item.label,
+                                    //         tests: getTests(item.value)?.length > 0 ? getTests(item.value)?.map((test) => ({
+                                    //             checked: false,
+                                    //             panelId: item.value,
+                                    //             id: String(test.id),
+                                    //             comment: "",
+                                    //             testCode: test.testCode,
+                                    //             image: "",
+                                    //         })) : []
+                                    //     }
+                                    // });
 
                                     const testsContainer = document.getElementById('testsContainer');
 
@@ -1937,7 +1967,7 @@ $reasonCodeStatii[ReasonStatusCodes::NONE]['description'] = xl("Select a status 
                                         testsContainer.appendChild(panelContainer);
                                     });
 
-                                    testsContainer.querySelectorAll('.tests-container input[type="checkbox"]').forEach(checkbox => {
+                                    testsContainer.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
                                         checkbox.addEventListener('change', function () {
                                             const panelId = this.dataset.panelId;
                                             const testId = this.dataset.testId;
@@ -1957,7 +1987,7 @@ $reasonCodeStatii[ReasonStatusCodes::NONE]['description'] = xl("Select a status 
                                         });
                                     });
 
-                                    testsContainer.querySelectorAll('.tests-container textarea').forEach(textarea => {
+                                    testsContainer.querySelectorAll('textarea').forEach(textarea => {
                                         textarea.addEventListener('input', function () {
                                             const panelId = this.dataset.panelId;
                                             const testId = this.dataset.testId;
