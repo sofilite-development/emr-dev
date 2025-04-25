@@ -2002,7 +2002,6 @@ $reasonCodeStatii[ReasonStatusCodes::NONE]['description'] = xl("Select a status 
                                                 }
                                             }
 
-                                            console.log(panelsWithTests)
                                         });
 
 
