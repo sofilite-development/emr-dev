@@ -1889,10 +1889,12 @@ $reasonCodeStatii[ReasonStatusCodes::NONE]['description'] = xl("Select a status 
                                     const existingPanelsState = {};
                                     panelsWithTests.forEach(panel => {
                                         existingPanelsState[panel.id] = {};
-                                        panel.tests.forEach(test => {
+                                        panel.tests.forEach((test, i) => {
+                                            const uniqueTestId = `${panel.id}_${test.id}`;
                                             existingPanelsState[panel.id][test.id] = {
                                                 checked: test.checked,
-                                                comment: test.comment
+                                                comment: String(test.comment ?? "").trim(),
+                                                uniqueId: uniqueTestId
                                             };
                                         });
                                     });
@@ -1903,34 +1905,21 @@ $reasonCodeStatii[ReasonStatusCodes::NONE]['description'] = xl("Select a status 
                                             id: item.value,
                                             name: item.label,
                                             tests: getTests(item.value)?.length > 0 ? getTests(item.value)?.map((test) => {
+                                                const uniqueTestId = `${item.value}_${test.id}`;
                                                 //Check if we have existing state for this test and use it
                                                 const existingState = existingPanelsState[item.value]?.[String(test.id)];
                                                 return {
                                                     checked: existingState ? existingState.checked : false,
                                                     panelId: item.value,
                                                     id: String(test.id),
-                                                    comment: existingState ? existingState.comment : "",
+                                                    comment: existingState ? (existingState.comment ?? "").trim() : "",
                                                     testCode: test.testCode,
                                                     image: "",
+                                                    uniqueId: uniqueTestId,
                                                 };
                                             }) : []
                                         }
                                     });
-
-                                    // panelsWithTests = e.detail.values?.map(item => {
-                                    //     return {
-                                    //         id: item.value,
-                                    //         name: item.label,
-                                    //         tests: getTests(item.value)?.length > 0 ? getTests(item.value)?.map((test) => ({
-                                    //             checked: false,
-                                    //             panelId: item.value,
-                                    //             id: String(test.id),
-                                    //             comment: "",
-                                    //             testCode: test.testCode,
-                                    //             image: "",
-                                    //         })) : []
-                                    //     }
-                                    // });
 
                                     const testsContainer = document.getElementById('testsContainer');
 
@@ -1946,19 +1935,26 @@ $reasonCodeStatii[ReasonStatusCodes::NONE]['description'] = xl("Select a status 
                                                 <li>
                                                     <input
                                                         type="checkbox"
-                                                        id="test-${test.id}"
+                                                        id="test-${test.uniqueId}"
                                                         data-panel-id="${test.panelId}" 
                                                         data-test-id="${test.id}" 
                                                         data-test-code="${test.testCode}" 
+                                                        data-unique-id="${test.uniqueId}" 
                                                         ${test.checked ? "checked" : ""}
                                                         />
                                                     <label 
-                                                        for="test-${test.id}" 
+                                                        for="test-${test.uniqueId}" 
                                                         class="test-code"
-                                                      >
+                                                    >
                                                         ${test.testCode}
                                                     </label>
-                                                    <textarea placeholder="Comment" data-panel-id="${test.panelId}" data-test-id="${test.id}" rows="2">${test.comment}</textarea>
+                                                    <textarea 
+                                                        placeholder="Comment" 
+                                                        data-panel-id="${test.panelId}" 
+                                                        data-test-id="${test.id}" 
+                                                        data-unique-id="${test.uniqueId}" 
+                                                        rows="2"
+                                                    >${test.comment}</textarea>
                                                 </li>
                                                 `).join('')}
                                             </ul>
@@ -1972,14 +1968,15 @@ $reasonCodeStatii[ReasonStatusCodes::NONE]['description'] = xl("Select a status 
                                             const panelId = this.dataset.panelId;
                                             const testId = this.dataset.testId;
                                             const checked = this.checked;
+                                            const uniqueId = this.dataset.uniqueId;
                                             // console.log({ checked, panelId, testId })
 
                                             const panelIndex = panelsWithTests.findIndex(p => String(p.id) === panelId);
                                             if (panelIndex !== -1) {
-                                                const testIndex = panelsWithTests[panelIndex].tests.findIndex(t => String(t.id) === testId);
+                                                // const testIndex = panelsWithTests[panelIndex].tests.findIndex(t => String(t.id) === testId);
+                                                const testIndex = panelsWithTests[panelIndex].tests.findIndex(t => t.uniqueId === uniqueId);
                                                 if (testIndex !== -1) {
                                                     panelsWithTests[panelIndex].tests[testIndex].checked = checked;
-
                                                     // Update the hidden input field with current state
                                                     document.getElementById('finalTests').value = JSON.stringify(panelsWithTests);
                                                 }
@@ -1992,19 +1989,20 @@ $reasonCodeStatii[ReasonStatusCodes::NONE]['description'] = xl("Select a status 
                                             const panelId = this.dataset.panelId;
                                             const testId = this.dataset.testId;
                                             const comment = this.value;
+                                            const uniqueId = this.dataset.uniqueId;
 
                                             const panelIndex = panelsWithTests.findIndex(p => String(p.id) === panelId);
                                             if (panelIndex !== -1) {
-                                                const testIndex = panelsWithTests[panelIndex].tests.findIndex(t => String(t.id) === testId);
+                                                // const testIndex = panelsWithTests[panelIndex].tests.findIndex(t => String(t.id) === testId);
+                                                const testIndex = panelsWithTests[panelIndex].tests.findIndex(t => t.uniqueId === uniqueId);
                                                 if (testIndex !== -1) {
                                                     panelsWithTests[panelIndex].tests[testIndex].comment = comment;
-
                                                     // Update the hidden input field with current state
                                                     document.getElementById('finalTests').value = JSON.stringify(panelsWithTests);
                                                 }
                                             }
 
-
+                                            console.log(panelsWithTests)
                                         });
 
 
