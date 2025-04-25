@@ -114,7 +114,7 @@ function handleSendingMsgWithNewPatientData($pid)
                 }
             }
             $patientData = array(
-                'patientMrnId' => cleanUtf8($patient['pid']),
+                'patientMrnId' => cleanUtf8($patient['patientMrnId']),
                 'title' => cleanUtf8($patient['title']),
                 'fname' => cleanUtf8($patient['fname']),
                 'lname' => cleanUtf8($patient['lname']),

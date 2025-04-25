@@ -16,6 +16,11 @@
 
 namespace OpenEMR\Events\Patient;
 
+// require_once("../../../library/RabbitMQ/RabbitMQService.php");
+
+// use Exception;
+// use OpenEMR\Common\Uuid\UuidRegistry;
+// use OpenEMR\Library\RabbitMQ\RabbitMQService;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class PatientUpdatedEvent extends Event
@@ -38,7 +43,55 @@ class PatientUpdatedEvent extends Event
     {
         $this->dataBeforeUpdate = $dataBeforeUpdate;
         $this->newPatientData = $newPatientData;
+
+        // $this->__invoke($this);
     }
+
+    // public function __invoke(PatientUpdatedEvent $event)
+    // {
+    //     try {
+    //         $patientData = $event->getNewPatientData();
+
+    //         // Format the data
+    //         $formattedData = array(
+    //             'id' => $patientData['pid'] ?? '',
+    //             'uuid' => !empty($patientData['uuid']) ? UuidRegistry::uuidToString($patientData['uuid']) : '',
+    //             'firstName' => cleanUtf8($patientData['fname'] ?? ''),
+    //             'lastName' => cleanUtf8($patientData['lname'] ?? ''),
+    //             'middleName' => cleanUtf8($patientData['mname'] ?? ''),
+    //             'email' => cleanUtf8($patientData['email'] ?? ''),
+    //             'phone' => cleanUtf8($patientData['phone_home'] ?? ''),
+    //             'dob' => cleanUtf8($patientData['DOB'] ?? ''),
+    //             'sex' => cleanUtf8($patientData['sex'] ?? ''),
+    //             'ssn' => cleanUtf8($patientData['ss'] ?? ''),
+    //             'street' => cleanUtf8($patientData['street'] ?? ''),
+    //             'city' => cleanUtf8($patientData['city'] ?? ''),
+    //             'state' => cleanUtf8($patientData['state'] ?? ''),
+    //             'zip' => cleanUtf8($patientData['postal_code'] ?? ''),
+    //             'country' => cleanUtf8($patientData['country_code'] ?? '')
+    //         );
+
+    //         $message = json_encode(
+    //             $formattedData,
+    //             JSON_UNESCAPED_UNICODE |
+    //             JSON_UNESCAPED_SLASHES |
+    //             JSON_PARTIAL_OUTPUT_ON_ERROR
+    //         );
+
+    //         if ($message === false) {
+    //             error_log("Patient Data : " . print_r($formattedData, true));
+    //             throw new Exception("Failed to encode Patient data: " . json_last_error_msg());
+    //         }
+
+    //         $rabbitMQ = new RabbitMQService();
+    //         $rabbitMQ->sendMessage($message, 'patient_updated');
+    //         $rabbitMQ->close();
+
+    //     } catch (\Exception $e) {
+    //         error_log("Failed to send Updated Patient Data to rabbitmq: " . $e->getMessage());
+    //         error_log("Patient Data that failed: " . print_r($formattedData ?? [], true));
+    //     }
+    // }
 
     /**
      * @return mixed

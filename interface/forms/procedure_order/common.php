@@ -128,7 +128,7 @@ function getListOptions($list_id, $fieldnames = array('option_id', 'title', 'seq
 }
 
 // do not change from $_REQUEST.
-$formid = (int)($_REQUEST['id'] ?? 0);
+$formid = (int) ($_REQUEST['id'] ?? 0);
 
 $reload_url = $rootdir . '/patient_file/encounter/view_form.php?formname=procedure_order&id=' . urlencode($formid);
 $req_url = $GLOBALS['web_root'] . '/controller.php?document&retrieve&patient_id=' . urlencode($pid) . '&document_id=';
@@ -140,7 +140,7 @@ if (($_POST['bn_save'] ?? null) || !empty($_POST['bn_xmit']) || !empty($_POST['b
     if (!CsrfUtils::verifyCsrfToken($_POST["csrf_token_form"])) {
         CsrfUtils::csrfNotVerified();
     }
-    $ppid = (int)($_POST['form_lab_id'] ?? null);
+    $ppid = (int) ($_POST['form_lab_id'] ?? null);
     if (get_lab_name($ppid) === 'labcorp') {
         if (!empty($_POST['form_account_facility'])) {
             $location = sqlQueryNoLog("SELECT f.id, f.facility_code, f.name FROM facility as f " .
@@ -174,7 +174,7 @@ if (($_POST['bn_save'] ?? null) || !empty($_POST['bn_xmit']) || !empty($_POST['b
         "procedure_order_type = ?";
     $set_array = array(
         QuotedOrNull($_POST['form_date_ordered']),
-        (int)$_POST['form_provider_id'],
+        (int) $_POST['form_provider_id'],
         $ppid,
         QuotedOrNull($_POST['form_date_collected']),
         $_POST['form_order_priority'],
@@ -191,11 +191,11 @@ if (($_POST['bn_save'] ?? null) || !empty($_POST['bn_xmit']) || !empty($_POST['b
         trim($_POST['form_order_abn']),
         trim($_POST['form_order_diagnosis']),
         trim($_POST['form_account']),
-        (int)$_POST['form_account_facility'],
-        (int)$_POST['form_collector_id'],
+        (int) $_POST['form_account_facility'],
+        (int) $_POST['form_collector_id'],
         trim($_POST['procedure_type_names']),
     );
-// If updating an existing form...
+    // If updating an existing form...
 //
     if ($formid) {
         $query = "UPDATE procedure_order SET $sets WHERE procedure_order_id = ?";
@@ -217,15 +217,15 @@ if (($_POST['bn_save'] ?? null) || !empty($_POST['bn_xmit']) || !empty($_POST['b
         $mode = 'update';
         $viewmode = true;
 
-        try{
-          $orderData = array(
+        try {
+            $orderData = array(
                 'order_id' => $formid,
-                'patientMrnId' =>  $patient['pid'], // Safely escaped for JS
-                'origin' => "EMR" , // String literals should also be escaped
-                'dob'=> $patient["DOB"],
+                'patientMrnId' => $patient['patientMrnId'],
+                'origin' => "EMR",
+                'dob' => $patient["DOB"],
                 'providerNpi' => $provider['npi'] ?? "",
-                'date_ordered' =>  $_POST['form_date_ordered'],
-                'tests' => [],
+                'date_ordered' => $_POST['form_date_ordered'],
+                'tests' => $_POST['finalTests'],
                 'cptCodes' => [],
                 'comment' => $_POST['form_clinical_hx'],
                 'resultState' => null,
@@ -237,11 +237,11 @@ if (($_POST['bn_save'] ?? null) || !empty($_POST['bn_xmit']) || !empty($_POST['b
             );
 
             $rabbitMQ = new RabbitMQService();
-            $rabbitMQ->sendMessage ($orderData, 'order_created', );
+            $rabbitMQ->sendMessage($orderData, 'order_created', );
             $rabbitMQ->close();
-            
-        }catch(Exception $e){
-         error_log("Failed to queue order message: " . $e->getMessage());
+
+        } catch (Exception $e) {
+            error_log("Failed to queue order message: " . $e->getMessage());
         }
     }
 
@@ -262,7 +262,7 @@ if (($_POST['bn_save'] ?? null) || !empty($_POST['bn_xmit']) || !empty($_POST['b
     );
 
     for ($i = 0; isset($_POST['form_proc_type'][$i]); ++$i) {
-        $ptid = (int)$_POST['form_proc_type'][$i];
+        $ptid = (int) $_POST['form_proc_type'][$i];
         if ($ptid <= 0 && $ptid !== -2) {
             continue;
         }
@@ -270,14 +270,20 @@ if (($_POST['bn_save'] ?? null) || !empty($_POST['bn_xmit']) || !empty($_POST['b
             // insert a compendium type for new code from picker.
             $query_select_pt = 'SELECT * FROM procedure_type WHERE procedure_code = ? AND lab_id = ?';
             $result_types = sqlQuery($query_select_pt, array($_POST['form_proc_code'][$i], $_POST['form_lab_id']));
-            $ptid = (int)($result_types['procedure_type_id'] ?? 0);
+            $ptid = (int) ($result_types['procedure_type_id'] ?? 0);
             if ($ptid === 0) {
                 //procedure_type
                 $query_insert = 'INSERT INTO procedure_type(name,lab_id,procedure_code,procedure_type,activity,procedure_type_name) VALUES (?,?,?,?,?,?)';
                 $ptid = sqlInsert(
                     $query_insert,
                     array(
-                        $_POST['form_proc_type_desc'][$i], $_POST['form_lab_id'], $_POST['form_proc_code'][$i], 'ord', 1, $_POST['procedure_type_names'])
+                        $_POST['form_proc_type_desc'][$i],
+                        $_POST['form_lab_id'],
+                        $_POST['form_proc_code'][$i],
+                        'ord',
+                        1,
+                        $_POST['procedure_type_names']
+                    )
                 );
                 $query_update_pt = 'UPDATE procedure_type SET parent = ? WHERE procedure_type_id = ?';
                 sqlQuery($query_update_pt, array($ptid, $ptid));
@@ -548,7 +554,7 @@ if (!empty($row['lab_id'])) {
             throw new Exception(sprintf('Directory "%s" was not created', $log_file));
         }
     }
-// filename
+    // filename
     $log_file .= check_file_dir_name($formid) . '_order_log.log';
     if (file_exists($log_file)) {
         $order_log = file_get_contents($log_file);
@@ -557,6 +563,7 @@ if (!empty($row['lab_id'])) {
 ?>
 <!DOCTYPE html>
 <html>
+
 <head>
     <?php Header::setupHeader(['datetime-picker', 'reason-code-widget']); ?>
 
@@ -571,7 +578,7 @@ if (!empty($row['lab_id'])) {
 
 
         // we want to setup our reason code widgets
-        window.addEventListener('DOMContentLoaded', function() {
+        window.addEventListener('DOMContentLoaded', function () {
             if (oeUI.reasonCodeWidget) {
                 oeUI.reasonCodeWidget.init(<?php echo js_url($GLOBALS['webroot']); ?>, <?php echo js_url(collect_codetypes("problem", "csv")) ?>);
             } else {
@@ -615,7 +622,7 @@ if (!empty($row['lab_id'])) {
             let target = $(event.currentTarget).closest('tr').find("input[name^='form_proc_type_desc']").val();
             let yn = true;
             if (target)
-                yn = confirm(<?php echo xlj("Confirm to remove item") ?> +"\n" + target);
+                yn = confirm(<?php echo xlj("Confirm to remove item") ?> + "\n" + target);
             if (yn)
                 $(event.currentTarget).closest(".proc-table").remove();
         }
@@ -628,12 +635,12 @@ if (!empty($row['lab_id'])) {
             let ptvarname = 'form_proc_type[' + formseq + ']';
 
             let title = <?php echo xlj("Find Procedure Order"); ?>;
-// This replaces the previous search for an easier/faster order picker tool.
+            // This replaces the previous search for an easier/faster order picker tool.
             dlgopen('../../orders/find_order_popup.php' +
                 '?labid=' + encodeURIComponent(f.form_lab_id.value) +
                 '&order=' + encodeURIComponent(f[ptvarname].value) +
                 '&formid=' + <?php echo js_url($formid); ?> +
-                    '&formseq=' + encodeURIComponent(formseq),
+                '&formseq=' + encodeURIComponent(formseq),
                 '_blank', 850, 500, '', title);
         }
 
@@ -728,7 +735,7 @@ if (!empty($row['lab_id'])) {
             }
 
             // now we are going to rename all of our templated nodes to be our newest index.
-            let remapArrayIndex = function(value) {
+            let remapArrayIndex = function (value) {
                 if (value && value.indexOf("[")) {
                     let parts = value.split("[");
                     return parts[0] + "[" + lineCount + "]";
@@ -736,15 +743,14 @@ if (!empty($row['lab_id'])) {
                     return value;
                 }
             };
-            let remapNames = function(node) {
+            let remapNames = function (node) {
                 node.name = remapArrayIndex(node.name);
             };
             // wierdly all of our mapped ids use array indexes as part of the id.
-            let remapIds = function(node) {
-                node.id= remapArrayIndex(node.id);
+            let remapIds = function (node) {
+                node.id = remapArrayIndex(node.id);
             };
-            let remapSelectors = function(selector, map)
-            {
+            let remapSelectors = function (selector, map) {
                 let mapNodes = node.querySelectorAll(selector);
                 if (mapNodes && mapNodes.length) {
                     mapNodes.forEach(map);
@@ -752,15 +758,15 @@ if (!empty($row['lab_id'])) {
             };
             remapSelectors('input,select', remapNames);
             remapSelectors('.qoe-table-sel-procedure', remapIds);
-            remapSelectors('[data-toggle-container]', function(node) {
+            remapSelectors('[data-toggle-container]', function (node) {
                 node.dataset.toggleContainer = "reason_code_" + lineCount;
             });
-            remapSelectors('.reasonCodeContainer', function(node) {
+            remapSelectors('.reasonCodeContainer', function (node) {
                 node.id = "reason_code_" + lineCount;
             });
 
             // now we need to add our events
-            let nullableFunction = function(selector, event, callback) {
+            let nullableFunction = function (selector, event, callback) {
                 let nodeForCallback = node.querySelector(selector);
                 if (nodeForCallback) {
                     nodeForCallback.addEventListener(event, callback);
@@ -769,35 +775,35 @@ if (!empty($row['lab_id'])) {
                 }
             };
             // once our node is in the DOM, we need to add event listeners to it.
-            nullableFunction('.itemTransport', 'click', function(event) {
+            nullableFunction('.itemTransport', 'click', function (event) {
                 // we have to bind to our lineCount at the time of instantiation in case addProcLine is called again
                 // and we curry against the outer lineCount
                 var boundLineCount = lineCount + 0; // should be copy by value, but some JS contexts are wierd
                 getDetails(event, boundLineCount);
             });
-            nullableFunction('.btn-secondary.btn-search', 'click', function(event) {
+            nullableFunction('.btn-secondary.btn-search', 'click', function (event) {
                 // we have to bind to our lineCount at the time of instantiation in case addProcLine is called again
                 // and we curry against the outer lineCount
                 var boundLineCount = lineCount + 0; // should be copy by value, but some JS contexts are wierd
                 selectProcedureCode(boundLineCount);
             });
-            nullableFunction('.search-current-diagnoses', 'click', function(event) {
+            nullableFunction('.search-current-diagnoses', 'click', function (event) {
                 current_diagnoses(event.currentTarget); // use the bound target
             });
 
-            nullableFunction('.add-diagnosis-sel-related', 'click', function(event) {
+            nullableFunction('.add-diagnosis-sel-related', 'click', function (event) {
                 sel_related(event.currentTarget.name);
             });
 
-            nullableFunction('.add-diagnosis-sel-related', 'focus', function(event) {
+            nullableFunction('.add-diagnosis-sel-related', 'focus', function (event) {
                 event.currentTarget.blur();
             });
 
-            nullableFunction('.sel-proc-type', 'click', function(event) {
+            nullableFunction('.sel-proc-type', 'click', function (event) {
                 var boundLineCount = lineCount + 0; // should be copy by value, but some JS contexts are wierd
                 sel_proc_type(boundLineCount);
             });
-            nullableFunction('.sel-proc-type', 'focus', function(event) {
+            nullableFunction('.sel-proc-type', 'focus', function (event) {
                 event.currentTarget.blur();
             });
 
@@ -856,9 +862,9 @@ if (!empty($row['lab_id'])) {
             let title = <?php echo xlj("Diagnosis Codes History"); ?>;
             dlgopen('find_code_history.php', 'dxDialog', 'modal-mlg', 450, '', title, {
                 buttons: [
-                    {text: '<?php echo xla('Save'); ?>', id: 'saveDx', style: 'primary btn-save'},
-                    {text: '<?php echo xla('Help'); ?>', id: 'showTips', style: 'primary btn-show'},
-                    {text: '<?php echo xla('Cancel'); ?>', close: true, style: 'secondary btn-cancel'},
+                    { text: '<?php echo xla('Save'); ?>', id: 'saveDx', style: 'primary btn-save' },
+                    { text: '<?php echo xla('Help'); ?>', id: 'showTips', style: 'primary btn-show' },
+                    { text: '<?php echo xla('Cancel'); ?>', close: true, style: 'secondary btn-cancel' },
                 ],
                 type: 'iframe'
             });
@@ -881,11 +887,11 @@ if (!empty($row['lab_id'])) {
         // This invokes the find-code popup.
         function sel_related(varname) {
             rcvarname = varname;
-// codetype is just to make things easier and avoid mistakes.
-// Might be nice to have a lab parameter for acceptable code types.
-// Also note the controlling script here runs from interface/patient_file/encounter/.
+            // codetype is just to make things easier and avoid mistakes.
+            // Might be nice to have a lab parameter for acceptable code types.
+            // Also note the controlling script here runs from interface/patient_file/encounter/.
             let title = '<?php echo xla("Select Diagnosis Codes"); ?>';
-            <?php /*echo attr(collect_codetypes("diagnosis", "csv")); */?>
+            <?php /*echo attr(collect_codetypes("diagnosis", "csv")); */ ?>
             dlgopen(top.webroot_url + '/interface/patient_file/encounter/find_code_dynamic.php', '_blank', 985, 750, '', title);
         }
 
@@ -909,20 +915,20 @@ if (!empty($row['lab_id'])) {
         // Issue a Cancel/OK warning if a previously transmitted order is being transmitted again.
         function validate(f, e) {
             <?php if (!empty($row['date_transmitted'])) { ?>
-            if (transmitting) {
-                if (!confirm(<?php echo xlj('This order was already transmitted on') ?> +' ' +
-                    <?php echo js_escape($row['date_transmitted']) ?> +'. ' +
-                    <?php echo xlj('Are you sure you want to transmit it again?'); ?>)) {
-                    return false;
+                if (transmitting) {
+                    if (!confirm(<?php echo xlj('This order was already transmitted on') ?> + ' ' +
+                        <?php echo js_escape($row['date_transmitted']) ?> + '. ' +
+                        <?php echo xlj('Are you sure you want to transmit it again?'); ?>)) {
+                        return false;
+                    }
                 }
-            }
             <?php } ?>
             $(".wait").removeClass('d-none');
             top.restoreSession();
 
-             // Get form ID from hidden input
+            // Get form ID from hidden input
             let formId = $("input[name='id']").val();
-            
+
             return true;
         }
 
@@ -954,7 +960,7 @@ if (!empty($row['lab_id'])) {
                 return false;
             });
             <?php if ($row['date_transmitted'] ?? '') { ?>
-            $("#summary").collapse("toggle");
+                $("#summary").collapse("toggle");
             <?php } ?>
         });
 
@@ -967,10 +973,10 @@ if (!empty($row['lab_id'])) {
             let url = top.webroot_url + "/interface/procedure_tools/libs/labs_ajax.php";
             url += "?action=code_detail)&code=" + encodeURIComponent(code) +
                 "&csrf_token_form=" + <?php echo js_url(CsrfUtils::collectCsrfToken()); ?>;
-            let title = <?php echo xlj("Test") ?> +": " + code + " " + f[codetitle].value;
+            let title = <?php echo xlj("Test") ?> + ": " + code + " " + f[codetitle].value;
             dlgopen(url, 'details', 'modal-md', 200, '', title, {
                 buttons: [
-                    {text: '<?php echo xla('Got It'); ?>', close: true, style: 'secondary btn-sm'}
+                    { text: '<?php echo xla('Got It'); ?>', close: true, style: 'secondary btn-sm' }
                 ]
             });
         }
@@ -1021,7 +1027,7 @@ if (!empty($row['lab_id'])) {
             let order = f.id.value;
             let patient = <?php echo js_escape($patient['lname'] . ', ' . $patient['fname'] . ' ' . $patient['mname']); ?>;
             let dob = <?php echo js_escape($patient['DOB']); ?>;
-            let pid = <?php echo js_escape($patient['pid']);  ?>;
+            let pid = <?php echo js_escape($patient['pid']); ?>;
             let url = top.webroot_url + "/interface/procedure_tools/libs/labs_ajax.php";
             // this escapes above
             let uri = "?action=print_labels&count=" + encodeURIComponent(count) + "&order=" + encodeURIComponent(order) + "&pid=" + encodeURIComponent(pid) +
@@ -1039,45 +1045,45 @@ if (!empty($row['lab_id'])) {
         }
     </script>
     <style>
-      @media only screen and (max-width: 768px) {
-        [class*="col-"] {
-          width: 100%;
-          text-align: left !important;
+        @media only screen and (max-width: 768px) {
+            [class*="col-"] {
+                width: 100%;
+                text-align: left !important;
+            }
         }
-      }
 
-      .qoe-table {
-        margin-bottom: 0px;
-      }
+        .qoe-table {
+            margin-bottom: 0px;
+        }
 
-      .proc-table {
-        margin-bottom: 5px;
-      }
+        .proc-table {
+            margin-bottom: 5px;
+        }
 
-      .proc-table .itemDelete {
-        width: 25px;
-        color: var(--danger);
-        cursor: pointer;
-      }
+        .proc-table .itemDelete {
+            width: 25px;
+            color: var(--danger);
+            cursor: pointer;
+        }
 
-      .proc-table .itemTransport {
-        width: 45px;
-        margin: 5px 2px;
-        padding: 2px 2px;
-        cursor: hand;
-      }
+        .proc-table .itemTransport {
+            width: 45px;
+            margin: 5px 2px;
+            padding: 2px 2px;
+            cursor: hand;
+        }
 
-      .proc-table .procedure-div {
-        min-width: 40%;
-      }
+        .proc-table .procedure-div {
+            min-width: 40%;
+        }
 
-      .proc-table .diagnosis-div {
-        min-width: 20%;
-      }
+        .proc-table .diagnosis-div {
+            min-width: 20%;
+        }
 
-      .c-hand {
-        cursor: pointer;
-      }
+        .c-hand {
+            cursor: pointer;
+        }
     </style>
 </head>
 <?php
@@ -1088,6 +1094,7 @@ $title = array(xl('Order for'), $name, $date);
 $reasonCodeStatii = ReasonStatusCodes::getCodesWithDescriptions();
 $reasonCodeStatii[ReasonStatusCodes::NONE]['description'] = xl("Select a status code");
 ?>
+
 <body class="body_top" onsubmit="doWait(event)">
     <div class="container">
         <div class="page-header">
@@ -1095,7 +1102,8 @@ $reasonCodeStatii[ReasonStatusCodes::NONE]['description'] = xl("Select a status 
         </div>
         <div class="col-md-12">
             <form class="form form-horizontal" method="post" action="" onsubmit="return validate(this,event)">
-                <input type="hidden" name="csrf_token_form" value="<?php echo attr(CsrfUtils::collectCsrfToken()); ?>" />
+                <input type="hidden" name="csrf_token_form"
+                    value="<?php echo attr(CsrfUtils::collectCsrfToken()); ?>" />
                 <input type='hidden' name='id' value='<?php echo attr($formid) ?>' />
                 <fieldset class="row">
                     <legend data-toggle="collapse" data-target="#orderOptions">
@@ -1104,21 +1112,22 @@ $reasonCodeStatii[ReasonStatusCodes::NONE]['description'] = xl("Select a status 
                     </legend>
                     <div class="col-md-12 collapse show" id="orderOptions">
                         <div class="form-group form-row">
-                            <label for="provider_id" class="col-form-label col-md-2"><?php echo xlt('Ordering Provider'); ?></label>
+                            <label for="provider_id"
+                                class="col-form-label col-md-2"><?php echo xlt('Ordering Provider'); ?></label>
                             <div class="col-md-2">
                                 <?php generate_form_field(array('data_type' => 10, 'field_id' => 'provider_id'), $row['provider_id']); ?>
                             </div>
-                            <label for="form_date_ordered" class="col-form-label col-md-2"><?php echo xlt('Order Date'); ?></label>
+                            <label for="form_date_ordered"
+                                class="col-form-label col-md-2"><?php echo xlt('Order Date'); ?></label>
                             <div class="col-md-2">
-                                <input type='text' class='datepicker form-control'
-                                    name='form_date_ordered'
-                                    id='form_date_ordered'
-                                    value="<?php echo attr($row['date_ordered']); ?>"
+                                <input type='text' class='datepicker form-control' name='form_date_ordered'
+                                    id='form_date_ordered' value="<?php echo attr($row['date_ordered']); ?>"
                                     title="<?php echo xla('Date of this order'); ?>" />
                             </div>
                             <label for="lab_id" class="col-form-label col-md-2"><?php echo xlt('Sending To'); ?></label>
                             <div class="col-md-2">
-                                <select name='form_lab_id' id='form_lab_id' onchange='lab_id_changed(this)' class='form-control'>
+                                <select name='form_lab_id' id='form_lab_id' onchange='lab_id_changed(this)'
+                                    class='form-control'>
                                     <?php
                                     $ppres = sqlStatement("SELECT `ppid`, name FROM `procedure_providers` WHERE `active` = 1 ORDER BY name, ppid");
                                     while ($pprow = sqlFetchArray($ppres)) {
@@ -1135,7 +1144,8 @@ $reasonCodeStatii[ReasonStatusCodes::NONE]['description'] = xl("Select a status 
                             <div class="clearfix"></div>
                         </div>
                         <div class="form-group form-row">
-                            <label for="form_order_psc" class="col-form-label col-md-2"><?php echo xlt('PSC Hold Order'); ?></label>
+                            <label for="form_order_psc"
+                                class="col-form-label col-md-2"><?php echo xlt('PSC Hold Order'); ?></label>
                             <div class="col-md-2">
                                 <?php
                                 $pscOrderOpts = array(
@@ -1146,16 +1156,16 @@ $reasonCodeStatii[ReasonStatusCodes::NONE]['description'] = xl("Select a status 
                                 generate_form_field($pscOrderOpts, $row['order_psc'] ?? '');
                                 ?>
                             </div>
-                            <label for="form_date_collected" class="col-form-label col-md-2"><?php echo xlt('Time Collected'); ?></label>
+                            <label for="form_date_collected"
+                                class="col-form-label col-md-2"><?php echo xlt('Time Collected'); ?></label>
                             <div class="col-md-2">
-                                <input class='datetimepicker form-control'
-                                    type='text'
-                                    name='form_date_collected'
+                                <input class='datetimepicker form-control' type='text' name='form_date_collected'
                                     id='form_date_collected'
                                     value="<?php echo attr(substr($row['date_collected'] ?? '', 0, 16)); ?>"
                                     title="<?php echo xla('Date and time that the sample was collected'); ?>" />
                             </div>
-                            <label for="form_account_facility" class="col-form-label col-md-2 labcorp"><?php echo xlt('Sending From'); ?></label>
+                            <label for="form_account_facility"
+                                class="col-form-label col-md-2 labcorp"><?php echo xlt('Sending From'); ?></label>
                             <div class="col-md-2 labcorp">
                                 <select name='form_account_facility' id='form_account_facility' class='form-control'>
                                     <option value=""><?php echo xlt('Select Location'); ?></option>
@@ -1178,63 +1188,92 @@ $reasonCodeStatii[ReasonStatusCodes::NONE]['description'] = xl("Select a status 
                                     }
                                     ?>
                                 </select>
-                                <input readonly type='hidden' class="input-sm" name="form_account" value="<?php echo attr($account); ?>">
+                                <input readonly type='hidden' class="input-sm" name="form_account"
+                                    value="<?php echo attr($account); ?>">
                             </div>
                             <div class="clearfix"></div>
                         </div>
                         <!--------------------Collections--------------------------->
                         <div class="form-group form-row">
-                            <label for="form_specimen_fasting" class="col-form-label col-md-2"><?php echo xlt('Fasting'); ?></label>
+                            <label for="form_specimen_fasting" class="col-form-label col-md-2">
+                                <?php echo xlt('Fasting'); ?>
+                            </label>
                             <div class="col-md-2">
                                 <?php
-                                generate_form_field(array('data_type' => 1, 'field_id' => 'specimen_fasting',
-                                    'list_id' => 'yesno'), $row['specimen_fasting'] ?? '');
+                                generate_form_field(array(
+                                    'data_type' => 1,
+                                    'field_id' => 'specimen_fasting',
+                                    'list_id' => 'yesno'
+                                ), $row['specimen_fasting'] ?? '');
                                 ?>
                             </div>
-                            <label for="collector_id" class="col-form-label col-md-2"><?php echo xlt('Collected By'); ?></label>
+                            <label for="collector_id" class="col-form-label col-md-2">
+                                <?php echo xlt('Collected By'); ?>
+                            </label>
                             <div class="col-md-2">
                                 <?php generate_form_field(array('data_type' => 10, 'field_id' => 'collector_id'), $row['collector_id'] ?? ''); ?>
                             </div>
-                            <label for='form_order_abn' class="col-form-label col-md-2"><?php echo xlt('ABN Status'); ?></label>
+                            <label for='form_order_abn' class="col-form-label col-md-2">
+                                <?php echo xlt('ABN Status'); ?>
+                            </label>
                             <div class="col-md-2">
                                 <select name='form_order_abn' id='form_order_abn' class='form-control'>
-                                    <option value="not_required" <?php echo $row['order_abn'] ?? '' === 'not_required' ? ' selected' : '' ?>><?php echo xlt('Not Required'); ?></option>
-                                    <option value="required" <?php echo $row['order_abn'] ?? '' === 'required' ? ' selected' : '' ?>><?php echo xlt('Required'); ?></option>
-                                    <option value="signed" <?php echo $row['order_abn'] ?? '' === 'signed' ? ' selected' : '' ?>><?php echo xlt('Signed'); ?></option>
+                                    <option value="not_required" <?php echo $row['order_abn'] ?? '' === 'not_required' ? ' selected' : '' ?>>
+                                        <?php echo xlt('Not Required'); ?>
+                                    </option>
+                                    <option value="required" <?php echo $row['order_abn'] ?? '' === 'required' ? ' selected' : '' ?>>
+                                        <?php echo xlt('Required'); ?>
+                                    </option>
+                                    <option value="signed" <?php echo $row['order_abn'] ?? '' === 'signed' ? ' selected' : '' ?>>
+                                        <?php echo xlt('Signed'); ?>
+                                    </option>
                                 </select>
                             </div>
                             <div class="clearfix"></div>
                         </div>
                         <div class="form-group form-row">
-                            <label for="form_order_priority"
-                                class="col-form-label col-md-2"><?php echo xlt('Priority'); ?></label>
+                            <label for="form_order_priority" class="col-form-label col-md-2">
+                                <?php echo xlt('Priority'); ?>
+                            </label>
                             <div class="col-md-2">
                                 <?php
-                                generate_form_field(array('data_type' => 1, 'field_id' => 'order_priority',
-                                    'list_id' => 'ord_priority'), $row['order_priority'] ?? '');
+                                generate_form_field(array(
+                                    'data_type' => 1,
+                                    'field_id' => 'order_priority',
+                                    'list_id' => 'ord_priority'
+                                ), $row['order_priority'] ?? '');
                                 ?>
                             </div>
-                            <label for="form_order_status"
-                                class="col-form-label col-md-2"><?php echo xlt('Status'); ?></label>
+                            <label for="form_order_status" class="col-form-label col-md-2">
+                                <?php echo xlt('Status'); ?>
+                            </label>
                             <div class="col-md-2">
                                 <?php
-                                generate_form_field(array('data_type' => 1, 'field_id' => 'order_status',
-                                    'list_id' => 'ord_status'), $row['order_status'] ?? '');
+                                generate_form_field(array(
+                                    'data_type' => 1,
+                                    'field_id' => 'order_status',
+                                    'list_id' => 'ord_status'
+                                ), $row['order_status'] ?? '');
                                 ?>
                             </div>
-                            <label for="form_billing_type"
-                                class="col-form-label col-md-2"><?php echo xlt('Billing'); ?></label>
+                            <label for="form_billing_type" class="col-form-label col-md-2">
+                                <?php echo xlt('Billing'); ?>
+                            </label>
                             <div class="col-md-2">
                                 <?php
-                                generate_form_field(array('data_type' => 1, 'field_id' => 'billing_type',
-                                    'list_id' => 'procedure_billing'), $row['billing_type'] ?? '');
+                                generate_form_field(array(
+                                    'data_type' => 1,
+                                    'field_id' => 'billing_type',
+                                    'list_id' => 'procedure_billing'
+                                ), $row['billing_type'] ?? '');
                                 ?>
                             </div>
                             <div class="clearfix"></div>
                         </div>
                         <div class="form-group form-row">
-                            <label for="form_history_order"
-                                class="col-form-label col-md-2"><?php echo xlt('History Order'); ?></label>
+                            <label for="form_history_order" class="col-form-label col-md-2">
+                                <?php echo xlt('History Order'); ?>
+                            </label>
                             <div class="col-md-2">
                                 <?php
                                 $historyOrderOpts = array(
@@ -1248,26 +1287,722 @@ $reasonCodeStatii[ReasonStatusCodes::NONE]['description'] = xl("Select a status 
                         </div>
                         <div class="form-group form-row">
                             <div class="col-md-6">
-                                <label for='form_clinical_hx' class='col-form-label'><?php echo xlt('Clinical History'); ?></label>
+                                <label for='form_clinical_hx' class='col-form-label'>
+                                    <?php echo xlt('Clinical History'); ?>
+                                </label>
                                 <textarea class='form-control text' rows='2' cols='60' wrap='hard'
-                                    name="form_clinical_hx" id="form_clinical_hx"><?php echo text($row['clinical_hx'] ?? ''); ?></textarea>
+                                    name="form_clinical_hx"
+                                    id="form_clinical_hx"><?php echo text($row['clinical_hx'] ?? ''); ?></textarea>
                             </div>
                             <div class="col-md-6">
-                                <label for='form_data_ordered' class='col-form-label'><?php echo xlt('Patient Instructions'); ?></label>
-                                <textarea class='form-control text' rows='2' cols="60" wrap="hard" id='form_patient_instructions'
+                                <label for='form_data_ordered' class='col-form-label'>
+                                    <?php echo xlt('Patient Instructions'); ?>
+                                </label>
+                                <textarea class='form-control text' rows='2' cols="60" wrap="hard"
+                                    id='form_patient_instructions'
                                     name='form_patient_instructions'><?php echo text($row['patient_instructions'] ?? '') ?></textarea>
                             </div>
                         </div>
+                        <!--  -->
+                        <style>
+                            * {
+                                box-sizing: border-box;
+                                font-family: Arial, sans-serif;
+                            }
+
+                            body {
+                                padding: 20px;
+                            }
+
+                            .select-container {
+                                position: relative;
+                                width: 100%;
+                                user-select: none;
+                                margin-bottom: 24px;
+                            }
+
+                            .select-button {
+                                width: 100%;
+                                min-height: 42px;
+                                padding: 5px 10px;
+                                background-color: #fff;
+                                border: 1px solid #ccc;
+                                border-radius: 4px;
+                                cursor: pointer;
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                font-size: 16px;
+                                flex-wrap: wrap;
+                            }
+
+                            .select-button:hover {
+                                border-color: #aaa;
+                            }
+
+                            .select-button:focus {
+                                outline: none;
+                                border-color: #2684FF;
+                                box-shadow: 0 0 0 1px #2684FF;
+                            }
+
+                            .select-button-text {
+                                flex: 1;
+                                text-align: left;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                white-space: nowrap;
+                            }
+
+                            .select-button-arrow {
+                                border: solid #666;
+                                border-width: 0 2px 2px 0;
+                                display: inline-block;
+                                padding: 3px;
+                                transform: rotate(45deg);
+                                transition: transform 0.2s;
+                                margin-left: 5px;
+                            }
+
+                            .select-button[aria-expanded="true"] .select-button-arrow {
+                                transform: rotate(-135deg);
+                            }
+
+                            .selected-items {
+                                display: flex;
+                                flex-wrap: wrap;
+                                gap: 5px;
+                                margin-right: 10px;
+                                width: max-content;
+                            }
+
+                            .selected-item {
+                                background-color: #e9ecef;
+                                border-radius: 3px;
+                                padding: 2px 8px;
+                                display: flex;
+                                align-items: center;
+                                font-size: 14px;
+                                margin: 2px 0;
+                            }
+
+                            .selected-item-remove {
+                                margin-left: 5px;
+                                cursor: pointer;
+                                font-weight: bold;
+                                color: #6c757d;
+                            }
+
+                            .selected-item-remove:hover {
+                                color: #dc3545;
+                            }
+
+                            .select-dropdown {
+                                position: absolute;
+                                top: 100%;
+                                left: 0;
+                                width: 100%;
+                                margin-top: 5px;
+                                background-color: #fff;
+                                border: 1px solid #ccc;
+                                border-radius: 4px;
+                                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+                                z-index: 100;
+                                display: none;
+                                max-height: 300px;
+                                overflow-y: auto;
+                            }
+
+                            .select-dropdown.show {
+                                display: block;
+                            }
+
+                            .search-container {
+                                padding: 10px;
+                                border-bottom: 1px solid #eee;
+                                position: sticky;
+                                top: 0;
+                                background-color: #fff;
+                                z-index: 1;
+                            }
+
+                            .search-input {
+                                width: 100%;
+                                padding: 8px 10px;
+                                border: 1px solid #ddd;
+                                border-radius: 4px;
+                                font-size: 14px;
+                            }
+
+                            .search-input:focus {
+                                outline: none;
+                                border-color: #2684FF;
+                                box-shadow: 0 0 0 1px #2684FF;
+                            }
+
+                            .options-container {
+                                list-style-type: none;
+                                margin: 0;
+                                padding: 0;
+                            }
+
+                            .option-item {
+                                padding: 10px 15px;
+                                cursor: pointer;
+                                transition: background-color 0.2s;
+                                display: flex;
+                                align-items: center;
+                            }
+
+                            .option-item:hover {
+                                background-color: #f5f5f5;
+                            }
+
+                            .option-item.selected {
+                                background-color: #ebf5ff;
+                                color: #2684FF;
+                            }
+
+                            .option-checkbox {
+                                margin-right: 10px;
+                            }
+
+                            .option-item.hidden {
+                                display: none;
+                            }
+
+                            .no-results {
+                                padding: 10px 15px;
+                                color: #999;
+                                font-style: italic;
+                                display: none;
+                            }
+
+                            .tests-container {
+                                margin-bottom: 16px;
+                                width: 100%;
+
+                            }
+
+                            .test-item-wrapper {
+                                margin-bottom: 16px;
+                                border-radius: 16px;
+                                border: 1px solid #ccc;
+                            }
+
+                            .test-item {
+                                transition: all 0.3s;
+                                padding: 1rem 1.5rem;
+                            }
+
+                            .test-item::hover {
+                                background-color: #f5f5f5;
+                            }
+
+                            .test-item .title {
+                                font-size: 18px;
+                                font-weight: semibold;
+                            }
+
+                            .test-item .tests-list {
+                                list-style: none;
+                                padding: 0;
+                                margin: 0;
+                            }
+
+                            .test-item .tests-list li {
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                gap: 16px;
+                                margin-bottom: 1rem;
+                            }
+
+                            .test-item .tests-list li input[type="checkbox"] {
+                                transform: scale(1.3);
+                            }
+
+                            .test-item .tests-list li textarea {
+                                max-width: 350px;
+                                width: 100%;
+                                padding: 8px;
+                            }
+
+                            .test-item .tests-list .test-code {
+                                user-select: none
+                            }
+                        </style>
+                        <div class="select-container" id="customMultiSelect">
+                            <label for="selectButton">Select Panels</label>
+                            <button type="button" class="select-button" id="selectButton" aria-haspopup="listbox"
+                                aria-expanded="false">
+                                <div class="selected-items" id="selectedItems">
+                                    <!-- Selected items will be added here -->
+                                </div>
+                                <span class="select-button-text" id="selectButtonText">Select options</span>
+                                <span class="select-button-arrow"></span>
+                            </button>
+
+                            <div class="select-dropdown" id="selectDropdown">
+                                <div class="search-container">
+                                    <input type="text" class="search-input" id="searchInput"
+                                        placeholder="Search options..." autocomplete="off">
+                                </div>
+
+                                <div class="no-results" id="noResults">No matching options found</div>
+
+                                <ul class="options-container" id="optionsList" role="listbox"
+                                    aria-multiselectable="true">
+                                    <!-- Options will be populated by JavaScript -->
+                                </ul>
+                            </div>
+
+                            <input type="hidden" id="selectedValues" name="selectedValues" value="">
+                        </div>
+
+                        <div class="tests-container" id="testsContainer">
+
+                        </div>
+
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                const urls = {
+                                    panels: "/master-panels",
+                                    compoPanels: "/combo-panel",
+
+                                };
+                                const fetchApi = async (url) => {
+                                    try {
+                                        const res = await fetch(url, {
+                                            headers: {
+                                                "api-key": labQApiKey
+                                            }
+                                        });
+                                        if (!res.ok) {
+                                            throw new Error(`HTTP error! status: ${res.status}`);
+                                        }
+                                        const data = await res.json();
+                                        return data;
+                                    } catch (error) {
+                                        console.error("API Error:", error);
+                                        return null;
+                                    }
+                                }
+                                const labQurl = "<?php echo $_ENV['LABQ_URL']; ?>";
+                                const labQApiKey = "<?php echo $_ENV['LABQ_API_KEY']; ?>";
+                                let masterPanels = [];
+                                let panelsWithTests = [];
+                                // let finalTests = []; // send to LabQ
+
+                                async function fetchData() {
+                                    const [masterPanelsRes] = await Promise.all([
+                                        fetchApi(`${labQurl}${urls.panels}?page=1&limit=100`),
+                                        fetchApi(`${labQurl}${urls.compoPanels}?page=1&limit=100`),
+                                    ])
+                                    masterPanels = await masterPanelsRes?.data?.length > 0 ? masterPanelsRes?.data : [];
+                                    const options = await masterPanelsRes?.data?.length > 0 ? masterPanelsRes?.data?.map(item => ({ value: item.id, label: item.panelName })) : []
+
+                                    initCustomMultiSelect('customMultiSelect', options)
+
+                                }
+
+                                fetchData();
+
+                                /**
+                                 * Initialize the custom multi-select component
+                                 * @param {string} containerId - The ID of the container element
+                                 * @param {Array} options - Array of options in format {value: string, label: string}
+                                 */
+                                function initCustomMultiSelect(containerId, options) {
+                                    const container = document.getElementById(containerId);
+                                    const selectButton = container.querySelector('#selectButton');
+                                    const selectButtonText = container.querySelector('#selectButtonText');
+                                    const selectedItemsContainer = container.querySelector('#selectedItems');
+                                    const dropdown = container.querySelector('#selectDropdown');
+                                    const searchInput = container.querySelector('#searchInput');
+                                    const optionsList = container.querySelector('#optionsList');
+                                    const noResults = container.querySelector('#noResults');
+                                    const hiddenInput = container.querySelector('#selectedValues');
+
+                                    let selectedOptions = [];
+
+                                    // Populate options list
+                                    options.forEach(option => {
+                                        const optionElement = document.createElement('li');
+                                        optionElement.className = 'option-item';
+                                        optionElement.setAttribute('role', 'option');
+                                        optionElement.setAttribute('data-value', option.value);
+
+                                        const checkbox = document.createElement('span');
+                                        checkbox.className = 'option-checkbox';
+                                        checkbox.innerHTML = '☐';
+
+                                        const label = document.createElement('span');
+                                        label.className = 'option-label';
+                                        label.textContent = option.label;
+
+                                        optionElement.appendChild(checkbox);
+                                        optionElement.appendChild(label);
+                                        optionsList.appendChild(optionElement);
+
+                                        // Option click event
+                                        optionElement.addEventListener('click', function (e) {
+                                            e.stopPropagation();
+                                            toggleOption(option);
+                                        });
+                                    });
+
+                                    // Toggle dropdown when clicking the select button
+                                    selectButton.addEventListener('click', function () {
+                                        toggleDropdown();
+                                    });
+
+                                    // Close dropdown when clicking outside
+                                    document.addEventListener('click', function (e) {
+                                        if (!container.contains(e.target)) {
+                                            closeDropdown();
+                                        }
+                                    });
+
+                                    // Search functionality
+                                    searchInput.addEventListener('input', function () {
+                                        const searchText = this.value.toLowerCase();
+                                        let hasVisibleOptions = false;
+
+                                        Array.from(optionsList.querySelectorAll('.option-item')).forEach(option => {
+                                            const optionText = option.querySelector('.option-label').textContent.toLowerCase();
+                                            if (optionText.includes(searchText)) {
+                                                option.classList.remove('hidden');
+                                                hasVisibleOptions = true;
+                                            } else {
+                                                option.classList.add('hidden');
+                                            }
+                                        });
+
+                                        // Show/hide "No results" message
+                                        noResults.style.display = hasVisibleOptions ? 'none' : 'block';
+                                    });
+
+                                    // Prevent dropdown from closing when clicking on search input
+                                    searchInput.addEventListener('click', function (e) {
+                                        e.stopPropagation();
+                                    });
+
+                                    // Handle keyboard navigation
+                                    container.addEventListener('keydown', function (e) {
+                                        if (e.key === 'Escape') {
+                                            closeDropdown();
+                                        } else if (e.key === 'ArrowDown' && !dropdown.classList.contains('show')) {
+                                            openDropdown();
+                                        }
+                                    });
+
+                                    /**
+                                     * Toggle the dropdown visibility
+                                     */
+                                    function toggleDropdown() {
+                                        if (dropdown.classList.contains('show')) {
+                                            closeDropdown();
+                                        } else {
+                                            openDropdown();
+                                        }
+                                    }
+
+                                    /**
+                                     * Open the dropdown
+                                     */
+                                    function openDropdown() {
+                                        dropdown.classList.add('show');
+                                        selectButton.setAttribute('aria-expanded', 'true');
+                                        searchInput.focus();
+                                        searchInput.value = '';
+
+                                        // Reset search results
+                                        Array.from(optionsList.querySelectorAll('.option-item')).forEach(option => {
+                                            option.classList.remove('hidden');
+                                        });
+                                        noResults.style.display = 'none';
+                                    }
+
+                                    /**
+                                     * Close the dropdown
+                                     */
+                                    function closeDropdown() {
+                                        dropdown.classList.remove('show');
+                                        selectButton.setAttribute('aria-expanded', 'false');
+                                    }
+
+                                    /**
+                                     * Toggle selection of an option
+                                     * @param {Object} option - The option to toggle
+                                     */
+                                    function toggleOption(option) {
+                                        const index = selectedOptions.findIndex(item => item.value === option.value);
+                                        const optionElement = optionsList.querySelector(`[data-value="${option.value}"]`);
+                                        const checkbox = optionElement.querySelector('.option-checkbox');
+
+                                        if (index === -1) {
+                                            // Add option
+                                            selectedOptions.push(option);
+                                            optionElement.classList.add('selected');
+                                            checkbox.innerHTML = '☑';
+                                            addSelectedItem(option);
+                                        } else {
+                                            // Remove option
+                                            selectedOptions.splice(index, 1);
+                                            optionElement.classList.remove('selected');
+                                            checkbox.innerHTML = '☐';
+                                            removeSelectedItem(option.value);
+                                        }
+
+                                        updateSelectButtonText();
+                                        updateHiddenInput();
+                                    }
+
+                                    /**
+                                     * Add a selected item to the select button
+                                     * @param {Object} option - The selected option
+                                     */
+                                    function addSelectedItem(option) {
+                                        const selectedItem = document.createElement('div');
+                                        selectedItem.className = 'selected-item';
+                                        selectedItem.dataset.value = option.value;
+
+                                        selectedItem.innerHTML = `
+                                            ${option.label}
+                                            <span class="selected-item-remove">&times;</span>
+                                        `;
+
+                                        selectedItemsContainer.appendChild(selectedItem);
+
+                                        // Add remove event
+                                        selectedItem.querySelector('.selected-item-remove').addEventListener('click', function (e) {
+                                            e.stopPropagation();
+                                            const value = selectedItem.dataset.value;
+                                            const option = options.find(opt => String(opt.value) === value);
+                                            if (option) {
+                                                toggleOption(option);
+                                            }
+                                        });
+                                    }
+
+                                    /**
+                                     * Remove a selected item from the select button
+                                     * @param {string} value - The value of the item to remove
+                                     */
+                                    function removeSelectedItem(value) {
+                                        const selectedItem = selectedItemsContainer.querySelector(`.selected-item[data-value="${value}"]`);
+                                        if (selectedItem) {
+                                            selectedItemsContainer.removeChild(selectedItem);
+                                        }
+                                    }
+
+                                    /**
+                                     * Update the select button text based on selected options
+                                     */
+                                    function updateSelectButtonText() {
+                                        if (selectedOptions.length === 0) {
+                                            selectButtonText.textContent = 'Select options';
+                                            selectButtonText.style.display = 'block';
+                                        } else {
+                                            selectButtonText.style.display = 'none';
+                                        }
+                                    }
+
+                                    /**
+                                     * Update the hidden input with the selected values
+                                     */
+                                    function updateHiddenInput() {
+                                        hiddenInput.value = JSON.stringify(selectedOptions);
+
+                                        // Trigger change event
+                                        const event = new CustomEvent('change', {
+                                            detail: { values: selectedOptions }
+                                        });
+                                        container.dispatchEvent(event);
+                                    }
+
+                                    // Public API
+                                    return {
+                                        getValues: function () {
+                                            return selectedOptions;
+                                        },
+                                        setValue: function (values) {
+                                            // Clear current selections
+                                            selectedOptions.forEach(option => {
+                                                removeSelectedItem(option.value);
+                                                const optionElement = optionsList.querySelector(`[data-value="${option.value}"]`);
+                                                if (optionElement) {
+                                                    optionElement.classList.remove('selected');
+                                                    optionElement.querySelector('.option-checkbox').innerHTML = '☐';
+                                                }
+                                            });
+
+                                            selectedOptions = [];
+
+                                            // Add new selections
+                                            if (Array.isArray(values)) {
+                                                values.forEach(value => {
+                                                    const option = options.find(opt => opt.value === value);
+                                                    if (option) {
+                                                        selectedOptions.push(option);
+                                                        const optionElement = optionsList.querySelector(`[data-value="${option.value}"]`);
+                                                        if (optionElement) {
+                                                            optionElement.classList.add('selected');
+                                                            optionElement.querySelector('.option-checkbox').innerHTML = '☑';
+                                                        }
+                                                        addSelectedItem(option);
+                                                    }
+                                                });
+                                            }
+
+                                            updateSelectButtonText();
+                                            updateHiddenInput();
+                                        },
+                                        reset: function () {
+                                            // Clear current selections
+                                            selectedOptions.forEach(option => {
+                                                removeSelectedItem(option.value);
+                                                const optionElement = optionsList.querySelector(`[data-value="${option.value}"]`);
+                                                if (optionElement) {
+                                                    optionElement.classList.remove('selected');
+                                                    optionElement.querySelector('.option-checkbox').innerHTML = '☐';
+                                                }
+                                            });
+
+                                            selectedOptions = [];
+                                            updateSelectButtonText();
+                                            updateHiddenInput();
+                                        }
+                                    };
+                                }
+
+                                // Example of listening for change events
+                                document.getElementById('customMultiSelect').addEventListener('change', function (e) {
+
+                                    function getTests(panelId) {
+                                        const findPanel = masterPanels?.find((panel) => String(panel.id) === String(panelId));
+                                        return findPanel?.tests?.length > 0 ? findPanel.tests : [];
+                                    }
+
+                                    // console.log('Selected options:', e.detail.values);
+                                    panelsWithTests = e.detail.values?.map(item => {
+                                        return {
+                                            id: item.value,
+                                            name: item.label,
+                                            tests: getTests(item.value)?.length > 0 ? getTests(item.value)?.map((test) => ({
+                                                checked: false,
+                                                panelId: item.value,
+                                                id: String(test.id),
+                                                comment: "",
+                                                testCode: test.testCode,
+                                                image: "",
+                                            })) : []
+                                        }
+                                    });
+
+                                    const testsContainer = document.getElementById('testsContainer');
+
+                                    testsContainer.innerHTML = '';
+                                    panelsWithTests.forEach((panel, i) => {
+                                        const panelContainer = document.createElement('div');
+                                        panelContainer.className = 'test-item-wrapper';
+                                        panelContainer.innerHTML = `
+                                        <div class="test-item">
+                                            <h3 class="title">${panel.name}</h3>
+                                            <ul class="tests-list">
+                                                ${panel.tests.map(test => `
+                                                <li>
+                                                    <input
+                                                        type="checkbox"
+                                                        id="test-${test.id}"
+                                                        data-panel-id="${test.panelId}" 
+                                                        data-test-id="${test.id}" 
+                                                        data-test-code="${test.testCode}" 
+                                                        ${test.checked ? "checked" : ""}
+                                                        />
+                                                    <label 
+                                                        for="test-${test.id}" 
+                                                        class="test-code"
+                                                      >
+                                                        ${test.testCode}
+                                                    </label>
+                                                    <textarea placeholder="Comment" data-panel-id="${test.panelId}" data-test-id="${test.id}" rows="2">${test.comment}</textarea>
+                                                </li>
+                                                `).join('')}
+                                            </ul>
+                                        </div>
+                                        `;
+                                        testsContainer.appendChild(panelContainer);
+                                    });
+
+                                    testsContainer.querySelectorAll('.tests-container input[type="checkbox"]').forEach(checkbox => {
+                                        checkbox.addEventListener('change', function () {
+                                            const panelId = this.dataset.panelId;
+                                            const testId = this.dataset.testId;
+                                            const checked = this.checked;
+                                            // console.log({ checked, panelId, testId })
+
+                                            const panelIndex = panelsWithTests.findIndex(p => String(p.id) === panelId);
+                                            if (panelIndex !== -1) {
+                                                const testIndex = panelsWithTests[panelIndex].tests.findIndex(t => String(t.id) === testId);
+                                                if (testIndex !== -1) {
+                                                    panelsWithTests[panelIndex].tests[testIndex].checked = checked;
+
+                                                    // Update the hidden input field with current state
+                                                    document.getElementById('finalTests').value = JSON.stringify(panelsWithTests);
+                                                }
+                                            }
+                                        });
+                                    });
+
+                                    testsContainer.querySelectorAll('.tests-container textarea').forEach(textarea => {
+                                        textarea.addEventListener('input', function () {
+                                            const panelId = this.dataset.panelId;
+                                            const testId = this.dataset.testId;
+                                            const comment = this.value;
+
+                                            const panelIndex = panelsWithTests.findIndex(p => String(p.id) === panelId);
+                                            if (panelIndex !== -1) {
+                                                const testIndex = panelsWithTests[panelIndex].tests.findIndex(t => String(t.id) === testId);
+                                                if (testIndex !== -1) {
+                                                    panelsWithTests[panelIndex].tests[testIndex].comment = comment;
+
+                                                    // Update the hidden input field with current state
+                                                    document.getElementById('finalTests').value = JSON.stringify(panelsWithTests);
+                                                }
+                                            }
+
+
+                                        });
+
+
+                                    });
+
+
+                                    document.getElementById('finalTests').value = JSON.stringify(panelsWithTests);
+
+                                });
+                            });
+                        </script>
+
+
+                        <input type="hidden" id="finalTests" name="finalTests" value="">
+
+                        <!--  -->
+
                     </div>
                 </fieldset>
                 <fieldset class="row">
                     <legend><?php $t = "<span>" .
-                            ($gbl_lab === "labcorp" ? "Location Account: $account_name $account" : "") . "</span>";
-                        echo xlt('Procedure Order Details') . " " . text($gbl_lab_title) . " " . $t; ?>
+                        ($gbl_lab === "labcorp" ? "Location Account: $account_name $account" : "") . "</span>";
+                    echo xlt('Procedure Order Details') . " " . text($gbl_lab_title) . " " . $t; ?>
                     </legend>
                     <?php if ($order_data ?? null) { ?>
                         <div id="errorAlerts" class="alert alert-danger alert-dismissible col-6 offset-3" role="alert">
-                            <button type="button" class="close" data-dismiss="alert"><span class="text-dark">&times;</span></button>
+                            <button type="button" class="close" data-dismiss="alert"><span
+                                    class="text-dark">&times;</span></button>
                             <p>
                                 <?php echo $order_data;
                                 unset($order_data); ?>
@@ -1276,7 +2011,8 @@ $reasonCodeStatii[ReasonStatusCodes::NONE]['description'] = xl("Select a status 
                     <?php } ?>
                     <div class="col-md-12 procedure-order-container table-responsive">
                         <div class="form-group form-row bg-dark text-light my-2 py-1">
-                            <label for="form_order_diagnosis" class="col-form-label"><?php echo xlt('Primary Diagnosis'); ?></label>
+                            <label for="form_order_diagnosis"
+                                class="col-form-label"><?php echo xlt('Primary Diagnosis'); ?></label>
                             <div class="col-md-4">
                                 <?php
                                 if (!$formid) {
@@ -1293,19 +2029,20 @@ $reasonCodeStatii[ReasonStatusCodes::NONE]['description'] = xl("Select a status 
                                         $problem_diags .= $probrow['diagnosis'] . ';';
                                     }
                                 } ?>
-                                <input class='form-control c-hand' type='text' name='form_order_diagnosis' id='form_order_diagnosis'
+                                <input class='form-control c-hand' type='text' name='form_order_diagnosis'
+                                    id='form_order_diagnosis'
                                     value='<?php echo $problem_diags ?? '' ? attr($problem_diags) : attr($row['order_diagnosis'] ?? '') ?>'
                                     onclick='sel_related(this.name)'
                                     title='<?php echo xla('Required Primary Diagnosis for Order. This will be automatically added to any missing test order diagnosis.'); ?>'
                                     readonly onfocus='this.blur()' />
                             </div>
-                            <label for="procedure_type_names" class="col-form-label"><?php echo xlt('Default Procedure Type'); ?></label>
+                            <label for="procedure_type_names"
+                                class="col-form-label"><?php echo xlt('Default Procedure Type'); ?></label>
                             <div class="col-md-4">
                                 <?php $procedure_order_type = getListOptions('order_type', array('option_id', 'title')); ?>
                                 <select name="procedure_type_names" id="procedure_type_names" class='form-control'>
                                     <?php foreach ($procedure_order_type as $ordered_types) { ?>
-                                        <option value="<?php echo attr($ordered_types['option_id']); ?>"
-                                            <?php echo $ordered_types['option_id'] == ($row['procedure_order_type'] ?? '') ? " selected" : ""; ?>><?php echo text(xl_list_label($ordered_types['title'])); ?>
+                                        <option value="<?php echo attr($ordered_types['option_id']); ?>" <?php echo $ordered_types['option_id'] == ($row['procedure_order_type'] ?? '') ? " selected" : ""; ?>><?php echo text(xl_list_label($ordered_types['title'])); ?>
                                         </option>
                                     <?php } ?>
                                 </select>
@@ -1328,7 +2065,7 @@ $reasonCodeStatii[ReasonStatusCodes::NONE]['description'] = xl("Select a status 
                         // The $i counter that you see below is to resolve the need for unique names for form fields
                         // that may occur for each of the multiple procedure requests within the same order.
                         // procedure_order_seq serves a similar need for uniqueness at the database level.
-
+                        
                         $oparr = array();
                         if ($formid) {
                             $opres = sqlStatement(
@@ -1378,67 +2115,71 @@ $reasonCodeStatii[ReasonStatusCodes::NONE]['description'] = xl("Select a status 
                         <template id="procedure_order_code_template">
                             <table class="table table-sm proc-table proc-table-main">
                                 <tbody>
-                                <tr>
-                                    <input type='hidden' name='form_proc_code[<?php echo $i; ?>]' value='' />
-                                    <td class="itemDelete"><i class="fa fa-trash fa-lg"></i></td>
-                                    <td class="itemTransport quest">
-                                        <input class="itemTransport form-control" readonly
-                                               name='form_transport[]'
-                                               placeholder='<?php echo xla('Click to review the Directory of Service for this test'); ?>'
-                                               value=''>
-                                    </td>
-                                    <td class="procedure-div">
-                                        <?php if (empty($formid) || empty($oprow['procedure_order_title'])) : ?>
-                                            <input type="hidden" name="form_proc_order_title[<?php echo $i; ?>]"
-                                                   value="procedure">
-                                        <?php else : ?>
-                                            <input type='hidden' name='form_proc_order_title[<?php echo $i; ?>]'
-                                                   value=''>
-                                        <?php endif; ?>
-                                        <div class='input-group-prepend'>
-                                            <button type="button" class='btn btn-secondary btn-search' title='<?php echo xla('Click to use procedure code from code popup'); ?>'>
-                                            </button>
-                                            <input type='hidden' name='form_procedure_type[<?php echo $i; ?>]' value='' />
-                                            <input type='text' name='form_proc_type_desc[<?php echo $i; ?>]'
-                                                   value=''
-                                                   title='<?php echo xla('Click to select the desired procedure'); ?>'
-                                                   placeholder='<?php echo xla('Click to select the desired procedure'); ?>'
-                                                   class='form-control c-hand sel-proc-type' readonly />
-                                            <!-- the configuration type id -->
-                                            <input type='hidden' name='form_proc_type[<?php echo $i; ?>]' value='-1' />
-                                        </div>
-                                    </td>
-                                    <td class='diagnosis-div input-group'>
-                                        <div class='input-group-prepend'>
-                                            <span class='btn btn-secondary input-group-text'>
-                                                <i class='fa fa-search fa-lg search-current-diagnoses' title='<?php echo xla('Click to search past and current diagnoses history'); ?>'></i>
-                                            </span>
-                                        </div>
-                                        <input class='form-control c-hand add-diagnosis-sel-related' type='text'
-                                               name='form_proc_type_diag[<?php echo $i; ?>]'
-                                               value=''
-                                               title='<?php echo xla('Click to add diagnosis for this test'); ?>'
-                                               readonly />
-                                    </td>
-                                    <td>
-                                        <!-- MSIE innerHTML property for a TABLE element is read-only, so using a DIV here. -->
-                                        <div class="table-responsive qoe-table-sel-procedure" id='qoetable[<?php echo attr($i); ?>]'>
-                                            <?php
-                                            $qoe_init_javascript = '';
-                                            echo generate_qoe_html($ptid ?? '', $formid, null, $i);
-                                            if ($qoe_init_javascript) {
-                                                echo "<script>$qoe_init_javascript</script>";
-                                            }
-                                            ?>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-secondary reason-code-btn mt-2"
+                                    <tr>
+                                        <input type='hidden' name='form_proc_code[<?php echo $i; ?>]' value='' />
+                                        <td class="itemDelete"><i class="fa fa-trash fa-lg"></i></td>
+                                        <td class="itemTransport quest">
+                                            <input class="itemTransport form-control" readonly name='form_transport[]'
+                                                placeholder='<?php echo xla('Click to review the Directory of Service for this test'); ?>'
+                                                value=''>
+                                        </td>
+                                        <td class="procedure-div">
+                                            <?php if (empty($formid) || empty($oprow['procedure_order_title'])): ?>
+                                                <input type="hidden" name="form_proc_order_title[<?php echo $i; ?>]"
+                                                    value="procedure">
+                                            <?php else: ?>
+                                                <input type='hidden' name='form_proc_order_title[<?php echo $i; ?>]'
+                                                    value=''>
+                                            <?php endif; ?>
+                                            <div class='input-group-prepend'>
+                                                <button type="button" class='btn btn-secondary btn-search'
+                                                    title='<?php echo xla('Click to use procedure code from code popup'); ?>'>
+                                                </button>
+                                                <input type='hidden' name='form_procedure_type[<?php echo $i; ?>]'
+                                                    value='' />
+                                                <input type='text' name='form_proc_type_desc[<?php echo $i; ?>]'
+                                                    value=''
+                                                    title='<?php echo xla('Click to select the desired procedure'); ?>'
+                                                    placeholder='<?php echo xla('Click to select the desired procedure'); ?>'
+                                                    class='form-control c-hand sel-proc-type' readonly />
+                                                <!-- the configuration type id -->
+                                                <input type='hidden' name='form_proc_type[<?php echo $i; ?>]'
+                                                    value='-1' />
+                                            </div>
+                                        </td>
+                                        <td class='diagnosis-div input-group'>
+                                            <div class='input-group-prepend'>
+                                                <span class='btn btn-secondary input-group-text'>
+                                                    <i class='fa fa-search fa-lg search-current-diagnoses'
+                                                        title='<?php echo xla('Click to search past and current diagnoses history'); ?>'></i>
+                                                </span>
+                                            </div>
+                                            <input class='form-control c-hand add-diagnosis-sel-related' type='text'
+                                                name='form_proc_type_diag[<?php echo $i; ?>]' value=''
+                                                title='<?php echo xla('Click to add diagnosis for this test'); ?>'
+                                                readonly />
+                                        </td>
+                                        <td>
+                                            <!-- MSIE innerHTML property for a TABLE element is read-only, so using a DIV here. -->
+                                            <div class="table-responsive qoe-table-sel-procedure"
+                                                id='qoetable[<?php echo attr($i); ?>]'>
+                                                <?php
+                                                $qoe_init_javascript = '';
+                                                echo generate_qoe_html($ptid ?? '', $formid, null, $i);
+                                                if ($qoe_init_javascript) {
+                                                    echo "<script>$qoe_init_javascript</script>";
+                                                }
+                                                ?>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-secondary reason-code-btn mt-2"
                                                 title='<?php echo xla('Click here to provide an explanation for procedure order (or why an order was not performed)'); ?>'
-                                                data-toggle-container="reason_code_<?php echo attr($i); ?>"><i class="fa fa-asterisk"></i></button>
-                                    </td>
-                                </tr>
-                                <?php include "templates/procedure_reason_row.php" ?>
+                                                data-toggle-container="reason_code_<?php echo attr($i); ?>"><i
+                                                    class="fa fa-asterisk"></i></button>
+                                        </td>
+                                    </tr>
+                                    <?php include "templates/procedure_reason_row.php" ?>
                                 </tbody>
                             </table>
                         </template>
@@ -1450,84 +2191,92 @@ $reasonCodeStatii[ReasonStatusCodes::NONE]['description'] = xl("Select a status 
                                 $ptid = $oprow['procedure_type_id'];
                             }
                             ?>
-                            <table class="table table-sm proc-table proc-table-main" id="procedures_item_<?php echo (string)attr($i) ?>">
+                            <table class="table table-sm proc-table proc-table-main"
+                                id="procedures_item_<?php echo (string) attr($i) ?>">
                                 <?php if ($i < 1) { ?>
                                     <thead>
-                                    <tr>
-                                        <th>&nbsp;</th>
-                                        <th class="quest">&nbsp;</th>
-                                        <th><?php echo xlt('Procedure Test'); ?></th>
-                                        <th><?php echo xlt('Diagnosis Codes'); ?></th>
-                                        <th><?php echo xlt("Order Questions"); ?></th>
-                                        <th><?php echo xlt("Actions"); ?></th>
-                                    </tr>
+                                        <tr>
+                                            <th>&nbsp;</th>
+                                            <th class="quest">&nbsp;</th>
+                                            <th><?php echo xlt('Procedure Test'); ?></th>
+                                            <th><?php echo xlt('Diagnosis Codes'); ?></th>
+                                            <th><?php echo xlt("Order Questions"); ?></th>
+                                            <th><?php echo xlt("Actions"); ?></th>
+                                        </tr>
                                     </thead>
                                 <?php } ?>
                                 <tbody>
-                                <tr>
-                                    <input type='hidden' name='form_proc_code[<?php echo $i; ?>]' value='<?php echo attr($oprow['procedure_code'] ?? '') ?>' />
-                                    <td class="itemDelete"><i class="fa fa-trash fa-lg"></i></td>
-                                    <td class="itemTransport quest">
-                                        <input class="itemTransport form-control" readonly
-                                            name='form_transport[<?php echo $i; ?>]' onclick='getDetails(event, <?php echo $i; ?>)'
-                                            placeholder='<?php echo xla('Click to review the Directory of Service for this test'); ?>'
-                                            value='<?php echo attr($oprow['transport'] ?? '') ?>'>
-                                    </td>
-                                    <td class="procedure-div">
-                                        <?php if (empty($formid) || empty($oprow['procedure_order_title'])) : ?>
-                                            <input type="hidden" name="form_proc_order_title[<?php echo $i; ?>]"
-                                                value="procedure">
-                                        <?php else : ?>
-                                            <input type='hidden' name='form_proc_order_title[<?php echo $i; ?>]'
-                                                value='<?php echo attr($oprow['procedure_order_title']) ?>'>
-                                        <?php endif; ?>
-                                        <div class='input-group-prepend'>
-                                            <button type="button" class='btn btn-secondary btn-search' onclick='selectProcedureCode(<?php echo $i; ?>)' title='<?php echo xla('Click to use procedure code from code popup'); ?>'>
-                                            </button>
-                                            <input type='hidden' name='form_procedure_type[<?php echo $i; ?>]' value='<?php echo attr($oprow['procedure_type'] ?? ''); ?>' />
-                                            <input type='text' name='form_proc_type_desc[<?php echo $i; ?>]'
-                                                value='<?php echo attr($oprow['procedure_name']) ?>'
-                                                onclick="sel_proc_type(<?php echo $i; ?>)"
-                                                onfocus='this.blur()'
-                                                title='<?php echo xla('Click to select the desired procedure'); ?>'
-                                                placeholder='<?php echo xla('Click to select the desired procedure'); ?>'
-                                                class='form-control c-hand' readonly />
-                                            <!-- the configuration type id -->
-                                            <input type='hidden' name='form_proc_type[<?php echo $i; ?>]' value='<?php echo attr($ptid); ?>' />
-                                        </div>
-                                    </td>
-                                    <td class='diagnosis-div input-group'>
-                                        <div class='input-group-prepend'>
-                                            <span class='btn btn-secondary input-group-text'>
-                                                <i onclick='current_diagnoses(this)' class='fa fa-search fa-lg' title='<?php echo xla('Click to search past and current diagnoses history'); ?>'></i>
-                                            </span>
-                                        </div>
-                                        <input class='form-control c-hand' type='text'
-                                            name='form_proc_type_diag[<?php echo $i; ?>]'
-                                            value='<?php echo attr($oprow['diagnoses'] ?? '') ?>'
-                                            onclick='sel_related(this.name)'
-                                            title='<?php echo xla('Click to add diagnosis for this test'); ?>'
-                                            onfocus='this.blur()' readonly />
-                                    </td>
-                                    <td>
-                                        <!-- MSIE innerHTML property for a TABLE element is read-only, so using a DIV here. -->
-                                        <div class="table-responsive" id='qoetable[<?php echo attr($i); ?>]'>
-                                            <?php
-                                            $qoe_init_javascript = '';
-                                            echo generate_qoe_html($ptid, $formid, ($oprow['procedure_order_seq'] ?? null), $i);
-                                            if ($qoe_init_javascript) {
-                                                echo "<script>$qoe_init_javascript</script>";
-                                            }
-                                            ?>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-secondary reason-code-btn mt-2"
+                                    <tr>
+                                        <input type='hidden' name='form_proc_code[<?php echo $i; ?>]'
+                                            value='<?php echo attr($oprow['procedure_code'] ?? '') ?>' />
+                                        <td class="itemDelete"><i class="fa fa-trash fa-lg"></i></td>
+                                        <td class="itemTransport quest">
+                                            <input class="itemTransport form-control" readonly
+                                                name='form_transport[<?php echo $i; ?>]'
+                                                onclick='getDetails(event, <?php echo $i; ?>)'
+                                                placeholder='<?php echo xla('Click to review the Directory of Service for this test'); ?>'
+                                                value='<?php echo attr($oprow['transport'] ?? '') ?>'>
+                                        </td>
+                                        <td class="procedure-div">
+                                            <?php if (empty($formid) || empty($oprow['procedure_order_title'])): ?>
+                                                <input type="hidden" name="form_proc_order_title[<?php echo $i; ?>]"
+                                                    value="procedure">
+                                            <?php else: ?>
+                                                <input type='hidden' name='form_proc_order_title[<?php echo $i; ?>]'
+                                                    value='<?php echo attr($oprow['procedure_order_title']) ?>'>
+                                            <?php endif; ?>
+                                            <div class='input-group-prepend'>
+                                                <button type="button" class='btn btn-secondary btn-search'
+                                                    onclick='selectProcedureCode(<?php echo $i; ?>)'
+                                                    title='<?php echo xla('Click to use procedure code from code popup'); ?>'>
+                                                </button>
+                                                <input type='hidden' name='form_procedure_type[<?php echo $i; ?>]'
+                                                    value='<?php echo attr($oprow['procedure_type'] ?? ''); ?>' />
+                                                <input type='text' name='form_proc_type_desc[<?php echo $i; ?>]'
+                                                    value='<?php echo attr($oprow['procedure_name']) ?>'
+                                                    onclick="sel_proc_type(<?php echo $i; ?>)" onfocus='this.blur()'
+                                                    title='<?php echo xla('Click to select the desired procedure'); ?>'
+                                                    placeholder='<?php echo xla('Click to select the desired procedure'); ?>'
+                                                    class='form-control c-hand' readonly />
+                                                <!-- the configuration type id -->
+                                                <input type='hidden' name='form_proc_type[<?php echo $i; ?>]'
+                                                    value='<?php echo attr($ptid); ?>' />
+                                            </div>
+                                        </td>
+                                        <td class='diagnosis-div input-group'>
+                                            <div class='input-group-prepend'>
+                                                <span class='btn btn-secondary input-group-text'>
+                                                    <i onclick='current_diagnoses(this)' class='fa fa-search fa-lg'
+                                                        title='<?php echo xla('Click to search past and current diagnoses history'); ?>'></i>
+                                                </span>
+                                            </div>
+                                            <input class='form-control c-hand' type='text'
+                                                name='form_proc_type_diag[<?php echo $i; ?>]'
+                                                value='<?php echo attr($oprow['diagnoses'] ?? '') ?>'
+                                                onclick='sel_related(this.name)'
+                                                title='<?php echo xla('Click to add diagnosis for this test'); ?>'
+                                                onfocus='this.blur()' readonly />
+                                        </td>
+                                        <td>
+                                            <!-- MSIE innerHTML property for a TABLE element is read-only, so using a DIV here. -->
+                                            <div class="table-responsive" id='qoetable[<?php echo attr($i); ?>]'>
+                                                <?php
+                                                $qoe_init_javascript = '';
+                                                echo generate_qoe_html($ptid, $formid, ($oprow['procedure_order_seq'] ?? null), $i);
+                                                if ($qoe_init_javascript) {
+                                                    echo "<script>$qoe_init_javascript</script>";
+                                                }
+                                                ?>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-secondary reason-code-btn mt-2"
                                                 title='<?php echo xla('Click here to provide an explanation for procedure order (or why an order was not performed)'); ?>'
-                                                data-toggle-container="reason_code_<?php echo attr($i); ?>"><i class="fa fa-asterisk"></i></button>
-                                    </td>
-                                </tr>
-                                <?php include "templates/procedure_reason_row.php" ?>
+                                                data-toggle-container="reason_code_<?php echo attr($i); ?>"><i
+                                                    class="fa fa-asterisk"></i></button>
+                                        </td>
+                                    </tr>
+                                    <?php include "templates/procedure_reason_row.php" ?>
                                 </tbody>
                             </table>
                             <?php
@@ -1536,7 +2285,8 @@ $reasonCodeStatii[ReasonStatusCodes::NONE]['description'] = xl("Select a status 
                         ?>
                     </div>
                     <div class="btn=group ml-4">
-                        <button type="button" class="btn btn-success btn-add" onclick="addProcLine()"><?php echo xlt('Add Procedure'); ?>
+                        <button type="button" class="btn btn-success btn-add"
+                            onclick="addProcLine()"><?php echo xlt('Add Procedure'); ?>
                         </button>
                     </div>
                 </fieldset>
@@ -1556,15 +2306,15 @@ $reasonCodeStatii[ReasonStatusCodes::NONE]['description'] = xl("Select a status 
                                             $title = $reqdoc['name'];
                                             $rpath = $reqdoc['url']; ?>
                                             <a class="btn btn-outline-primary"
-                                            href="<?php echo attr($rpath); ?>"><?php echo text($title) ?></a>
+                                                href="<?php echo attr($rpath); ?>"><?php echo text($title) ?></a>
                                         <?php }
                                     } ?>
                                     <a class='btn btn-success ml-1' href='#'
                                         onclick="createLabels(event, this)"><?php echo xlt('Labels'); ?></a>
                                     <?php
                                     if ($gbl_lab === "labcorp") { ?>
-                                        <button type="submit" class="btn btn-outline-primary btn-save"
-                                            name='bn_save_ereq' id='bn_save_ereq' value="save_ereq"
+                                        <button type="submit" class="btn btn-outline-primary btn-save" name='bn_save_ereq'
+                                            id='bn_save_ereq' value="save_ereq"
                                             onclick='transmitting = false;'><?php echo xlt('Manual eREQ'); ?>
                                         </button>
                                     <?php } elseif ($gbl_lab === 'clarity') {
@@ -1576,7 +2326,8 @@ $reasonCodeStatii[ReasonStatusCodes::NONE]['description'] = xl("Select a status 
                         </div>
                         <div class="col-md-12">
                             <legend class="bg-dark text-light"><?php echo xlt('Order Log'); ?></legend>
-                            <div class="jumbotron m-0 px-2 py-0 overflow-auto" id="processLog" style="max-height: 500px;">
+                            <div class="jumbotron m-0 px-2 py-0 overflow-auto" id="processLog"
+                                style="max-height: 500px;">
                                 <?php
                                 if (!empty($order_log)) {
                                     $alertmsg = $order_log;
@@ -1595,16 +2346,13 @@ $reasonCodeStatii[ReasonStatusCodes::NONE]['description'] = xl("Select a status 
                 <div class="row form-group clearfix">
                     <div class="float-left position-override mt-2">
                         <div class="btn-group" role="group">
-                            <button type="submit" class="btn btn-primary btn-save"
-                                name="bn_save" id="bn_save" value="save"
-                                onclick='transmitting = false;'><?php echo xlt('Save Current'); ?>
+                            <button type="submit" class="btn btn-primary btn-save" name="bn_save" id="bn_save"
+                                value="save" onclick='transmitting = false;'><?php echo xlt('Save Current'); ?>
                             </button>
-                            <button type="submit" class="btn btn-success btn-save"
-                                name='bn_save_exit' id='bn_save_exit' value="save_exit"
-                                onclick='transmitting = false;'><?php echo xlt('Save'); ?>
+                            <button type="submit" class="btn btn-success btn-save" name='bn_save_exit' id='bn_save_exit'
+                                value="save_exit" onclick='transmitting = false;'><?php echo xlt('Save'); ?>
                             </button>
-                            <button type="submit" class="btn btn-primary btn-transmit"
-                                name='bn_xmit' value="transmit"
+                            <button type="submit" class="btn btn-primary btn-transmit" name='bn_xmit' value="transmit"
                                 onclick='transmitting = true;'><?php echo xlt('Transmit Order'); ?>
                             </button>
                             <button type="button" class="btn btn-secondary btn-cancel"
@@ -1618,4 +2366,5 @@ $reasonCodeStatii[ReasonStatusCodes::NONE]['description'] = xl("Select a status 
         </div>
     </div><!--end of .container -->
 </body>
+
 </html>
