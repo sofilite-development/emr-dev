@@ -37,11 +37,11 @@ use OpenEMR\Services\UserService;
 use OpenEMR\Events\User\UserUpdatedEvent;
 use OpenEMR\Events\User\UserCreatedEvent;
 
-// if (!empty($_REQUEST)) {
-//     if (!CsrfUtils::verifyCsrfToken($_REQUEST["csrf_token_form"])) {
-//         CsrfUtils::csrfNotVerified();
-//     }
-// }
+if (!empty($_REQUEST)) {
+    if (!CsrfUtils::verifyCsrfToken($_REQUEST["csrf_token_form"])) {
+        CsrfUtils::csrfNotVerified();
+    }
+}
 
 
 if (!AclMain::aclCheckCore('admin', 'users')) {
