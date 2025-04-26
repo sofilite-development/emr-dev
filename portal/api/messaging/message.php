@@ -88,6 +88,8 @@ function handleTask($task, $owner, $noteid, $notejson, $reply_noteid, $note, $ti
 
         case "setread":
             return markMessageAsRead($noteid, $owner);
+        case "getUsers":
+            return getAuthPortalUsers($pid);
 
         default:
             return ['error' => 'Invalid task'];
@@ -170,4 +172,18 @@ function deleteMultipleMessages($notejson, $owner)
         updatePortalMailMessageStatus($deleteid, 'Delete', $owner);
     }
     return ['status' => 'Messages deleted'];
+}
+
+function getAuthPortalUsers($pid)
+{
+    $resultpd = array();
+    $authusers = sqlStatement("SELECT users.username as userid, CONCAT(users.fname,' ',users.lname) as username FROM users WHERE active = 1 AND portal_user = 1");
+    while ($row = sqlFetchArray($authusers)) {
+        $resultpd[] = $row;
+    }
+    if (count($resultpd ?? []) === 0) {
+        $resultpd[] = sqlQuery("SELECT users.username as userid, CONCAT(users.fname,' ',users.lname) as username FROM users WHERE id = 1");
+    }
+
+    return $resultpd;
 }
