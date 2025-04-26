@@ -1,0 +1,1 @@
+ALTER TABLE patient_data ADD COLUMN patientMrnId VARCHAR(255) DEFAULT NULL;

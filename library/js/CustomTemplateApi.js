@@ -44,5 +44,5 @@ const bindTextArea = function () {
         })
     });
 
-    console.log("Bound text events: ['" + location + "']");
+    // console.log("Bound text events: ['" + location + "']");
 };

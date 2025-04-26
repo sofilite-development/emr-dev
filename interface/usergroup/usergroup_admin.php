@@ -1,4 +1,7 @@
 <?php
+require_once("../../library/RabbitMQ/RabbitMQService.php");
+
+use OpenEMR\Library\RabbitMQ\RabbitMQService;
 
 /**
  * This script assigns ACL 'Emergency login'.
@@ -40,6 +43,7 @@ if (!empty($_REQUEST)) {
     }
 }
 
+
 if (!AclMain::aclCheckCore('admin', 'users')) {
     echo (new TwigContainer(null, $GLOBALS['kernel']))->getTwig()->render('core/unauthorized.html.twig', ['pageTitle' => xl("User / Groups")]);
     exit;
@@ -51,7 +55,8 @@ if (!AclMain::aclCheckCore('admin', 'super')) {
         foreach ($_POST['access_group'] as $aro_group) {
             if (AclExtended::isGroupIncludeSuperuser($aro_group)) {
                 die(xlt('Saving denied'));
-            };
+            }
+            ;
         }
     }
     if (($_POST['mode'] ?? '') === 'update') {
@@ -62,7 +67,8 @@ if (!AclMain::aclCheckCore('admin', 'super')) {
         foreach ($aro_groups as $aro_group) {
             if (AclExtended::isGroupIncludeSuperuser($aro_group)) {
                 die(xlt('Saving denied'));
-            };
+            }
+            ;
         }
     }
 }
@@ -98,6 +104,7 @@ if (!empty($_POST['access_group']) && is_array($_POST['access_group'])) {
 
 /* To refresh and save variables in mail frame */
 if (isset($_POST["privatemode"]) && $_POST["privatemode"] == "user_admin") {
+    // USER UPDATE BLOCK
     if ($_POST["mode"] == "update") {
         $user_data = sqlFetchArray(sqlStatement("select * from users where id= ? ", array($_POST["id"])));
 
@@ -170,7 +177,7 @@ if (isset($_POST["privatemode"]) && $_POST["privatemode"] == "user_admin") {
             }
             $tmpres = sqlStatement(
                 "SELECT * FROM users_facility WHERE " .
-                    "tablename = ? AND table_id = ?",
+                "tablename = ? AND table_id = ?",
                 array('users', $_POST["id"])
             );
             // $olduf will become an array of entries to delete.
@@ -194,7 +201,7 @@ if (isset($_POST["privatemode"]) && $_POST["privatemode"] == "user_admin") {
                 if (!isset($olduf["$facid/$whid"])) {
                     sqlStatement(
                         "INSERT INTO users_facility SET tablename = ?, table_id = ?, " .
-                            "facility_id = ?, warehouse_id = ?",
+                        "facility_id = ?, warehouse_id = ?",
                         array('users', $_POST["id"], $facid, $whid)
                     );
                 }
@@ -207,7 +214,7 @@ if (isset($_POST["privatemode"]) && $_POST["privatemode"] == "user_admin") {
                     $whid = substr($key, $i + 1);
                     sqlStatement(
                         "DELETE FROM users_facility WHERE " .
-                            "tablename = ? AND table_id = ? AND facility_id = ? AND warehouse_id = ?",
+                        "tablename = ? AND table_id = ? AND facility_id = ? AND warehouse_id = ?",
                         array('users', $_POST["id"], $facid, $whid)
                         // At one time binding here screwed up by matching all warehouse_id values
                         // when it's an empty string, and so the code below was used.
@@ -236,7 +243,7 @@ if (isset($_POST["privatemode"]) && $_POST["privatemode"] == "user_admin") {
         if (!empty($_POST['clear_2fa'])) {
             sqlStatement("DELETE FROM login_mfa_registrations WHERE user_id = ?", array($_POST['id']));
         }
-
+        $success = false;
         if ($_POST["adminPass"] && $_POST["clearPass"]) {
             $authUtilsUpdatePassword = new AuthUtils();
             $success = $authUtilsUpdatePassword->updatePassword($_SESSION['authUserID'], $_POST['id'], $_POST['adminPass'], $_POST['clearPass']);
@@ -246,9 +253,9 @@ if (isset($_POST["privatemode"]) && $_POST["privatemode"] == "user_admin") {
             }
         }
 
-        $tqvar  = (!empty($_POST["authorized"])) ? 1 : 0;
-        $actvar = (!empty($_POST["active"]))     ? 1 : 0;
-        $calvar = (!empty($_POST["calendar"]))   ? 1 : 0;
+        $tqvar = (!empty($_POST["authorized"])) ? 1 : 0;
+        $actvar = (!empty($_POST["active"])) ? 1 : 0;
+        $calvar = (!empty($_POST["calendar"])) ? 1 : 0;
         $portalvar = (!empty($_POST["portal_user"])) ? 1 : 0;
 
         sqlStatement("UPDATE users SET authorized = ?, active = ?, " .
@@ -298,7 +305,16 @@ if (isset($_POST["privatemode"]) && $_POST["privatemode"] == "user_admin") {
         }
 
         if (isset($_POST["supervisor_id"])) {
-            sqlStatement("update users set supervisor_id = ? where id = ? ", array((int)$_POST["supervisor_id"], $_POST["id"]));
+            sqlStatement("update users set supervisor_id = ? where id = ? ", array((int) $_POST["supervisor_id"], $_POST["id"]));
+        }
+
+        if (isset($_POST["email"])) {
+            if (empty($_POST["email"])) {
+                $email = null;
+            } else {
+                $email = $_POST["email"];
+            }
+            sqlStatement("update users set email = ? where id = ? ", array($email, $_POST["id"]));
         }
         if (isset($_POST["google_signin_email"])) {
             if (empty($_POST["google_signin_email"])) {
@@ -319,6 +335,67 @@ if (isset($_POST["privatemode"]) && $_POST["privatemode"] == "user_admin") {
             (isset($_POST['lname']) ? $_POST['lname'] : '')
         );
 
+
+        try {
+            // get the user that was just created
+            $updatedProvider = sqlQuery("SELECT * FROM users WHERE username = ?", [trim($user_data["username"])]);
+            if (empty($updatedProvider)) {
+                throw new Exception("Failed to retrieve newly created user data");
+            }
+
+            $facilityResult = null;
+            if (!empty($updatedProvider['facility_id'])) {
+                $facilityResult = sqlQuery("SELECT * FROM facility WHERE id = ?", [$updatedProvider['facility_id']]);
+            }
+
+            $providerData = array(
+                'id' => $updatedProvider['id'] ?? '',
+                'username' => cleanUtf8($updatedProvider['username'] ?? ''),
+                'firstName' => cleanUtf8($updatedProvider['fname'] ?? ''),
+                'lastName' => cleanUtf8($updatedProvider['lname'] ?? ''),
+                'middleName' => cleanUtf8($updatedProvider['mname'] ?? ''),
+                'email' => cleanUtf8($updatedProvider['email'] ?? ''),
+                'npi' => cleanUtf8($updatedProvider['npi'] ?? ''),
+                'uuid' => !empty($updatedProvider['uuid']) ? UuidRegistry::uuidToString($updatedProvider['uuid']) : '',
+                'authorized' => cleanUtf8($updatedProvider['authorized'] ?? ''),
+                'organization' => !empty($facilityResult) ? array(
+                    'id' => cleanUtf8($facilityResult['id'] ?? ''),
+                    'name' => cleanUtf8($facilityResult['name'] ?? ''),
+                    'uuid' => !empty($facilityResult['uuid']) ? UuidRegistry::uuidToString($facilityResult['uuid']) : '',
+                    'phone' => cleanUtf8($facilityResult['phone'] ?? ''),
+                    'fax' => cleanUtf8($facilityResult['fax'] ?? ''),
+                    'city' => cleanUtf8($facilityResult['city'] ?? ''),
+                    'state' => cleanUtf8($facilityResult['state'] ?? ''),
+                    'zip' => cleanUtf8($facilityResult['postal_code'] ?? ''),
+                    'country' => cleanUtf8($facilityResult['country_code'] ?? ''),
+                    'street' => cleanUtf8($facilityResult['street'] ?? ''),
+                ) : null
+            );
+
+            // send new user data to LabQ through RabbitMQ
+            $message = json_encode(
+                $providerData,
+                JSON_UNESCAPED_UNICODE |
+                JSON_UNESCAPED_SLASHES |
+                JSON_PARTIAL_OUTPUT_ON_ERROR
+            );
+
+            if ($message === false) {
+                error_log("Provider/User Data : " . print_r($patientData, true));
+                throw new Exception("Failed to encode Provider/User data: " . json_last_error_msg());
+            }
+
+            $rabbitMQ = new RabbitMQService();
+            $rabbitMQ->sendMessage($message, 'provider_updated', );
+            $rabbitMQ->close();
+
+
+        } catch (\Exception $e) {
+            error_log("Failed to send Provider Data to rabbitmq: " . $e->getMessage());
+            error_log("Provider Data that failed: " . print_r($_POST, true));
+            echo "Failed to send Provider Data to rabbitmq: " . $e->getMessage();
+        }
+
         // TODO: why are we sending $user_data here when its overwritten with just the 'username' of the user updated
         // instead of the entire user data?  This makes the pre event data not very useful w/o doing a database hit...
         $userUpdatedEvent = new UserUpdatedEvent($user_data, $_POST);
@@ -328,6 +405,7 @@ if (isset($_POST["privatemode"]) && $_POST["privatemode"] == "user_admin") {
 
 /* To refresh and save variables in mail frame  - Arb*/
 if (isset($_POST["mode"])) {
+    //NEW USER/PROVIDER CREATION BLOCK
     if ($_POST["mode"] == "new_user") {
         if (empty($_POST["authorized"]) || $_POST["authorized"] != "1") {
             $_POST["authorized"] = 0;
@@ -386,7 +464,6 @@ if (isset($_POST["mode"])) {
         }
 
 
-
         if ($doit == true) {
             // google_signin_email has unique key constraint, needs to be handled differently
             $googleSigninEmail = "NULL";
@@ -399,36 +476,37 @@ if (isset($_POST["mode"])) {
             }
             $insertUserSQL =
                 "insert into users set " .
-                "username = '"         . add_escape_custom(trim((isset($_POST['rumple']) ? $_POST['rumple'] : ''))) .
-                "', password = '"      . 'NoLongerUsed'                  .
-                "', fname = '"         . add_escape_custom(trim((isset($_POST['fname']) ? $_POST['fname'] : ''))) .
-                "', mname = '"         . add_escape_custom(trim((isset($_POST['mname']) ? $_POST['mname'] : ''))) .
-                "', lname = '"         . add_escape_custom(trim((isset($_POST['lname']) ? $_POST['lname'] : ''))) .
-                "', suffix = '"         . add_escape_custom(trim((isset($_POST['suffix']) ? $_POST['suffix'] : ''))) .
+                "username = '" . add_escape_custom(trim((isset($_POST['rumple']) ? $_POST['rumple'] : ''))) .
+                "', password = '" . 'NoLongerUsed' .
+                "', fname = '" . add_escape_custom(trim((isset($_POST['fname']) ? $_POST['fname'] : ''))) .
+                "', mname = '" . add_escape_custom(trim((isset($_POST['mname']) ? $_POST['mname'] : ''))) .
+                "', lname = '" . add_escape_custom(trim((isset($_POST['lname']) ? $_POST['lname'] : ''))) .
+                "', suffix = '" . add_escape_custom(trim((isset($_POST['suffix']) ? $_POST['suffix'] : ''))) .
                 "', google_signin_email = " . $googleSigninEmail .
-                ", valedictory = '"         . add_escape_custom(trim((isset($_POST['valedictory']) ? $_POST['valedictory'] : ''))) .
-                "', federaltaxid = '"  . add_escape_custom(trim((isset($_POST['federaltaxid']) ? $_POST['federaltaxid'] : ''))) .
-                "', state_license_number = '"  . add_escape_custom(trim((isset($_POST['state_license_number']) ? $_POST['state_license_number'] : ''))) .
-                "', newcrop_user_role = '"  . add_escape_custom(trim((isset($_POST['erxrole']) ? $_POST['erxrole'] : ''))) .
-                "', physician_type = '"  . add_escape_custom(trim((isset($_POST['physician_type']) ? $_POST['physician_type'] : ''))) .
-                "', main_menu_role = '"  . add_escape_custom(trim((isset($_POST['main_menu_role']) ? $_POST['main_menu_role'] : ''))) .
-                "', patient_menu_role = '"  . add_escape_custom(trim((isset($_POST['patient_menu_role']) ? $_POST['patient_menu_role'] : ''))) .
-                "', weno_prov_id = '"  . add_escape_custom(trim((isset($_POST['erxprid']) ? $_POST['erxprid'] : ''))) .
-                "', authorized = '"    . add_escape_custom(trim((isset($_POST['authorized']) ? $_POST['authorized'] : ''))) .
-                "', info = '"          . add_escape_custom(trim((isset($_POST['info']) ? $_POST['info'] : ''))) .
+                ", valedictory = '" . add_escape_custom(trim((isset($_POST['valedictory']) ? $_POST['valedictory'] : ''))) .
+                "', federaltaxid = '" . add_escape_custom(trim((isset($_POST['federaltaxid']) ? $_POST['federaltaxid'] : ''))) .
+                "', state_license_number = '" . add_escape_custom(trim((isset($_POST['state_license_number']) ? $_POST['state_license_number'] : ''))) .
+                "', newcrop_user_role = '" . add_escape_custom(trim((isset($_POST['erxrole']) ? $_POST['erxrole'] : ''))) .
+                "', physician_type = '" . add_escape_custom(trim((isset($_POST['physician_type']) ? $_POST['physician_type'] : ''))) .
+                "', main_menu_role = '" . add_escape_custom(trim((isset($_POST['main_menu_role']) ? $_POST['main_menu_role'] : ''))) .
+                "', patient_menu_role = '" . add_escape_custom(trim((isset($_POST['patient_menu_role']) ? $_POST['patient_menu_role'] : ''))) .
+                "', weno_prov_id = '" . add_escape_custom(trim((isset($_POST['erxprid']) ? $_POST['erxprid'] : ''))) .
+                "', authorized = '" . add_escape_custom(trim((isset($_POST['authorized']) ? $_POST['authorized'] : ''))) .
+                "', info = '" . add_escape_custom(trim((isset($_POST['info']) ? $_POST['info'] : ''))) .
                 "', federaldrugid = '" . add_escape_custom(trim((isset($_POST['federaldrugid']) ? $_POST['federaldrugid'] : ''))) .
-                "', upin = '"          . add_escape_custom(trim((isset($_POST['upin']) ? $_POST['upin'] : ''))) .
-                "', npi  = '"          . add_escape_custom(trim((isset($_POST['npi']) ? $_POST['npi'] : ''))) .
-                "', taxonomy = '"      . add_escape_custom(trim((isset($_POST['taxonomy']) ? $_POST['taxonomy'] : ''))) .
-                "', facility_id = '"   . add_escape_custom(trim((isset($_POST['facility_id']) ? $_POST['facility_id'] : ''))) .
-                "', billing_facility_id = '"   . add_escape_custom(trim((isset($_POST['billing_facility_id']) ? $_POST['billing_facility_id'] : ''))) .
-                "', specialty = '"     . add_escape_custom(trim((isset($_POST['specialty']) ? $_POST['specialty'] : ''))) .
-                "', see_auth = '"      . add_escape_custom(trim((isset($_POST['see_auth']) ? $_POST['see_auth'] : ''))) .
+                "', upin = '" . add_escape_custom(trim((isset($_POST['upin']) ? $_POST['upin'] : ''))) .
+                "', npi  = '" . add_escape_custom(trim((isset($_POST['npi']) ? $_POST['npi'] : ''))) .
+                "', email = '" . add_escape_custom(trim((isset($_POST['email']) ? $_POST['email'] : ''))) .
+                "', taxonomy = '" . add_escape_custom(trim((isset($_POST['taxonomy']) ? $_POST['taxonomy'] : ''))) .
+                "', facility_id = '" . add_escape_custom(trim((isset($_POST['facility_id']) ? $_POST['facility_id'] : ''))) .
+                "', billing_facility_id = '" . add_escape_custom(trim((isset($_POST['billing_facility_id']) ? $_POST['billing_facility_id'] : ''))) .
+                "', specialty = '" . add_escape_custom(trim((isset($_POST['specialty']) ? $_POST['specialty'] : ''))) .
+                "', see_auth = '" . add_escape_custom(trim((isset($_POST['see_auth']) ? $_POST['see_auth'] : ''))) .
                 "', default_warehouse = '" . add_escape_custom(trim((isset($_POST['default_warehouse']) ? $_POST['default_warehouse'] : ''))) .
-                "', irnpool = '"       . add_escape_custom(trim((isset($_POST['irnpool']) ? $_POST['irnpool'] : ''))) .
-                "', calendar = '"      . add_escape_custom($calvar) .
-                "', portal_user = '"   . add_escape_custom($portalvar) .
-                "', supervisor_id = '" . add_escape_custom((isset($_POST['supervisor_id']) ? (int)$_POST['supervisor_id'] : 0)) .
+                "', irnpool = '" . add_escape_custom(trim((isset($_POST['irnpool']) ? $_POST['irnpool'] : ''))) .
+                "', calendar = '" . add_escape_custom($calvar) .
+                "', portal_user = '" . add_escape_custom($portalvar) .
+                "', supervisor_id = '" . add_escape_custom((isset($_POST['supervisor_id']) ? (int) $_POST['supervisor_id'] : 0)) .
                 "', url = '" . add_escape_custom(trim(isset($signaturePath) ? $signaturePath : "")) .
                 "'";
             // signature_URL
@@ -486,6 +564,66 @@ if (isset($_POST["mode"])) {
                         trim((isset($_POST['mname']) ? $_POST['mname'] : '')),
                         trim((isset($_POST['lname']) ? $_POST['lname'] : ''))
                     );
+                }
+
+                try {
+                    // get the user that was just created
+                    $newProvider = sqlQuery("SELECT * FROM users WHERE username = ?", [trim($_POST['rumple'])]);
+                    if (empty($newProvider)) {
+                        throw new Exception("Failed to retrieve newly created user data");
+                    }
+
+                    $facilityResult = null;
+                    if (!empty($newProvider['facility_id'])) {
+                        $facilityResult = sqlQuery("SELECT * FROM facility WHERE id = ?", [$newProvider['facility_id']]);
+                    }
+
+                    $providerData = array(
+                        'id' => $newProvider['id'] ?? '',
+                        'username' => cleanUtf8($newProvider['username'] ?? ''),
+                        'firstName' => cleanUtf8($newProvider['fname'] ?? ''),
+                        'lastName' => cleanUtf8($newProvider['lname'] ?? ''),
+                        'middleName' => cleanUtf8($newProvider['mname'] ?? ''),
+                        'email' => cleanUtf8($newProvider['email'] ?? ''),
+                        'npi' => cleanUtf8($newProvider['npi'] ?? ''),
+                        'uuid' => !empty($newProvider['uuid']) ? UuidRegistry::uuidToString($newProvider['uuid']) : '',
+                        'authorized' => cleanUtf8($newProvider['authorized'] ?? ''),
+                        'organization' => !empty($facilityResult) ? array(
+                            'id' => cleanUtf8($facilityResult['id'] ?? ''),
+                            'name' => cleanUtf8($facilityResult['name'] ?? ''),
+                            'uuid' => !empty($facilityResult['uuid']) ? UuidRegistry::uuidToString($facilityResult['uuid']) : '',
+                            'phone' => cleanUtf8($facilityResult['phone'] ?? ''),
+                            'fax' => cleanUtf8($facilityResult['fax'] ?? ''),
+                            'city' => cleanUtf8($facilityResult['city'] ?? ''),
+                            'state' => cleanUtf8($facilityResult['state'] ?? ''),
+                            'zip' => cleanUtf8($facilityResult['postal_code'] ?? ''),
+                            'country' => cleanUtf8($facilityResult['country_code'] ?? ''),
+                            'street' => cleanUtf8($facilityResult['street'] ?? ''),
+                        ) : null
+                    );
+
+                    // send new user data to LabQ through RabbitMQ
+                    $message = json_encode(
+                        $providerData,
+                        JSON_UNESCAPED_UNICODE |
+                        JSON_UNESCAPED_SLASHES |
+                        JSON_PARTIAL_OUTPUT_ON_ERROR
+                    );
+
+                    if ($message === false) {
+                        error_log("Provider/User Data : " . print_r($patientData, true));
+                        throw new Exception("Failed to encode Provider/User data: " . json_last_error_msg());
+                    }
+
+                    $rabbitMQ = new RabbitMQService();
+                    $rabbitMQ->sendMessage($message, 'provider_created', );
+                    $rabbitMQ->close();
+
+
+                } catch (\Exception $e) {
+                    error_log("Failed to send Provider Data to rabbitmq: " . $e->getMessage());
+                    error_log("Provider Data that failed: " . print_r($_POST, true));
+                    echo "Failed to send Provider Data to rabbitmq: " . $e->getMessage();
                 }
             }
         } else {
@@ -600,11 +738,11 @@ $form_inactive = !empty($_POST['form_inactive']);
     <?php Header::setupHeader(['common']); ?>
 
     <script>
-        $(function() {
+        $(function () {
 
             tabbify();
 
-            $(".medium_modal").on('click', function(e) {
+            $(".medium_modal").on('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 dlgopen('', '', 'modal-mlg', 450, '', '', {
@@ -664,7 +802,7 @@ $form_inactive = !empty($_POST['form_inactive']);
             bottom: 0;
             line-height: 100%;
             margin: auto;
-            color:rgb(220, 215, 225);
+            color: rgb(220, 215, 225);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -686,14 +824,19 @@ $form_inactive = !empty($_POST['form_inactive']);
         <div class="row">
             <div class="col-12">
                 <div class="btn-group">
-                    <a href="usergroup_admin_add.php" class="medium_modal btn btn-secondary btn-add"><?php echo xlt('Add User'); ?></a>
-                    <a href="facility_user.php" class="btn btn-secondary btn-show"><?php echo xlt('View Facility Specific User Information'); ?></a>
+                    <a href="usergroup_admin_add.php"
+                        class="medium_modal btn btn-secondary btn-add"><?php echo xlt('Add User'); ?></a>
+                    <a href="facility_user.php"
+                        class="btn btn-secondary btn-show"><?php echo xlt('View Facility Specific User Information'); ?></a>
                 </div>
-                <form name='userlist' method='post' style="display: inline;" class="form-inline" class="float-right" action='usergroup_admin.php' onsubmit='return top.restoreSession()'>
-                    <input type="hidden" name="csrf_token_form" value="<?php echo attr(CsrfUtils::collectCsrfToken()); ?>" />
+                <form name='userlist' method='post' style="display: inline;" class="form-inline" class="float-right"
+                    action='usergroup_admin.php' onsubmit='return top.restoreSession()'>
+                    <input type="hidden" name="csrf_token_form"
+                        value="<?php echo attr(CsrfUtils::collectCsrfToken()); ?>" />
                     <div class="checkbox">
                         <label for="form_inactive">
-                            <input type='checkbox' class="form-control" id="form_inactive" name='form_inactive' value='1' onclick='submit()' <?php echo ($form_inactive) ? 'checked ' : ''; ?>>
+                            <input type='checkbox' class="form-control" id="form_inactive" name='form_inactive'
+                                value='1' onclick='submit()' <?php echo ($form_inactive) ? 'checked ' : ''; ?>>
                             <?php echo xlt('Include inactive users'); ?>
                         </label>
                     </div>
@@ -760,7 +903,7 @@ $form_inactive = !empty($_POST['form_inactive']);
 
                                 $mfa = sqlQuery(
                                     "SELECT `method` FROM `login_mfa_registrations` " .
-                                        "WHERE `user_id` = ? AND (`method` = 'TOTP' OR `method` = 'U2F')",
+                                    "WHERE `user_id` = ? AND (`method` = 'TOTP' OR `method` = 'U2F')",
                                     [$iter['id']]
                                 );
                                 if (!empty($mfa['method'])) {
@@ -804,7 +947,7 @@ $form_inactive = !empty($_POST['form_inactive']);
                                     echo '<td>';
                                     echo xlt('Not Applicable');
                                 } else {
-                                    echo '<td id="login-counter-' . attr($iter["username"]) .  '">';
+                                    echo '<td id="login-counter-' . attr($iter["username"]) . '">';
                                     $queryCounter = privQuery("SELECT `login_fail_counter`, `last_login_fail`, TIMESTAMPDIFF(SECOND, `last_login_fail`, NOW()) as `seconds_last_login_fail` FROM `users_secure` WHERE BINARY `username` = ?", [$iter["username"]]);
                                     if (!empty($queryCounter['login_fail_counter'])) {
                                         echo text($queryCounter['login_fail_counter']);
@@ -814,11 +957,11 @@ $form_inactive = !empty($_POST['form_inactive']);
                                         echo ' ' . '<button type="button" class="btn btn-sm btn-danger ml-1" onclick="resetCounter(' . attr_js($iter["username"]) . ')">' . xlt("Reset Counter") . '</button>';
                                         $autoBlocked = false;
                                         $autoBlockEnd = null;
-                                        if ((int)$GLOBALS['password_max_failed_logins'] != 0 && ($queryCounter['login_fail_counter'] > (int)$GLOBALS['password_max_failed_logins'])) {
-                                            if ((int)$GLOBALS['time_reset_password_max_failed_logins'] != 0) {
-                                                if ($queryCounter['seconds_last_login_fail'] < (int)$GLOBALS['time_reset_password_max_failed_logins']) {
+                                        if ((int) $GLOBALS['password_max_failed_logins'] != 0 && ($queryCounter['login_fail_counter'] > (int) $GLOBALS['password_max_failed_logins'])) {
+                                            if ((int) $GLOBALS['time_reset_password_max_failed_logins'] != 0) {
+                                                if ($queryCounter['seconds_last_login_fail'] < (int) $GLOBALS['time_reset_password_max_failed_logins']) {
                                                     $autoBlocked = true;
-                                                    $autoBlockEnd = date('Y-m-d H:i:s', (time() + ((int)$GLOBALS['time_reset_password_max_failed_logins'] - $queryCounter['seconds_last_login_fail'])));
+                                                    $autoBlockEnd = date('Y-m-d H:i:s', (time() + ((int) $GLOBALS['time_reset_password_max_failed_logins'] - $queryCounter['seconds_last_login_fail'])));
                                                 }
                                             } else {
                                                 $autoBlocked = true;
