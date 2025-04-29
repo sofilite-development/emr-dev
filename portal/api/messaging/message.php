@@ -40,11 +40,12 @@ $notejson = isset($_POST['notejson']) ? json_decode($_POST['notejson'], true) : 
 $reply_noteid = $_POST['replyid'] ?? 0;
 $note = $_POST['inputBody'] ?? null;
 $title = $_POST['title'] ?? null;
-$sid = $_POST['sender_id'] ?? null;
-$sn = $_POST['sender_name'] ?? null;
 $rid = $_POST['recipient_id'] ?? null;
 $rn = $_POST['recipient_name'] ?? null;
 $pid = $_POST['pid'] ?? 0;
+$pid = $_GET['pid'] ?? ($_SESSION['pid'] ?? null);
+$sid = $_POST['sender_id'] ?? $owner;
+$sn = $_POST['sender_name'] ?? $_SESSION["ptName"];
 
 // Handle the task
 $response = handleTask($task, $owner, $noteid, $notejson, $reply_noteid, $note, $title, $sid, $sn, $rid, $rn, $pid);
@@ -117,9 +118,13 @@ function getLatestMails($owner, $limit = 3)
  */
 function sendMessage($owner, $note, $title, $sid, $sn, $rid, $rn, $reply_noteid)
 {
-    sendMail($owner, $note, $title, '', 0, $sid, $sn, $rid, $rn, 'New');
-    sendMail($rid, $note, $title, '', 0, $sid, $sn, $rid, $rn, 'New', $reply_noteid);
-    return ['status' => 'Message sent'];
+    try {
+        sendMail($owner, $note, $title, '', 0, $sid, $sn, $rid, $rn, 'New');
+        sendMail($rid, $note, $title, '', 0, $sid, $sn, $rid, $rn, 'New', $reply_noteid);
+        return ['status' => 'Message sent', 'success' => true];
+    } catch (error) {
+        return ['status' => 'Message failed', 'success' => false];
+    }
 }
 
 /**
