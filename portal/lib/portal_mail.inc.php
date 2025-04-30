@@ -79,7 +79,7 @@ function addPortalMailboxMail(
     return sqlInsert(
         "INSERT INTO onsite_mail (date, body, owner, user, groupname, " .
             "authorized, activity, title, assigned_to, message_status, mail_chain, sender_id, sender_name, recipient_id, recipient_name, reply_mail_chain) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)",
-        array($datetime, $body, $owner, $user, 'Default', $authorized, $activity, $title, $assigned_to, $message_status,$master_note,$sid,$sn,$rid,$rn,$replyid)
+        array($datetime, $body, $owner, $user, 'Default', $authorized, $activity, $title, $assigned_to, $message_status, $master_note, $sid, $sn, $rid, $rn, $replyid)
     );
 }
 
@@ -120,9 +120,9 @@ function getPortalPatientDeleted($owner = '', $limit = '', $offset = 0, $search 
 	$limit
 	";
     $all = $row = array();
-    $data = array($owner,$owner);
+    $data = array($owner, $owner);
     if ($search) {
-        $data = array($owner,$owner,$owner);
+        $data = array($owner, $owner, $owner);
     }
 
     $res = sqlStatement($sql, $data);
@@ -169,15 +169,49 @@ function getPortalPatientNotes($owner = '', $limit = '', $offset = 0, $search = 
 	ORDER BY `date` desc
 	$limit
 	";
-    $all = $row = array();
-    $data = array($owner,$owner);
+
+
+    $all = [];
+    $data = [$owner, $owner];
     if ($search) {
-        $data = array($owner,$owner,$owner);
+        $data = [$owner, $owner, $owner];
     }
 
     $res = sqlStatement($sql, $data);
-    for ($iter = 0; $row = sqlFetchArray($res); $iter++) {
-        $all[$iter] = $row;
+    while ($row = sqlFetchArray($res)) {
+
+        $row['is_send'] = ($row['sender_id'] === $owner);
+
+        // $mail_chain = $row['mail_chain'];
+        // $reply_sql = "
+        //     SELECT
+        //         r.id,
+        //         r.date,
+        //         r.owner,
+        //         r.user,
+        //         r.title,
+        //         r.body AS body,
+        //         r.message_status,
+        //         r.sender_id,
+        //         r.sender_name,
+        //         r.recipient_id,
+        //         r.recipient_name,
+        //         r.mail_chain,
+        //         r.reply_mail_chain
+        //     FROM
+        //         onsite_mail AS r
+        //     WHERE
+        //         r.deleted != 1 AND r.reply_mail_chain = ? AND r.id != ?
+        //     ORDER BY r.date ASC
+        // ";
+        // $reply_res = sqlStatement($reply_sql, [$mail_chain, $row['id']]);
+        // $replies = [];
+        // while ($reply = sqlFetchArray($reply_res)) {
+        //     $reply['is_send'] = ($reply['sender_id'] === $owner);
+        //     $replies[] = $reply;
+        // }
+        // $row['replies'] = $replies;
+        $all[] = $row;
     }
 
     return $all;
@@ -270,7 +304,7 @@ function getPortalPatientSentNotes($owner = '', $limit = '', $offset = 0, $searc
 	$limit
 	";
     $all = $row = array();
-    $res = sqlStatement($sql, array($owner,$owner));
+    $res = sqlStatement($sql, array($owner, $owner));
     for ($iter = 0; $row = sqlFetchArray($res); $iter++) {
         $all[$iter] = $row;
     }
@@ -381,4 +415,49 @@ function sendMail($owner, $note, $title, $to, $noteid, $sid, $sn, $rid, $rn, $st
     } else {
         return 'failed';
     }
+}
+
+
+/**
+ * Get a single onsite mail message by ID for a given owner.
+ *
+ * @param int $id
+ * @param string $owner
+ * @return array|null
+ */
+function getSingleOnsiteMailById(int $id, string $owner): ?array
+{
+    $sql = "
+        SELECT
+            p.id,
+            p.date,
+            p.owner,
+            p.user,
+            p.title,
+            p.body AS body,
+            p.message_status,
+            'Message' as `type`,
+            p.sender_id,
+            p.sender_name,
+            p.recipient_id,
+            p.recipient_name,
+            p.mail_chain,
+            p.reply_mail_chain
+        FROM
+            onsite_mail AS p
+        WHERE
+            p.deleted != 1
+            AND p.id = ?
+            AND p.owner = ?
+        LIMIT 1
+    ";
+
+    $res = sqlQuery($sql, [$id, $owner]);
+
+    if ($res) {
+        $res['is_send'] = ($res['sender_id'] === $owner);
+        return $res;
+    }
+
+    return null;
 }

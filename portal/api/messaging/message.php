@@ -35,7 +35,6 @@ if (!isset($_POST["api_request"])) {
 }
 
 // Extract common parameters
-$noteid = $_POST['noteid'] ?? 0;
 $notejson = isset($_POST['notejson']) ? json_decode($_POST['notejson'], true) : 0;
 $reply_noteid = $_POST['replyid'] ?? 0;
 $note = $_POST['inputBody'] ?? null;
@@ -46,9 +45,10 @@ $pid = $_POST['pid'] ?? 0;
 $pid = $_GET['pid'] ?? ($_SESSION['pid'] ?? null);
 $sid = $_POST['sender_id'] ?? $owner;
 $sn = $_POST['sender_name'] ?? $_SESSION["ptName"];
+$msgid = $_POST["messageId"] ?? 0;
 
 // Handle the task
-$response = handleTask($task, $owner, $noteid, $notejson, $reply_noteid, $note, $title, $sid, $sn, $rid, $rn, $pid);
+$response = $task === "getsingle" ? getSingleOnsiteMailById($msgid, $owner) : handleTask($task, $owner, $msgid, $notejson, $reply_noteid, $note, $title, $sid, $sn, $rid, $rn, $pid);
 echo json_encode($response);
 
 /**
@@ -173,10 +173,14 @@ function deleteMessage($noteid, $owner)
  */
 function deleteMultipleMessages($notejson, $owner)
 {
-    foreach ($notejson as $deleteid) {
-        updatePortalMailMessageStatus($deleteid, 'Delete', $owner);
+    try {
+        foreach ($notejson as $deleteid) {
+            updatePortalMailMessageStatus($deleteid, 'Delete', $owner);
+        }
+        return ['status' => 'Messages archived', 'success' => true];
+    } catch (error) {
+        return ['status' => 'Messages archived failed', 'success' => false];
     }
-    return ['status' => 'Messages deleted'];
 }
 
 function getAuthPortalUsers($pid)
