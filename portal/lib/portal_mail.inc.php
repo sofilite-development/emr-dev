@@ -473,7 +473,7 @@ function getSingleOnsiteMailById(int $id, string $owner): ?array
             FROM
                 onsite_mail AS r
             WHERE
-                r.deleted != 1 AND r.reply_mail_chain = ? AND r.id != ?
+                r.deleted != 1 AND r.mail_chain = ? AND r.id != ?
             ORDER BY r.date ASC
         ";
     $reply_res = sqlStatement($reply_sql, [$mail_chain, $res['id']]);

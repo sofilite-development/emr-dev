@@ -132,8 +132,54 @@ function sendMessage($owner, $note, $title, $sid, $sn, $rid, $rn, $reply_noteid)
  */
 function replyMessage($owner, $note, $title, $sid, $sn, $rid, $rn, $reply_noteid)
 {
-    sendMail($owner, $note, $title, '', 0, $sid, $sn, $rid, $rn, 'Reply', '');
-    sendMail($rid, $note, $title, '', 0, $sid, $sn, $rid, $rn, 'New', $reply_noteid);
+    $mail = sqlQuery("SELECT mail_chain, reply_mail_chain FROM onsite_mail WHERE id = ?", [$reply_noteid]);
+    $mail_chain = $mail['mail_chain'] ?? $reply_noteid;
+
+    $now = date('Y-m-d H:i:s');
+    $title = $title ?: 'Unassigned';
+
+    sqlInsert(
+        "INSERT INTO onsite_mail (
+            date, body, owner, user, groupname, authorized, activity, title,
+            assigned_to, message_status, mail_chain, sender_id, sender_name,
+            recipient_id, recipient_name, reply_mail_chain
+        ) VALUES (?, ?, ?, ?, 'Default', 1, 1, ?, '', 'Reply', ?, ?, ?, ?, ?, ?)",
+        [
+            $now,
+            $note,
+            $owner,
+            $owner,
+            $title,
+            $mail_chain,
+            $sid,
+            $sn,
+            $rid,
+            $rn,
+            $mail_chain
+        ]
+    );
+
+    sqlInsert(
+        "INSERT INTO onsite_mail (
+            date, body, owner, user, groupname, authorized, activity, title,
+            assigned_to, message_status, mail_chain, sender_id, sender_name,
+            recipient_id, recipient_name, reply_mail_chain
+        ) VALUES (?, ?, ?, ?, 'Default', 1, 1, ?, '', 'New', ?, ?, ?, ?, ?, ?)",
+        [
+            $now,
+            $note,
+            $rid,
+            $owner,
+            $title,
+            $mail["reply_mail_chain"] ?? $mail_chain,
+            $sid,
+            $sn,
+            $rid,
+            $rn,
+            $mail_chain
+        ]
+    );
+
     return ['status' => 'Reply sent'];
 }
 
