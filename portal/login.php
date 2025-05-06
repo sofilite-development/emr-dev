@@ -28,13 +28,13 @@ $is_api = (isset($_REQUEST['from']) && $_REQUEST['from'] === 'api');
 
 
 // landing page definition -- where to go if something goes wrong
-$landingpage = "index.php?site=" . urlencode($_SESSION['site_id'] ?? ($_GET['site'] ?? 'default'));
+// $landingpage = "index.php?site=" . urlencode($_SESSION['site_id'] ?? ($_GET['site'] ?? 'default'));
 //
 
-if (!empty($_REQUEST['redirect'])) {
-    // let's add the redirect back in case there are any errors or other problems.
-    $landingpage .= "&redirect=" . urlencode($_REQUEST['redirect']);
-}
+// if (!empty($_REQUEST['redirect'])) {
+//     // let's add the redirect back in case there are any errors or other problems.
+//     $landingpage .= "&redirect=" . urlencode($_REQUEST['redirect']);
+// }
 
 
 // some validation
@@ -102,8 +102,6 @@ if ($auth === false) {
     OpenEMR\Common\Session\SessionUtil::portalSessionCookieDestroy();
     echo json_encode($response);
     exit();
-    // header('Location: ' . $landingpage . '&w&u');
-    // exit();
 }
 
 if (AuthHash::passwordVerify($_POST['pass'], $auth[COL_POR_PWD])) {
