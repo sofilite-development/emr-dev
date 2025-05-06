@@ -60,6 +60,8 @@ require_once('../interface/globals.php');
 
 require_once(dirname(__FILE__) . "/lib/appsql.class.php");
 require_once("$srcdir/user.inc.php");
+require_once __DIR__ . '/../src/Common/Auth/JWT.php';
+
 
 use OpenEMR\Common\Auth\AuthHash;
 use OpenEMR\Common\Csrf\CsrfUtils;
@@ -104,7 +106,28 @@ if ($auth === false) {
     exit();
 }
 
-if (AuthHash::passwordVerify($_POST['pass'], $auth[COL_POR_PWD])) {
+$isLocalAuthenticate = $_POST['is_local_authenticate'] ?? null;
+
+if ($isLocalAuthenticate && $isLocalAuthenticate === "yes") {
+    $accessToken = $_POST['access_token'] ?? null;
+    $deviceId = $_POST['device_id'] ?? null;
+    if (!$accessToken || !$deviceId) {
+        $response["message"] = "Credentials missing";
+        echo json_encode($response);
+        exit();
+    }
+    $decodedPayload = JWT::decode($accessToken);
+
+    if (!$decodedPayload || ($decodedPayload["device_id"] !== $deviceId || $decodedPayload["username"] !== $_POST['uname'])) {
+        echo json_encode($response);
+        exit();
+    }
+
+    // $response["message"] = "from " . $isLocalAuthenticate;
+    // echo json_encode($decodedPayload);
+    // exit();
+} 
+else if (AuthHash::passwordVerify($_POST['pass'], $auth[COL_POR_PWD])) {
     $authHashPortal = new AuthHash('auth');
     if ($authHashPortal->passwordNeedsRehash($auth[COL_POR_PWD])) {
         // If so, create a new hash, and replace the old one (this will ensure always using most modern hashing)
