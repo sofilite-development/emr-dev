@@ -1,7 +1,7 @@
 <?php
 require_once(__DIR__ . '/../../../../library/payment.inc.php');
 
-function recordStripeFrontPaymentWithActivity($pid, $amount, $encounter = null, $method = 'credit_card', $desc = 'Stripe Portal Payment')
+function recordStripeFrontPaymentWithActivity($pid, $amount, $encounter = null, $method = 'online', $desc = 'Stripe Portal Payment')
 {
     if (!$pid || !$amount) return false;
 
@@ -92,4 +92,33 @@ function recordStripeFrontPaymentWithActivity($pid, $amount, $encounter = null, 
     }
 
     return $session_id;
+}
+
+
+function getPaymentHistory($pid)
+{
+    $payments = sqlStatement("SELECT * FROM payments WHERE pid = ? ORDER BY dtime DESC", array($pid));
+
+    $results = array();
+    $total = 0.0;
+
+    while ($row = sqlFetchArray($payments)) {
+        // Convert string amounts to float
+        $amount1 = (float)$row['amount1'];
+        $amount2 = (float)$row['amount2'];
+
+        // Calculate total for this row
+        $row['total_amount'] = $amount1 + $amount2;
+
+        // Add to running total
+        $total += $row['total_amount'];
+
+        // Add row to results
+        $results[] = $row;
+    }
+
+    return [
+        'payments' => $results,
+        'total_paid' => $total
+    ];
 }
