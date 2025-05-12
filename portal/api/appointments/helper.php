@@ -8,8 +8,8 @@ function getVisitCategories()
     $categories = [];
     $cattype = 0; // Only include categories of type 0
 
-    $query = "SELECT pc_catid, pc_cattype, pc_constant_id, pc_catname, 
-                     pc_duration, pc_end_all_day
+    $query = "SELECT pc_catid, pc_cattype, pc_constant_id, pc_catname, pc_catdesc,
+                     pc_duration, pc_end_all_day, pc_catcolor
               FROM openemr_postcalendar_categories 
               WHERE pc_active = 1 
               ORDER BY pc_seq";
@@ -33,7 +33,9 @@ function getVisitCategories()
             $categories[] = [
                 'id' => $row['pc_catid'],
                 'name' => xl_appt_category($row['pc_catname']),
-                'duration' => $duration
+                'duration' => $duration,
+                'description' => $row['pc_catdesc'] ?? null,
+                'color' => $row['pc_catcolor']
             ];
         }
     }
