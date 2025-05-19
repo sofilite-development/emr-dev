@@ -1,29 +1,28 @@
-SET NAMES utf8mb4;
-
--- Step 1: Add patientMrnId column as VARCHAR(255) with DEFAULT NULL if not exists
+-- Step 1: Add guardianid column to patient_data if not exists
 SET @col_exists = (
     SELECT COUNT(*)
     FROM information_schema.columns
     WHERE table_schema = DATABASE()
       AND table_name = 'patient_data'
-      AND column_name = 'patientMrnId'
+      AND column_name = 'guardianid'
 );
 
 SET @sql1 = IF(@col_exists = 0,
-    'ALTER TABLE patient_data ADD COLUMN patientMrnId VARCHAR(255) DEFAULT NULL;',
-    'SELECT "Column patientMrnId already exists."'
+    'ALTER TABLE patient_data ADD COLUMN guardianid TEXT;',
+    'SELECT "Column guardianid already exists."'
 );
 PREPARE stmt1 FROM @sql1;
 EXECUTE stmt1;
 DEALLOCATE PREPARE stmt1;
 
--- Step 2: Insert into layout_options if not exists
+-- Step 2: Insert into layout_options if guardianid field is not already present
 INSERT INTO layout_options (
     form_id, field_id, group_id, title, seq, data_type, uor, fld_length, max_length,
     list_id, titlecols, datacols, default_value, edit_options, description,
     fld_rows, list_backup_id, source, conditions, validation, codes
 )
-SELECT 'DEM', 'patientMrnId', '1', 'Patient MRN ID', 150, 2, 2, 30, 50, '', 1, 1, '', '', '', 0, '', 'F', '', '', ''
+SELECT 'DEM', 'guardianid', '1', 'Guardian', 250, 51, 1, 0, 0, '', 1, 1, '', '', 'Guardian',
+       0, '', 'F', '', '', ''
 WHERE NOT EXISTS (
-    SELECT 1 FROM layout_options WHERE field_id = 'patientMrnId' AND form_id = 'DEM'
+    SELECT 1 FROM layout_options WHERE field_id = 'guardianid' AND form_id = 'DEM'
 );

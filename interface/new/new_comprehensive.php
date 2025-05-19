@@ -494,7 +494,7 @@ $constraints = LBF_Validation::generate_validate_constraints("DEM");
                                     $checked = ($init_open == 1) ? $checked . " show" : $checked;
                                 }
                                 echo <<<HTML
-                                <div class="card">
+                                <div class="card" id="card_{$group_name}">
                                     <div class="card-header p-0 bg-secondary" id="header_{$group_seq_attr}">
                                         <h2 class="mb-0">
                                             <button class="btn btn-link btn-block text-light text-left" type="button" data-toggle="collapse" data-target="#div_{$group_seq_attr}" aria-expanded="true" aria-controls="{$group_seq_attr}">$group_name_xl</button>
@@ -514,7 +514,7 @@ $constraints = LBF_Validation::generate_validate_constraints("DEM");
                       // Handle starting of a new row.
                         if (($titlecols > 0 && $cell_count >= $CPR) || $cell_count == 0) {
                             end_row();
-                            echo "<div class='form-group row'>";
+                            echo "<div class='form-group row' id='field_" . $frow['field_id'] . "' >";
                         }
 
                         if ($item_count == 0 && $titlecols == 0) {
@@ -807,6 +807,39 @@ $constraints = LBF_Validation::generate_validate_constraints("DEM");
             </div>
         </div>
     </div> <!--end of container div -->
+    <!-- For Dob and Guardian -->
+    <script>
+
+      function isChild(dob){
+          const dateOfBirth = new Date(dob);
+          const today = new Date();
+
+          let age = today.getFullYear() - dateOfBirth.getFullYear();
+          const m = today.getMonth() - dateOfBirth.getMonth();
+
+          if (m < 0 || (m === 0 && today.getDate() < dateOfBirth.getDate())) {
+              age--;
+          }
+          if (age < 18) {
+              return true;
+          } else {
+              return false;
+          }
+      }
+
+      $(document).ready(function() {
+        $('#form_DOB').on('change', function() {
+            const ischild = isChild(this.value) 
+            if (ischild) {
+                $('#field_guardianid').show();
+                $("#card_Guardian").hide();
+            } else {
+                $('#field_guardianid').hide();
+            }
+        });
+        $('#field_guardianid').hide();
+    });
+    </script>
 <!-- include support for the list-add selectbox feature -->
 <?php require($GLOBALS['fileroot'] . "/library/options_listadd.inc.php"); ?>
 <script>
