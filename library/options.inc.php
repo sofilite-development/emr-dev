@@ -1623,6 +1623,7 @@ function generate_form_field($frow, $currvalue)
         // Extra readonly input field for patient description (name and pid).
         echo "<input type='text'" .
             " name='form_$field_id_esc" . "__desc'" .
+            " placeholder='$description'" .
             " size='$fldlength'" .
             " title='$description'" .
             " value='$currdescstring'";

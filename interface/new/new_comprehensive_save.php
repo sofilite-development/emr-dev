@@ -147,22 +147,49 @@ function handleSendingMsgWithNewPatientData($pid)
         $message = json_encode(
             $patientData,
             JSON_UNESCAPED_UNICODE |
-            JSON_UNESCAPED_SLASHES |
-            JSON_PARTIAL_OUTPUT_ON_ERROR
+                JSON_UNESCAPED_SLASHES |
+                JSON_PARTIAL_OUTPUT_ON_ERROR
         );
 
         if ($message === false) {
             error_log("Patient Data : " . print_r($patientData, true));
             throw new Exception("Failed to encode patient data: " . json_last_error_msg());
         }
-        $rabbitMQ->sendMessage($message, 'patient_created', );
+        $rabbitMQ->sendMessage($message, 'patient_created',);
         $rabbitMQ->close();
-
-
     } catch (\Exception $e) {
         error_log("Failed to send Patient Data to rabbitmq: " . $e->getMessage());
         error_log("Patient Data that failed: " . print_r($patientData, true));
         echo "Failed to send Patient Data to rabbitmq: " . $e->getMessage();
+    }
+}
+
+$guardianId = $newdata['patient_data']["guardianid"] ?? null;
+
+if ($guardianId) {
+    $guardian = sqlQuery(
+        "SELECT fname, lname, mname, sex, city, state, postal_code, nationality_country, phone_contact, phone_cell, email 
+     FROM patient_data 
+     WHERE pid = ?",
+        array($guardianId)
+    );
+    $newdata['patient_data']["guardianrelationship"] = $newdata['patient_data']["guardian_relationship"] ?? null;
+    if ($guardian) {
+        $fullNameParts = array_filter([
+            $guardian["fname"] ?? '',
+            $guardian["mname"] ?? '',
+            $guardian["lname"] ?? ''
+        ]);
+
+        $newdata['patient_data']["guardiansname"] = implode(" ", $fullNameParts);
+        $newdata['patient_data']["guardiansex"] = $guardian["sex"];
+        $newdata['patient_data']["guardiancity"] = $guardian["city"];
+        $newdata['patient_data']["guardianstate"] = $guardian["state"];
+        $newdata['patient_data']["guardiancountry"] = $guardian["nationality_country"];
+        $newdata['patient_data']["guardianpostalcode"] = $guardian["postal_code"];
+        $newdata['patient_data']["guardianphone"] = $guardian["phone_contact"];
+        $newdata['patient_data']["guardianworkphone"] = $guardian["phone_cell"];
+        $newdata['patient_data']["guardianemail"] = $guardian["email"];
     }
 }
 
