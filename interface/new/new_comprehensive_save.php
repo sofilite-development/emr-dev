@@ -173,7 +173,9 @@ if ($guardianId) {
      WHERE pid = ?",
         array($guardianId)
     );
+
     $newdata['patient_data']["guardianrelationship"] = $newdata['patient_data']["guardian_relationship"] ?? null;
+
     if ($guardian) {
         $fullNameParts = array_filter([
             $guardian["fname"] ?? '',
@@ -181,15 +183,15 @@ if ($guardianId) {
             $guardian["lname"] ?? ''
         ]);
 
-        $newdata['patient_data']["guardiansname"] = implode(" ", $fullNameParts);
-        $newdata['patient_data']["guardiansex"] = $guardian["sex"];
-        $newdata['patient_data']["guardiancity"] = $guardian["city"];
-        $newdata['patient_data']["guardianstate"] = $guardian["state"];
-        $newdata['patient_data']["guardiancountry"] = $guardian["nationality_country"];
-        $newdata['patient_data']["guardianpostalcode"] = $guardian["postal_code"];
-        $newdata['patient_data']["guardianphone"] = $guardian["phone_contact"];
-        $newdata['patient_data']["guardianworkphone"] = $guardian["phone_cell"];
-        $newdata['patient_data']["guardianemail"] = $guardian["email"];
+        $newdata['patient_data']["guardiansname"] = implode(" ", $fullNameParts) ?? $newdata['patient_data']["guardiansname"] ?? null;
+        $newdata['patient_data']["guardiansex"] = $guardian["sex"] ?? $newdata['patient_data']["guardiansex"] ?? null;
+        $newdata['patient_data']["guardiancity"] = $guardian["city"] ?? $newdata['patient_data']["guardiancity"] ?? null;
+        $newdata['patient_data']["guardianstate"] = $guardian["state"] ?? $newdata['patient_data']["guardianstate"] ?? null;
+        $newdata['patient_data']["guardiancountry"] = $guardian["nationality_country"] ?? $newdata['patient_data']["guardiancountry"] ?? null;
+        $newdata['patient_data']["guardianpostalcode"] = $guardian["postal_code"] ?? $newdata['patient_data']["guardianpostalcode"] ?? null;
+        $newdata['patient_data']["guardianphone"] = $guardian["phone_contact"] ?? $newdata['patient_data']["guardianphone"] ?? null;
+        $newdata['patient_data']["guardianworkphone"] = $guardian["phone_cell"] ?? $newdata['patient_data']["guardianworkphone"] ?? null;
+        $newdata['patient_data']["guardianemail"] = $guardian["email"] ?? $newdata['patient_data']["guardianemail"] ?? null;
     }
 }
 

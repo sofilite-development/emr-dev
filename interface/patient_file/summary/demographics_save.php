@@ -37,7 +37,7 @@ if ($pid) {
         die(xlt('You are not authorized to access this squad.'));
     }
 } else {
-    if (!AclMain::aclCheckCore('patients', 'demo', '', array('write','addonly'))) {
+    if (!AclMain::aclCheckCore('patients', 'demo', '', array('write', 'addonly'))) {
         die(xlt('Adding demographics is not authorized.'));
     }
 }
@@ -53,8 +53,8 @@ foreach ($_POST as $key => $val) {
 $newdata = array();
 $newdata['patient_data']['id'] = $_POST['db_id'];
 $fres = sqlStatement("SELECT * FROM layout_options " .
-  "WHERE form_id = 'DEM' AND uor > 0 AND field_id != '' " .
-  "ORDER BY group_id, seq");
+    "WHERE form_id = 'DEM' AND uor > 0 AND field_id != '' " .
+    "ORDER BY group_id, seq");
 
 $addressFieldsToSave = array();
 while ($frow = sqlFetchArray($fres)) {
@@ -82,6 +82,36 @@ while ($frow = sqlFetchArray($fres)) {
 }
 
 // TODO: All of this should be bundled up inside a transaction...
+$guardianId = $newdata['patient_data']["guardianid"] ?? null;
+
+if ($guardianId) {
+    $guardian = sqlQuery(
+        "SELECT fname, lname, mname, sex, city, state, postal_code, nationality_country, phone_contact, phone_cell, email 
+     FROM patient_data 
+     WHERE pid = ?",
+        array($guardianId)
+    );
+
+    $newdata['patient_data']["guardianrelationship"] = $newdata['patient_data']["guardian_relationship"] ?? null;
+
+    if ($guardian) {
+        $fullNameParts = array_filter([
+            $guardian["fname"] ?? '',
+            $guardian["mname"] ?? '',
+            $guardian["lname"] ?? ''
+        ]);
+
+        $newdata['patient_data']["guardiansname"] = implode(" ", $fullNameParts) ?? $newdata['patient_data']["guardiansname"] ?? null;
+        $newdata['patient_data']["guardiansex"] = $guardian["sex"] ?? $newdata['patient_data']["guardiansex"] ?? null;
+        $newdata['patient_data']["guardiancity"] = $guardian["city"] ?? $newdata['patient_data']["guardiancity"] ?? null;
+        $newdata['patient_data']["guardianstate"] = $guardian["state"] ?? $newdata['patient_data']["guardianstate"] ?? null;
+        $newdata['patient_data']["guardiancountry"] = $guardian["nationality_country"] ?? $newdata['patient_data']["guardiancountry"] ?? null;
+        $newdata['patient_data']["guardianpostalcode"] = $guardian["postal_code"] ?? $newdata['patient_data']["guardianpostalcode"] ?? null;
+        $newdata['patient_data']["guardianphone"] = $guardian["phone_contact"] ?? $newdata['patient_data']["guardianphone"] ?? null;
+        $newdata['patient_data']["guardianworkphone"] = $guardian["phone_cell"] ?? $newdata['patient_data']["guardianworkphone"] ?? null;
+        $newdata['patient_data']["guardianemail"] = $guardian["email"] ?? $newdata['patient_data']["guardianemail"] ?? null;
+    }
+}
 
 updatePatientData($pid, $newdata['patient_data']);
 if (!$GLOBALS['omit_employers']) {
