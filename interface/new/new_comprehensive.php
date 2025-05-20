@@ -829,17 +829,20 @@ $fres = getLayoutRes();
         const ischild = isChild(this.value)
         if (ischild) {
           $('#field_guardianid').show();
+          $('#field_guardian_relationship').show();
           $("#card_Guardian").hide();
           // $("#text_allow_patient_portal").hide();
           // $("#label_allow_patient_portal").hide();
         } else {
           $('#field_guardianid').hide();
+          $('#field_guardian_relationship').hide();
           $("#card_Guardian").show();
           // $("#text_allow_patient_portal").show();
           // $("#label_allow_patient_portal").show();
         }
       });
       $('#field_guardianid').hide();
+      $('#field_guardian_relationship').hide();
     });
   </script>
   <!-- include support for the list-add selectbox feature -->
