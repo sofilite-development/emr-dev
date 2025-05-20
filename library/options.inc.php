@@ -4209,9 +4209,11 @@ function display_layout_tabs_data_editable($formtype, $result1, $result2 = '')
                 $group_fields['smallform'] = ' form-control-sm mb-1 mw-100';
                 if ($group_name === "Guardian" && $result1["guardianid"]) {
                     echo generate_form_field($group_fields, $currvalue, true);
-                } else if (isChild($result1["DOB"]) && $group_fields['field_id'] === "allow_patient_portal") {
-                    echo generate_form_field($group_fields, $currvalue, true);
-                } else {
+                }
+                // else if (isChild($result1["DOB"]) && $group_fields['field_id'] === "allow_patient_portal") {
+                //     echo generate_form_field($group_fields, $currvalue, true);
+                // }
+                else {
                     echo generate_form_field($group_fields, $currvalue,);
                 }
                 if ($datacols == 0) {

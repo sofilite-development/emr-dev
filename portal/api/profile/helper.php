@@ -53,3 +53,28 @@ function getTableFields($table)
 
     return $fields;
 }
+
+function getLinkedPatient($patientId) {
+    $patientQuery = sqlStatement(
+        "SELECT fname, lname, mname, pid, allow_patient_portal 
+         FROM patient_data 
+         WHERE guardianid = ? 
+         AND TIMESTAMPDIFF(YEAR, DOB, CURDATE()) < 18
+         AND allow_patient_portal = 'YES'",
+        [$patientId]
+    );
+
+    $patient = [];
+
+    while($row = sqlFetchArray($patientQuery)){
+        // $fullNameParts = array_filter([
+        //     $row["fname"] ?? '',
+        //     $row["mname"] ?? '',
+        //     $row["lname"] ?? ''
+        // ]);
+        // $row["name"] = implode(" ", $fullNameParts);
+        $patient[] = $row;
+    }
+
+    return $patient;
+}

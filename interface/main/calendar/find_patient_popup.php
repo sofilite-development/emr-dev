@@ -20,7 +20,7 @@ require_once("$srcdir/patient.inc.php");
 use OpenEMR\Common\Acl\AclMain;
 use OpenEMR\Core\Header;
 
-$ischild = $_GET["is_child"];
+$ischild = $_GET["is_child"] ?? null;
 // echo $ischild;
 $info_msg = "";
 
@@ -242,8 +242,6 @@ if (!empty($_REQUEST['searchby']) && !empty($_REQUEST['searchparm'])) {
                     $(this).toggleClass("highlight");
                 });
                 $(".oneresult").click(function () {
-                    console.log("Sleect ")
-                    return
                     SelectPatient(this);
                 });
                 //ViSolve
