@@ -54,6 +54,8 @@ if (!$auth) {
 $_SESSION['guardian_username'] = $_SESSION['portal_username'];
 $_SESSION['guardian_login_username'] = $_SESSION["portal_login_username"];
 $_SESSION['is_sub_profile'] = true;
+$_SESSION['portal_username'] = null;
+$_SESSION["portal_login_username"] = null;
 
 $_SESSION['pid'] = $auth['pid'];
 $_SESSION['patient_portal_onsite_two'] = 1;
@@ -71,7 +73,7 @@ $_SESSION['authUser'] = 'portal-user';
 //  Note this key always remains private and never leaves server session. It is used to create
 //  the csrf tokens.
 CsrfUtils::setupCsrfKey();
-$logit->portalLog('login', $_SESSION['pid'], ("Relatives of ".$_SESSION['portal_username'] . ': ' . $_SESSION['ptName'] . ':success'));
+$logit->portalLog('login', $_SESSION['pid'], ("Relatives of " . $_SESSION['guardian_username'] . ': ' . $_SESSION['ptName'] . ':success'));
 
 
 function sanitizeData($data)
