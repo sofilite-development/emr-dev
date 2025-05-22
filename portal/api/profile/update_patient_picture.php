@@ -56,7 +56,7 @@ if (move_uploaded_file($file['tmp_name'], $targetPath)) {
 
     // Save relative path to DB
     $updateSql = "UPDATE patient_data SET profile_picture = ? WHERE pid = ?";
-    sqlStatement($updateSql, [$relativePath, $pid]);
+    sqlStatement($updateSql, [$publicUrl, $pid]);
 
     echo json_encode([
         'success' => true,
