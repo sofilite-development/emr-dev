@@ -40,6 +40,12 @@ function handleProcessedOrder()
                 return;
             }
 
+            if (!$data["externalOrderId"]) {
+                error_log("externalOrderId is required");
+                $msg->reject(false); // Reject the message without requeue
+                return;
+            }
+
             try {
                 // Check if order exists
                 $existingOrder = sqlQuery(
