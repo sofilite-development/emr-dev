@@ -539,7 +539,8 @@ function generate_order_report($orderid, $input_form = false, $genstyles = true,
                 <?php
 
                 if ($processed) {
-
+                    $orderData = json_decode($processed['order_data']);
+                    $reportLink = $orderData->reportLink ?? '#';
                     ?>
 
                     <tr>
@@ -548,160 +549,20 @@ function generate_order_report($orderid, $input_form = false, $genstyles = true,
                                 <div class="card">
                                     <div class="card-header" id=<?php echo "orderDetailsHeader" . $orderid; ?>>
                                         <h2 class="mb-0">
-                                            <button class="btn btn-light btn-block" type="button" data-toggle="collapse"
-                                                data-target=<?php echo "#orderDetailsCollapse" . $orderid; ?> aria-expanded="true"
-                                                aria-controls=<?php echo "orderDetailsCollapse" . $orderid; ?>>
-                                                View Processed Order Details
-                                            </button>
+                                            <a 
+                                                href=<?php echo attr($reportLink); ?>
+                                                target="_blank"
+                                                class="btn btn-light btn-block" 
+                                                >
+                                                View Report 
+                                            </a>
                                         </h2>
                                     </div>
-                                    <div id=<?php echo "orderDetailsCollapse" . $orderid; ?> class="collapse" aria-labelledby=<?php echo "orderDetailsHeader" . $orderid; ?>
-                                        data-parent=<?php echo "#orderDetailsAccordion" . $orderid; ?>>
-                                        <div class="card-body">
-                                            <table class="table table-striped table-bordered">
-                                                <tbody class="processedOrderDetails" id=<?php echo"processedOrderDetails".$orderid; ?>>
-                                                    <!-- JavaScript will populate this -->
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
+                                   
                                 </div>
                             </div>
-                            <style>
-                                .section-header {
-                                    background-color: var(--light);
-                                    font-weight: bold;
-                                    color: var(--dark);
-                                    padding: 8px;
-                                }
-
-                                .processedOrderDetails td:first-child {
-                                    width: 200px;
-                                    background-color: var(--light);
-                                    font-weight: bold;
-                                }
-
-                                .orderDetailsAccordion .card-header {
-                                    background-color: var(--light);
-                                }
-
-                                .orderDetailsAccordion .btn-link {
-                                    color: var(--dark);
-                                    text-decoration: none;
-                                    width: 100%;
-                                    text-align: left;
-                                }
-
-                                .orderDetailsAccordion .btn-link:hover,
-                                .orderDetailsAccordion .btn-link:focus {
-                                    text-decoration: none;
-                                }
-                            </style>
-                            <script>
-                                (function () {
-                                    const orderId = <?php echo $orderid; ?>;
-                                    const processedData = <?php echo json_encode($processed['order_data']); ?>;
-                                    const parsedData = typeof processedData === 'string' ? JSON.parse(processedData) : processedData;
-
-                                    let tableContent = '';
-
-                                    // Order Details Section
-                                    tableContent += `
-                                    <tr>
-                                        <td colspan="2" class="section-header text-center font-bold">Order Details</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Order ID</td>
-                                        <td>${parsedData?.externalOrderId || '-'}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Status</td>
-                                        <td>${parsedData?.status || '-'}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Date Collected</td>
-                                        <td>${parsedData?.dateCollected || '-'}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Origin</td>
-                                        <td>${parsedData?.origin || '-'}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Comments</td>
-                                        <td>${parsedData?.comment || '-'}</td>
-                                    </tr>
-
-                                    <!-- Patient Information -->
-                                    <tr>
-                                        <td colspan="2" class="section-header text-center font-bold">Patient Information</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Name</td>
-                                        <td>${parsedData?.patient?.firstName} ${parsedData?.patient?.middleName} ${parsedData?.patient?.lastName}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>MRN</td>
-                                        <td>${parsedData?.patient?.patientMrnId || '-'}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Gender</td>
-                                        <td>${parsedData?.patient?.gender || '-'}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>DOB</td>
-                                        <td>${parsedData?.patient?.dob || '-'}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Email</td>
-                                        <td>${parsedData?.patient?.email || '-'}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Address</td>
-                                        <td>${parsedData?.patient?.street}, ${parsedData?.patient?.city} ${parsedData?.patient?.state} ${parsedData?.patient?.zip}</td>
-                                    </tr>
-
-                                    <!-- Provider Information -->
-                                    <tr>
-                                        <td colspan="2" class="section-header text-center font-bold">Provider Information</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Name</td>
-                                        <td>${parsedData?.primaryProvider?.title} ${parsedData?.primaryProvider?.firstName} ${parsedData?.primaryProvider?.lastName}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>NPI</td>
-                                        <td>${parsedData?.primaryProvider?.providerNpi || '-'}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Email</td>
-                                        <td>${parsedData?.primaryProvider?.email || '-'}</td>
-                                    </tr>
-
-                                    <!-- Location Information -->
-                                    <tr>
-                                        <td colspan="2" class="section-header text-center font-bold">Location Information</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Name</td>
-                                        <td>${parsedData?.location?.name || '-'}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Type</td>
-                                        <td>${parsedData?.location?.customerType || '-'}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Email</td>
-                                        <td>${parsedData?.location?.email || '-'}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Phone</td>
-                                        <td>${parsedData?.location?.phone || '-'}</td>
-                                    </tr>`;
-
-                                    document.getElementById('processedOrderDetails'+orderId).innerHTML = tableContent;
-                                })();
-
-                            </script>
+                          
+                            
 
                         </td>
                     </tr>
