@@ -54,9 +54,10 @@ function getTableFields($table)
     return $fields;
 }
 
-function getLinkedPatient($patientId) {
+function getLinkedPatient($patientId)
+{
     $patientQuery = sqlStatement(
-        "SELECT fname, lname, mname, pid, allow_patient_portal 
+        "SELECT id, fname, lname, mname, pid, allow_patient_portal, profile_picture 
          FROM patient_data 
          WHERE guardianid = ? 
          AND TIMESTAMPDIFF(YEAR, DOB, CURDATE()) < 18
@@ -66,7 +67,7 @@ function getLinkedPatient($patientId) {
 
     $patient = [];
 
-    while($row = sqlFetchArray($patientQuery)){
+    while ($row = sqlFetchArray($patientQuery)) {
         // $fullNameParts = array_filter([
         //     $row["fname"] ?? '',
         //     $row["mname"] ?? '',

@@ -1,0 +1,1 @@
+ALTER TABLE patient_data ADD COLUMN profile_picture VARCHAR(255);
