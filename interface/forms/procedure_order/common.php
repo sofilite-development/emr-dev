@@ -241,7 +241,7 @@ if (($_POST['bn_save'] ?? null) || !empty($_POST['bn_xmit']) || !empty($_POST['b
             $rabbitMQ->sendMessage($orderData, 'order_created', );
             $rabbitMQ->close();
             // header("Location:".$_ENV["LABQ_FE_URL"]."/admin/orders/edit/" . $formid . "?type=anatomical");
-            echo "<script>window.open('" . $_ENV["LABQ_FE_URL"] . "/user/orders/edit/" . $formid . "?type=anatomical&from-origin=emr&origin=EMR', '_blank');</script>";
+            echo "<script>window.open('" . "https://labqfusion-dev.quantumleapcorp.com" . "/user/orders/edit/" . $formid . "?type=anatomical&from-origin=emr&origin=EMR', '_blank');</script>";
             exit;
         } catch (Exception $e) {
             error_log("Failed to queue order message: " . $e->getMessage());
