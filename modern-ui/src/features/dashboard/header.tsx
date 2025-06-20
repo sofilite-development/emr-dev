@@ -1,6 +1,5 @@
 import {
     ActionIcon,
-    Container,
     Menu,
     MenuDropdown,
     MenuTarget,
@@ -8,6 +7,7 @@ import {
     Group,
 } from "@mantine/core";
 import { IconBell } from "@tabler/icons-react";
+import { ThemeToggle } from "../../components/ThemeToggle";
 
 export const Header = () => {
     return (
@@ -19,6 +19,7 @@ export const Header = () => {
 
                 <Group>
                     <NotificationMenu />
+                    <ThemeToggle />
                 </Group>
             </div>
         </header>
@@ -29,7 +30,7 @@ const NotificationMenu = () => {
     return (
         <Menu>
             <MenuTarget>
-                <ActionIcon>
+                <ActionIcon size="lg" variant="default">
                     <IconBell size={22} />
                 </ActionIcon>
             </MenuTarget>
