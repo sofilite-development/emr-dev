@@ -18,9 +18,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useTheme } from "@/components/theme-provider";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { useMutation } from "@tanstack/react-query";
-import { api } from "@/lib/api";
-import { endpoints } from "@/constants/endpoints";
+
+import { useAuth } from "@/hooks/use-auth";
+import { cn } from "@/lib/utils";
 
 export const Header = () => {
     return (
@@ -38,19 +38,10 @@ export const Header = () => {
 };
 
 export const UserDropdown = () => {
-    const { mutate, isPending } = useMutation({
-        mutationFn: () => {
-            return api(endpoints.api.logout, {
-                method: "GET",
-            });
-        },
-        onError: () => {
-            console.log("Logout failed");
-        },
-        onSettled: () => {
-            window.location.href = endpoints.pages.login;
-        },
-    });
+    const {
+        logoutMutation: { mutate, isPending },
+        meQuery: { data, isSuccess },
+    } = useAuth();
     const handleLogout = () => {
         mutate();
     };
@@ -63,11 +54,15 @@ export const UserDropdown = () => {
                     className="h-10 !pl-2 pr-4 w-auto rounded-4xl border shadow-sm"
                 >
                     <UserCircleIcon className="size-6" />
-                    <span className="">Doctor name</span>
+                    <span className={cn(isSuccess ? "inline-block" : "hidden")}>
+                        {data?.data?.user?.firstName +
+                            " " +
+                            data?.data?.user?.lastName}
+                    </span>
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-64">
-                <DropdownMenuLabel>Provider</DropdownMenuLabel>
+                <DropdownMenuLabel className="capitalize">{data?.data?.user?.role}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
 
                 {[

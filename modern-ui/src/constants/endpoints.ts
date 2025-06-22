@@ -1,4 +1,5 @@
 export const endpoints = {
+    base: import.meta.env.VITE_API_BASE_URL,
     pages: {
         dashboard: "/dashboard",
         calender: "/calender",
@@ -11,4 +12,4 @@ export const endpoints = {
         dashboardStats: "/dashboard/stats.php",
         logout: "/logout.php"
     },
-};
+} ;
