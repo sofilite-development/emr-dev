@@ -1,8 +1,17 @@
-import { Bell, Sun, Moon } from "lucide-react";
+import {
+    Bell,
+    Sun,
+    Moon,
+    UserIcon,
+    SettingsIcon,
+    LogOutIcon,
+    UserCircleIcon,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
+    DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
@@ -13,14 +22,57 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 export const Header = () => {
     return (
         <header>
-            <div className="flex py-3 items-center px-4">
+            <div className="flex py-2 items-center px-4">
                 <SidebarTrigger />
-                <div className="ml-auto flex items-center space-x-4">
+                <div className="ml-auto flex items-center gap-1">
                     <NotificationMenu />
+                    <UserDropdown />
                     <ThemeToggle />
                 </div>
             </div>
         </header>
+    );
+};
+
+export const UserDropdown = () => {
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-10 !pl-2 pr-4 w-auto rounded-4xl border shadow-sm" >
+                    <UserCircleIcon className="size-6" />
+                    <span className="">Doctor name</span>
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-64">
+                <DropdownMenuLabel>Provider</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+
+                {[
+                    {
+                        label: "Profile",
+                        href: "/profile",
+                        icon: <UserIcon className={"size-5"} />,
+                    },
+                    {
+                        label: "Settings",
+                        href: "/settings",
+                        icon: <SettingsIcon className={"size-5"} />,
+                    },
+                    {
+                        label: "Logout",
+                        href: "/logout",
+                        icon: <LogOutIcon className={"size-5"} />,
+                    },
+                ].map((item) => (
+                    <DropdownMenuItem asChild key={item.label} className="mb-2">
+                        <a href={item.href} className="flex items-center">
+                            {item.icon}
+                            {item.label}
+                        </a>
+                    </DropdownMenuItem>
+                ))}
+            </DropdownMenuContent>
+        </DropdownMenu>
     );
 };
 
@@ -29,7 +81,7 @@ const NotificationMenu = () => {
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon">
-                    <Bell className="h-5 w-5" />
+                    <Bell className="size-5" />
                     <span className="sr-only">Notifications</span>
                 </Button>
             </DropdownMenuTrigger>
@@ -52,9 +104,10 @@ const ThemeToggle = () => {
             variant="ghost"
             size="icon"
             onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+            className="p-0"
         >
-            <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+            <Sun className="!h-5 !w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+            <Moon className="absolute !h-5 !w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
             <span className="sr-only">Toggle theme</span>
         </Button>
     );

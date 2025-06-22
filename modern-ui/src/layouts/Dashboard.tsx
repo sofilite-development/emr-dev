@@ -14,7 +14,7 @@ export const DashboardLayout = ({
                 <div className="  w-full rounded-l-[20px] rounded-2xl">
                     <Header />
 
-                    <ScrollArea className="h-[calc(100vh-70px)] bg-background rounded-xl">
+                    <ScrollArea className="h-[calc(100vh-70px)] bg-background rounded-l-xl rounded-b-none border-l border-t">
                         {children}
                     </ScrollArea>
                 </div>
