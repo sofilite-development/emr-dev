@@ -1,6 +1,7 @@
 import { config } from "@/config";
 import { endpoints } from "@/constants/endpoints";
 import { cn } from "@/lib/utils";
+import logo from "../assets/icon.png";
 
 interface Props {
     showIcon?: boolean;
@@ -28,7 +29,7 @@ export const Logo = ({
                 {showIcon && (
                     <div className={cn("p-[2px] rounded-lg ", classNames.icon)}>
                         <img
-                            src="/icon.png"
+                            src={logo}
                             alt="Quantum leap"
                             loading="lazy"
                             className="max-w-9 max-h-9 w-full object-contain"

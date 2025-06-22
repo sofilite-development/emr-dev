@@ -18,6 +18,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useTheme } from "@/components/theme-provider";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useMutation } from "@tanstack/react-query";
+import { api } from "@/lib/api";
+import { endpoints } from "@/constants/endpoints";
 
 export const Header = () => {
     return (
@@ -35,10 +38,30 @@ export const Header = () => {
 };
 
 export const UserDropdown = () => {
+    const { mutate, isPending } = useMutation({
+        mutationFn: () => {
+            return api(endpoints.api.logout, {
+                method: "GET",
+            });
+        },
+        onError: () => {
+            console.log("Logout failed");
+        },
+        onSettled: () => {
+            window.location.href = endpoints.pages.login;
+        },
+    });
+    const handleLogout = () => {
+        mutate();
+    };
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-10 !pl-2 pr-4 w-auto rounded-4xl border shadow-sm" >
+                <Button
+                    variant="ghost"
+                    className="h-10 !pl-2 pr-4 w-auto rounded-4xl border shadow-sm"
+                >
                     <UserCircleIcon className="size-6" />
                     <span className="">Doctor name</span>
                 </Button>
@@ -58,11 +81,6 @@ export const UserDropdown = () => {
                         href: "/settings",
                         icon: <SettingsIcon className={"size-5"} />,
                     },
-                    {
-                        label: "Logout",
-                        href: "/logout",
-                        icon: <LogOutIcon className={"size-5"} />,
-                    },
                 ].map((item) => (
                     <DropdownMenuItem asChild key={item.label} className="mb-2">
                         <a href={item.href} className="flex items-center">
@@ -71,6 +89,10 @@ export const UserDropdown = () => {
                         </a>
                     </DropdownMenuItem>
                 ))}
+                <DropdownMenuItem disabled={isPending} onClick={handleLogout}>
+                    <LogOutIcon className="size-5" />
+                    <span className="">Logout</span>
+                </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     );

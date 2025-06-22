@@ -8,7 +8,8 @@
     "css": "src/index.css",
     "baseColor": "dark",
     "cssVariables": true,
-    "prefix": ""
+    "prefix": "",
+    "important": "#react-root"
   },
   "aliases": {
     "components": "@/components",

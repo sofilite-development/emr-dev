@@ -1,10 +1,11 @@
 import { DashboardLayout } from "../layouts/Dashboard";
+import { DashboardElements } from "@/features/dashboard";
 
 export const Dashboard = () => {
     return (
         <>
             <DashboardLayout>
-                <h1 className="mt-4">Dashboard</h1>
+                <DashboardElements />
             </DashboardLayout>
         </>
     );

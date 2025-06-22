@@ -1,6 +1,11 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Reset styles for the react app container */
+/* #react-root, #react-root * {
+  all: revert;
+} */
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -187,3 +192,4 @@
         @apply bg-background text-foreground;
     }
 }
+
