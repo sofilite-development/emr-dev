@@ -1,10 +1,14 @@
-import axios, { type AxiosRequestConfig, type AxiosResponse } from "axios";
+import axios, { type AxiosRequestConfig} from "axios";
+
+const isDevelopment = import.meta.env.DEV;
+const baseURL = isDevelopment 
+    ? '/api/interface/main/dashboard/api'  // Uses the Vite proxy in development
+    : import.meta.env.VITE_BASE_URL + "/interface/main/dashboard/api";  // Uses the actual URL in production
 
 const _api = axios.create({
-    baseURL: import.meta.env.VITE_BASE_URL + "/interface/main/dashboard/api",
+    baseURL,
     withCredentials: true,
 });
-
 
 _api.interceptors.request.use((config) => {
     const contentType =
@@ -13,19 +17,22 @@ _api.interceptors.request.use((config) => {
             : "application/json";
 
     config.headers["Content-Type"] = contentType;
-
-    // config.headers["X-CSRF-Token"] = getCsrfToken();
+    
+    // Add any additional headers needed for your API
+    if (!isDevelopment) {
+        // config.headers["X-CSRF-Token"] = getCsrfToken();
+    }
 
     return config;
 });
 
 export const api = async <T>(
     url: string,
-    config: AxiosRequestConfig
+    config: AxiosRequestConfig = {}
 ): Promise<T> =>
     _api
         .request<T>({
             url,
             ...config,
         })
-        .then((res: AxiosResponse<T>) => res.data);
+        .then((response) => response.data);

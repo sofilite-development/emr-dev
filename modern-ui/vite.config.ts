@@ -12,16 +12,26 @@ export default defineConfig({
             "@": path.resolve(__dirname, "./src"),
         },
     },
+    server: {
+        proxy: {
+            "/api": {
+                target: "http://localhost:8000", // Your PHP server address
+                changeOrigin: true,
+                secure: false,
+                rewrite: (path) => path.replace(/^\/api/, ""),
+            },
+        },
+    },
     build: {
         rollupOptions: {
             output: {
                 entryFileNames: `assets/js/script.js`,
                 chunkFileNames: `assets/js/[name].js`,
                 assetFileNames: (assetInfo) => {
-                    if (assetInfo.name && assetInfo.name.endsWith('.css')) {
-                        return 'assets/css/styles.css';
+                    if (assetInfo.name && assetInfo.name.endsWith(".css")) {
+                        return "assets/css/styles.css";
                     }
-                    return 'assets/[name][extname]';
+                    return "assets/[name][extname]";
                 },
             },
         },
