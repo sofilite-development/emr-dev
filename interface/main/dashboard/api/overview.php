@@ -68,7 +68,7 @@ JOIN patient_data pd ON pd.pid = po.patient_id
 WHERE po.provider_id = ?
 AND po.order_status IN ('pending', 'routed', 'in_progress')
 ORDER BY po.date_ordered DESC
-LIMIT 50",
+LIMIT 20",
         array($provider_id)
     );
 
