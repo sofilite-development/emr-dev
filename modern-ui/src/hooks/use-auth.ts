@@ -7,7 +7,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useAuth = () => {
 
-
     const meQuery = useQuery({
         queryKey: [queryKeys.me],
         queryFn: () => {
@@ -20,10 +19,6 @@ export const useAuth = () => {
         },
         
     });
-
-
-
-
 
     const logoutMutation = useMutation({
         mutationFn: () => {
