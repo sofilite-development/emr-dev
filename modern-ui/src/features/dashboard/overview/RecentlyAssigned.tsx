@@ -11,12 +11,14 @@ import type { OverviewResponse } from "../type";
 export function RecentlyAssigned({
     procedure_orders,
     isLoading,
+    className
 }: {
     procedure_orders: OverviewResponse["data"]["procedure_orders"];
     isLoading: boolean;
+    className?:string
 }) {
     return (
-        <div className="blue-gradient mt-4 p-4 max-w-3xl rounded-lg relative overflow-hidden">
+        <div className={cn("blue-gradient mt-4 p-4 rounded-lg relative overflow-hidden", className)}>
             <h3 className="text-white text-2xl font-semibold">
                 Recently Assigned Tasks
                 <Badge className="ml-2 mb-2 bg-white text-black text-xl">

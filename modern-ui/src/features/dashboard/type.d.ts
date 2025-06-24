@@ -11,6 +11,22 @@ export interface Order {
     patient: PatientInfo;
 }
 
+export interface Message {
+    id: number;
+    title: string;
+    body: string;
+    date: string;
+    status: string;
+    sender: {
+        id: string;
+        name: string;
+    };
+    recipient: {
+        id: string;
+        name: string;
+    };
+}
+
 export interface PatientTrackerData {
     id: number;
     apptdate: string;
@@ -34,6 +50,7 @@ export interface OverviewResponse {
         patient_trackers: PatientTrackerData[];
         procedure_orders: Order[];
         calendar_events: CalendarEvent[];
+        messages: Message[];
         timestamp: string; // ISO date string
     };
 }
