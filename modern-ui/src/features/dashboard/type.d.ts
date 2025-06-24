@@ -19,13 +19,21 @@ export interface PatientTrackerData {
     patient: PatientInfo;
 }
 
+export interface CalendarEvent {
+    id: number;
+    title: string;
+    date: string;
+    startTime: string;
+    endTime: string;
+    dateTime: string;
+}
+
 export interface OverviewResponse {
     success: boolean;
     data: {
         patient_trackers: PatientTrackerData[];
         procedure_orders: Order[];
+        calendar_events: CalendarEvent[];
         timestamp: string; // ISO date string
     };
-    error?: string; // Only present when success is false
 }
-

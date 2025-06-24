@@ -12,7 +12,6 @@ interface User {
 
 interface UserContextType {
     user: User | null;
-    setUser: (user: User) => void;
 }
 // interface ErrRes {
 //     error: string;
@@ -46,7 +45,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     }, [meQuery.isError, meQuery.data]);
 
     return (
-        <UserContext.Provider value={{ user, setUser }}>
+        <UserContext.Provider value={{ user }}>
             {children}
         </UserContext.Provider>
     );
