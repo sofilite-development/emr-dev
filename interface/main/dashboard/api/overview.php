@@ -19,6 +19,54 @@ if (empty($_SESSION['authUser'])) {
     exit;
 }
 
+function getMessages ($provider_id) {
+    // Get latest messages
+$messagesQuery = sqlStatement(
+    "SELECT 
+        m.id as message_id,
+        m.title,
+        m.body,
+        m.date as message_date,
+        m.sender_id,
+        m.sender_name,
+        m.recipient_id,
+        m.recipient_name,
+        m.message_status,
+        pd1.fname as sender_fname,
+        pd1.lname as sender_lname,
+        pd2.fname as recipient_fname,
+        pd2.lname as recipient_lname
+    FROM onsite_mail m
+    LEFT JOIN patient_data pd1 ON pd1.pid = m.sender_id
+    LEFT JOIN patient_data pd2 ON pd2.pid = m.recipient_id
+    WHERE (m.sender_id = ? OR m.recipient_id = ?)
+    AND m.deleted = 0
+    ORDER BY m.date DESC
+    LIMIT 10",
+    array($provider_id, $provider_id)
+);
+
+$messages = [];
+while ($row = sqlFetchArray($messagesQuery)) {
+    $messages[] = [
+        'id' => $row['message_id'],
+        'title' => $row['title'],
+        'body' => mb_strimwidth($row['body'], 0, 100, '...'), // Truncate long messages
+        'date' => $row['message_date'],
+        'status' => $row['message_status'],
+        'sender' => [
+            'id' => $row['sender_id'],
+            'name' => $row['sender_name'] ?: ($row['sender_fname'] . ' ' . $row['sender_lname'])
+        ],
+        'recipient' => [
+            'id' => $row['recipient_id'],
+            'name' => $row['recipient_name'] ?: ($row['recipient_fname'] . ' ' . $row['recipient_lname'])
+        ]
+    ];
+}
+return $messages;
+}
+
 try {
     $username = $_SESSION['authUser'];
     $user = sqlQuery('SELECT id, username, fname, lname, authorized FROM users WHERE username = ?', array($username));
@@ -113,10 +161,13 @@ LIMIT 20",
         ];
     }
 
+    $messages = getMessages($provider_id);
+
     $data = [
         'patient_trackers' => $patientTrackers,
         'procedure_orders' => $procedureOrders,
         'calendar_events' => $calendarEvents,
+        'messages' => $messages,
         'timestamp' => date('Y-m-d H:i:s'),
     ];
 
