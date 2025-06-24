@@ -1,4 +1,4 @@
 export const queryKeys = {
-    dashboardStats: "dashboard-stats",
+    dashboardOverview: "dashboardOverview",
     me: "me",
 };

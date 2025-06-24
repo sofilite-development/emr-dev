@@ -9,7 +9,7 @@ export const endpoints = {
     },
     api: {
         me: "/me.php",
-        dashboardStats: "/dashboard/stats.php",
-        logout: "/logout.php"
+        dashboardOverview: "/overview.php",
+        logout: "/logout.php",
     },
-} ;
+};

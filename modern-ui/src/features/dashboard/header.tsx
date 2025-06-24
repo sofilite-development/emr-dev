@@ -2,8 +2,8 @@ import {
     Bell,
     Sun,
     Moon,
-    UserIcon,
-    SettingsIcon,
+    // UserIcon,
+    // SettingsIcon,
     LogOutIcon,
     UserCircleIcon,
 } from "lucide-react";
@@ -40,7 +40,7 @@ export const Header = () => {
 export const UserDropdown = () => {
     const {
         logoutMutation: { mutate, isPending },
-        meQuery: { data, isSuccess },
+        user,
     } = useAuth();
     const handleLogout = () => {
         mutate();
@@ -54,18 +54,16 @@ export const UserDropdown = () => {
                     className="h-10 !pl-2 pr-4 w-auto rounded-4xl border shadow-sm"
                 >
                     <UserCircleIcon className="size-6" />
-                    <span className={cn(isSuccess ? "inline-block" : "hidden")}>
-                        {data?.data?.user?.firstName +
-                            " " +
-                            data?.data?.user?.lastName}
+                    <span className={cn(!!user && !!user?.name ? "inline-block" : "hidden")}>
+                        {user?.name}
                     </span>
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-64">
-                <DropdownMenuLabel className="capitalize">{data?.data?.user?.role}</DropdownMenuLabel>
+                <DropdownMenuLabel className="capitalize">{user?.role}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
 
-                {[
+                {/* {[
                     {
                         label: "Profile",
                         href: "/profile",
@@ -83,7 +81,7 @@ export const UserDropdown = () => {
                             {item.label}
                         </a>
                     </DropdownMenuItem>
-                ))}
+                ))} */}
                 <DropdownMenuItem disabled={isPending} onClick={handleLogout}>
                     <LogOutIcon className="size-5" />
                     <span className="">Logout</span>

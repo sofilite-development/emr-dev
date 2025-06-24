@@ -193,3 +193,10 @@
     }
 }
 
+.container {
+    @apply max-w-7xl mx-auto px-4 sm:px-4;
+}
+
+.blue-gradient {
+    @apply bg-gradient-to-r from-blue-700 via-blue-600 to-blue-500;
+}
