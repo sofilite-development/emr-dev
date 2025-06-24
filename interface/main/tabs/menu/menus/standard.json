@@ -3,7 +3,7 @@
         "label": "Dashboard",
         "menu_id": "dashboard",
         "target": "_blank",
-        "url": "/interface/dashboard/doctor.php",
+        "url": "/interface/main/dashboard/index.php",
         "children": [],
         "requirement": 0,
         "acl_req": ["patients", "appt"],

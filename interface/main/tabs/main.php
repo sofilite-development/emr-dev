@@ -45,9 +45,11 @@ if (
 }
 // this will not allow copy/paste of the link to this main.php page or a refresh of this main.php page
 //  (default behavior, however, this behavior can be turned off in the prevent_browser_refresh global)
-if ($GLOBALS['prevent_browser_refresh'] > 1) {
-    unset($_SESSION['token_main_php']);
-}
+
+// ^ This prevents browser refresh
+// if ($GLOBALS['prevent_browser_refresh'] > 1) {
+//     unset($_SESSION['token_main_php']);
+// }
 
 $esignApi = new Api();
 ?>

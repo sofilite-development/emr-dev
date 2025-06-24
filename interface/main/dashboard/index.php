@@ -16,9 +16,8 @@
  * @copyright Copyright (c) 2024 Care Management Solutions, Inc. <stephen.waite@cmsvt.com>
  * @license   https://github.com/openemr/openemr/blob/master/LICENSE GNU General Public License 3
  */
-
 $sessionAllowWrite = true;
-require_once(__DIR__ . '/../globals.php');
+require_once (__DIR__ . '/../../globals.php');
 require_once $GLOBALS['srcdir'] . '/ESign/Api.php';
 
 use Esign\Api;
@@ -32,19 +31,19 @@ $menuLogo = $logoService->getLogo('core/menu/primary/');
 
 // Ensure token_main matches so this script can not be run by itself
 //  If do not match, then destroy the session and go back to login screen
+
 if (
-    (empty($_SESSION['token_main_php'])) ||
-    (empty($_GET['token_main'])) ||
-    ($_GET['token_main'] != $_SESSION['token_main_php'])
+    (empty($_SESSION['token_main_php']))
 ) {
     // Below functions are from auth.inc, which is included in globals.php
     authCloseSession();
     authLoginScreen(false);
+    header('Location: ' . $web_root . 'interface/login/login.php');
 }
 // this will not allow copy/paste of the link to this main.php page or a refresh of this main.php page
 //  (default behavior, however, this behavior can be turned off in the prevent_browser_refresh global)
 
-// ^ TO PREVENT REFRESH 
+// ^ TO PREVENT REFRESH
 // if ($GLOBALS['prevent_browser_refresh'] > 1) {
 //     unset($_SESSION['token_main_php']);
 // }
@@ -65,7 +64,7 @@ $esignApi = new Api();
     //
     // prepare newcrop globals that are used in creating the menu
     if ($GLOBALS['erx_enable']) {
-        $newcrop_user_role_sql = sqlQuery("SELECT `newcrop_user_role` FROM `users` WHERE `username` = ?", array($_SESSION['authUser']));
+        $newcrop_user_role_sql = sqlQuery('SELECT `newcrop_user_role` FROM `users` WHERE `username` = ?', array($_SESSION['authUser']));
         $GLOBALS['newcrop_user_role'] = $newcrop_user_role_sql['newcrop_user_role'];
         if ($GLOBALS['newcrop_user_role'] === 'erxadmin') {
             $GLOBALS['newcrop_user_role_erxadmin'] = 1;
@@ -81,26 +80,22 @@ $esignApi = new Api();
     ?>
 
    
-    <?php $userQuery = sqlQuery("select * from users where username = ?", array($_SESSION['authUser'])); ?>
+    <?php
+    $userQuery = sqlQuery('select * from users where username = ?', array($_SESSION['authUser']));
+
+    ?>
    
 
-    <script defer src="../../modern-ui/dist/assets/index.js"></script>
-    <link rel="stylesheet" href="../../modern-ui/dist/assets/style.css" />
+    <!-- <script defer src="../../../modern-ui/dist/assets/js/script.js"></script>
+    <link rel="stylesheet" href="../../../modern-ui/dist/assets/css/styles.css" /> -->
 
 </head>
 
 <body>
-    <div id="root"></div>
+    <!-- <div id="root"></div> -->
+<iframe src="../../../modern-ui/dist/index.html" style="width:100%; height:100%; border:none;"></iframe>
 
-    <script>
-        window.__DATA__ = <?= json_encode([
-            'doctorName' => $_SESSION['authUser'],
-            'tasks' => [
-                ['title' => 'Patient Rounds', 'time' => '04:00 PM'],
-                ['title' => 'Lab Test Review', 'time' => '04:30 PM'],
-            ]
-        ]) ?>;
-    </script>
+  
 </body>
 
 </html>

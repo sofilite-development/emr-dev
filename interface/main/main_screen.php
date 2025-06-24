@@ -16,7 +16,7 @@
 
 // Set $sessionAllowWrite to true to prevent session concurrency issues during authorization and app setup related code
 $sessionAllowWrite = true;
-require_once('../globals.php');
+require_once ('../globals.php');
 
 use OpenEMR\Common\Auth\AuthUtils;
 use OpenEMR\Common\Crypto\CryptoGen;
@@ -28,9 +28,9 @@ use OpenEMR\Services\FacilityService;
 use OpenEMR\Services\ListService;
 use u2flib_server\U2F;
 
-///////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////
 // Functions to support MFA.
-///////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////
 
 function posted_to_hidden($name)
 {
@@ -45,7 +45,7 @@ function generate_html_start()
     <html>
     <head>
     <?php Header::setupHeader(); ?>
-    <title><?php echo xlt("MFA Authorization"); ?></title>
+    <title><?php echo xlt('MFA Authorization'); ?></title>
     <style>
     .alert-msg {
         font-size:100%;
@@ -76,7 +76,7 @@ function generate_html_u2f()
                 registeredKeys,
                 function (data) {
                     if (data.errorCode && data.errorCode != 0) {
-                        alert(<?php echo xlj("Key access failed with error"); ?> +' ' + data.errorCode);
+                        alert(<?php echo xlj('Key access failed with error'); ?> +' ' + data.errorCode);
                         return;
                     }
                     f.form_response.value = JSON.stringify(data);
@@ -89,6 +89,7 @@ function generate_html_u2f()
     </script>
     <?php
 }
+
 function input_focus()
 {
     ?>
@@ -115,15 +116,16 @@ function generate_html_middle()
     posted_to_hidden('clearPass');
 }
 
-require_once(dirname(__FILE__) . "/../../src/Common/Session/SessionUtil.php");
+require_once (dirname(__FILE__) . '/../../src/Common/Session/SessionUtil.php');
+
 function generate_html_end()
 {
     // to be safe, remove clearPass from memory now (if it is not empty yet)
-    if (!empty($_POST["clearPass"])) {
+    if (!empty($_POST['clearPass'])) {
         if (function_exists('sodium_memzero')) {
-            sodium_memzero($_POST["clearPass"]);
+            sodium_memzero($_POST['clearPass']);
         } else {
-            $_POST["clearPass"] = '';
+            $_POST['clearPass'] = '';
         }
     }
     echo "</div></body></html>\n";
@@ -131,16 +133,20 @@ function generate_html_end()
     return 0;
 }
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 if (isset($_POST['new_login_session_management'])) {
-///////////////////////////////////////////////////////////////////////
-// Begin code to support U2F and APP Based TOTP logic.
-///////////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////////
+    // Begin code to support U2F and APP Based TOTP logic.
+    // /////////////////////////////////////////////////////////////////////
     $errormsg = '';
-    $regs = array();          // for mapping device handles to their names
-    $registrations = array(); // the array of stored registration objects
+    $regs = array();  // for mapping device handles to their names
+    $registrations = array();  // the array of stored registration objects
     $res1 = sqlStatement(
-        "SELECT a.name, a.method, a.var1 FROM login_mfa_registrations AS a " .
-        "WHERE a.user_id = ? AND (a.method = 'TOTP' OR a.method = 'U2F') ORDER BY a.name",
+        'SELECT a.name, a.method, a.var1 FROM login_mfa_registrations AS a '
+            . "WHERE a.user_id = ? AND (a.method = 'TOTP' OR a.method = 'U2F') ORDER BY a.name",
         array($_SESSION['authUserID'])
     );
 
@@ -154,7 +160,7 @@ if (isset($_POST['new_login_session_management'])) {
             $regobj = json_decode($row1['var1']);
             $regs[json_encode($regobj->keyHandle)] = $row1['name'];
             $registrations[] = $regobj;
-        } else { // $row1['method'] == 'TOTP'
+        } else {  // $row1['method'] == 'TOTP'
             $isTOTP = true;
         }
     }
@@ -165,7 +171,7 @@ if (isset($_POST['new_login_session_management'])) {
         if ($isU2F) {
             // There is at least one U2F key registered so we have to request or verify key data.
             // https is required, and with a proxy the server might not see it.
-            $scheme = "https://"; // isset($_SERVER['HTTPS']) ? "https://" : "http://";
+            $scheme = 'https://';  // isset($_SERVER['HTTPS']) ? "https://" : "http://";
             $appId = $scheme . $_SERVER['HTTP_HOST'];
             $u2f = new u2flib_server\U2F($appId);
         }
@@ -173,7 +179,7 @@ if (isset($_POST['new_login_session_management'])) {
         $form_response = empty($_POST['form_response']) ? '' : $_POST['form_response'];
         if ($form_response) {
             // TOTP METHOD enabled if TOTP is visible in post request
-            if (isset($_POST['totp']) && trim($_POST['totp']) != "" && $isTOTP) {
+            if (isset($_POST['totp']) && trim($_POST['totp']) != '' && $isTOTP) {
                 $errormsg = false;
 
                 $form_response = '';
@@ -194,13 +200,13 @@ if (isset($_POST['new_login_session_management'])) {
                 if (empty($secret)) {
                     // Second, try the password hash, which was setup during install and is temporary
                     $passwordResults = privQuery(
-                        "SELECT password FROM users_secure WHERE username = ?",
-                        array($_POST["authUser"])
+                        'SELECT password FROM users_secure WHERE username = ?',
+                        array($_POST['authUser'])
                     );
-                    if (!empty($passwordResults["password"])) {
-                        $secret = $cryptoGen->decryptStandard($registrationSecret, $passwordResults["password"]);
+                    if (!empty($passwordResults['password'])) {
+                        $secret = $cryptoGen->decryptStandard($registrationSecret, $passwordResults['password']);
                         if (!empty($secret)) {
-                            error_log("Disregard the decryption failed authentication error reported above this line; it is not an error.");
+                            error_log('Disregard the decryption failed authentication error reported above this line; it is not an error.');
                             // Re-encrypt with the more secure standard key
                             $secretEncrypt = $cryptoGen->encryptStandard($secret);
                             privStatement(
@@ -219,19 +225,19 @@ if (isset($_POST['new_login_session_management'])) {
                 if ($form_response) {
                     // Keep track of when challenges were last answered correctly.
                     privStatement(
-                        "UPDATE users_secure SET last_challenge_response = NOW() WHERE id = ?",
+                        'UPDATE users_secure SET last_challenge_response = NOW() WHERE id = ?',
                         array($_SESSION['authUserID'])
                     );
                 } else {
-                    $errormsg = xl("The code you entered was not valid");
-                    $errortype = "TOTP";
+                    $errormsg = xl('The code you entered was not valid');
+                    $errortype = 'TOTP';
                 }
-            } elseif ($isU2F) { // Otherwise use U2F METHOD
+            } elseif ($isU2F) {  // Otherwise use U2F METHOD
                 // We have key data, check if it matches what was registered.
-                $tmprow = sqlQuery("SELECT login_work_area FROM users_secure WHERE id = ?", array($userid));
+                $tmprow = sqlQuery('SELECT login_work_area FROM users_secure WHERE id = ?', array($userid));
                 try {
                     $registration = $u2f->doAuthenticate(
-                        json_decode($tmprow['login_work_area']), // these are the original challenge requests
+                        json_decode($tmprow['login_work_area']),  // these are the original challenge requests
                         $registrations,
                         json_decode($_POST['form_response'])
                     );
@@ -240,8 +246,8 @@ if (isset($_POST['new_login_session_management'])) {
                     $strhandle = json_encode($registration->keyHandle);
                     if (isset($regs[$strhandle])) {
                         sqlStatement(
-                            "UPDATE login_mfa_registrations SET `var1` = ? WHERE " .
-                            "`user_id` = ? AND `method` = 'U2F' AND `name` = ?",
+                            'UPDATE login_mfa_registrations SET `var1` = ? WHERE '
+                                . "`user_id` = ? AND `method` = 'U2F' AND `name` = ?",
                             array(json_encode($registration), $userid, $regs[$strhandle])
                         );
                     } else {
@@ -249,14 +255,14 @@ if (isset($_POST['new_login_session_management'])) {
                     }
                     // Keep track of when challenges were last answered correctly.
                     sqlStatement(
-                        "UPDATE users_secure SET last_challenge_response = NOW() WHERE id = ?",
+                        'UPDATE users_secure SET last_challenge_response = NOW() WHERE id = ?',
                         array($_SESSION['authUserID'])
                     );
                 } catch (u2flib_server\Error $e) {
                     // Authentication failed so we will build the U2F form again.
                     $form_response = '';
-                    $errormsg = xl('U2F Key Authentication error') . ": " . $e->getMessage();
-                    $errortype = "U2F";
+                    $errormsg = xl('U2F Key Authentication error') . ': ' . $e->getMessage();
+                    $errortype = 'U2F';
                 }
             } else {
                 // do nothing
@@ -279,7 +285,7 @@ if (isset($_POST['new_login_session_management'])) {
                 echo '        <h2>' . xlt('TOTP Verification') . '</h2>';
                 echo '    </div>';
                 echo '</div>';
-                if ($errormsg && $errortype == "TOTP") {
+                if ($errormsg && $errortype == 'TOTP') {
                     echo '<div class="row"><div class="col-sm-12"><div class="alert alert-danger alert-msg">' . text($errormsg) . '</div></div></div>';
                 }
 
@@ -311,7 +317,7 @@ if (isset($_POST['new_login_session_management'])) {
                 $requests = json_encode($u2f->getAuthenticateData($registrations));
                 // Persist the challenge also in the database because the browser is untrusted.
                 sqlStatement(
-                    "UPDATE users_secure SET login_work_area = ? WHERE id = ?",
+                    'UPDATE users_secure SET login_work_area = ? WHERE id = ?',
                     array($requests, $userid)
                 );
 
@@ -321,7 +327,7 @@ if (isset($_POST['new_login_session_management'])) {
                 echo '        <h2>' . xlt('U2F Key Verification') . '</h2>';
                 echo '    </div>';
                 echo '</div>';
-                if ($errormsg && $errortype == "U2F") {
+                if ($errormsg && $errortype == 'U2F') {
                     echo '<div class="row"><div class="col-sm-12"><div class="alert alert-danger  alert-msg">' . text($errormsg) . '</div></div></div>';
                 }
                 echo '<div class="row">';
@@ -352,10 +358,9 @@ if (isset($_POST['new_login_session_management'])) {
             exit(generate_html_end());
         }
     }
-    ///////////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////////
     // End of U2F and APP Based TOTP logic.
-    ///////////////////////////////////////////////////////////////////////
-
+    // /////////////////////////////////////////////////////////////////////
 
     // Creates a new session id when load this outer frame
     // (allows creations of separate OpenEMR frames to view patients concurrently
@@ -369,13 +374,13 @@ if (isset($_POST['new_login_session_management'])) {
     session_regenerate_id(true);
     // Also need to delete clearPass from memory
     if (function_exists('sodium_memzero')) {
-        sodium_memzero($_POST["clearPass"]);
+        sodium_memzero($_POST['clearPass']);
     } else {
-        $_POST["clearPass"] = '';
+        $_POST['clearPass'] = '';
     }
 } else {
     // This is not a new login, so check csrf and then create a new session id and do NOT remove the old session
-    if (!CsrfUtils::verifyCsrfToken($_POST["csrf_token_form"])) {
+    if (!CsrfUtils::verifyCsrfToken($_POST['csrf_token_form'])) {
         CsrfUtils::csrfNotVerified();
     }
     session_regenerate_id(false);
@@ -388,12 +393,12 @@ CsrfUtils::setupCsrfKey();
 //  At this time only used for lastupdate tracking
 SessionTracker::setupSessionDatabaseTracker();
 
-$_SESSION["encounter"] = '';
+$_SESSION['encounter'] = '';
 
 if ($GLOBALS['login_into_facility']) {
     $facility_id = $_POST['facility'];
     if ($facility_id === 'user_default') {
-        //get the default facility of login user from users table
+        // get the default facility of login user from users table
         $facilityService = new FacilityService();
         $facility = $facilityService->getFacilityForUser($_SESSION['authUserID']);
         $facility_id = $facility['id'];
@@ -401,19 +406,19 @@ if ($GLOBALS['login_into_facility']) {
     $_SESSION['facilityId'] = $facility_id;
     if ($GLOBALS['set_facility_cookie']) {
         // set cookie with facility for the calender screens
-        setcookie("pc_facility", $_SESSION['facilityId'], time() + (3600 * 365), $GLOBALS['webroot']);
+        setcookie('pc_facility', $_SESSION['facilityId'], time() + (3600 * 365), $GLOBALS['webroot']);
     }
 }
 
 // Fetch the password expiration date (note LDAP skips this)
 $is_expired = false;
 if ((!AuthUtils::useActiveDirectory()) && ($GLOBALS['password_expiration_days'] != 0) && (check_integer($GLOBALS['password_expiration_days']))) {
-    $result = privQuery("select `last_update_password` from `users_secure` where `id` = ?", [$_SESSION['authUserID']]);
+    $result = privQuery('select `last_update_password` from `users_secure` where `id` = ?', [$_SESSION['authUserID']]);
     $current_date = date('Y-m-d');
     if (!empty($result['last_update_password'])) {
         $pwd_last_update = $result['last_update_password'];
     } else {
-        error_log("OpenEMR ERROR: there is a problem with recording of last_update_password entry in users_secure table");
+        error_log('OpenEMR ERROR: there is a problem with recording of last_update_password entry in users_secure table');
         $pwd_last_update = $current_date;
     }
 
@@ -431,33 +436,33 @@ $listSvc = new ListService();
 $_tabs = $listSvc->getOptionsByListName('default_open_tabs', ['activity' => 1]);
 
 if ($is_expired) {
-    //display the php file containing the password expiration message.
+    // display the php file containing the password expiration message.
     array_unshift($_tabs, [
-        'notes' => "pwd_expires_alert.php?csrf_token_form=" . attr_url(CsrfUtils::collectCsrfToken()),
-        'id' => "adm",
-        "label" => xl("Password Reset"),
+        'notes' => 'pwd_expires_alert.php?csrf_token_form=' . attr_url(CsrfUtils::collectCsrfToken()),
+        'id' => 'adm',
+        'label' => xl('Password Reset'),
     ]);
 } elseif (!empty($_POST['patientID'])) {
     // Patient is open, so add this to the list of tabs, at the end
     $patientID = (int) $_POST['patientID'];
-    $_notes = "../patient_file/summary/demographics.php?set_pid=" . attr_url($patientID);
+    $_notes = '../patient_file/summary/demographics.php?set_pid=' . attr_url($patientID);
     if (!empty($_POST['encounterID'])) {
         $encounterID = (int) $_POST['encounterID'];
-        $_notes = $_notes . "&set_encounterid=" . attr_url($encounterID);
+        $_notes = $_notes . '&set_encounterid=' . attr_url($encounterID);
     }
     $_tabs[] = [
         'notes' => $_notes,
-        'id' => "pat",
-        'label' => xl("Dashboard"),
+        'id' => 'pat',
+        'label' => xl('Dashboard'),
     ];
-} elseif (isset($_GET['mode']) && $_GET['mode'] == "loadcalendar") {
+} elseif (isset($_GET['mode']) && $_GET['mode'] == 'loadcalendar') {
     // Load the calendar, at the end
-    $_notes = "calendar/index.php?pid=" . attr_url($_GET['pid']);
-    $_notes = (isset($_GET['date'])) ? $_notes . "&date=" . attr_url($_GET['date']) : $_notes;
+    $_notes = 'calendar/index.php?pid=' . attr_url($_GET['pid']);
+    $_notes = (isset($_GET['date'])) ? $_notes . '&date=' . attr_url($_GET['date']) : $_notes;
     $_tabs[] = [
         'notes' => $_notes,
-        'id' => "cal",
-        "label" => xl("Calendar"),
+        'id' => 'cal',
+        'label' => xl('Calendar'),
     ];
 }
 
@@ -470,6 +475,7 @@ if ((isset($_POST['appChoice'])) && ($_POST['appChoice'] !== '*OpenEMR')) {
 
 // Pass a unique token, so main.php script can not be run on its own
 $_SESSION['token_main_php'] = RandomGenUtils::createUniqueToken();
-header('Location: ' . $web_root . "/interface/main/dashboard.php?token_main=" . urlencode($_SESSION['token_main_php']));
+// header('Location: ' . $web_root . '/interface/main/dashboard/index.php');
+header('Location: ' . $web_root . "/interface/main/tabs/main.php?token_main=" . urlencode($_SESSION['token_main_php']));
 exit();
 ?>
