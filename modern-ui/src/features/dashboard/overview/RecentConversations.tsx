@@ -1,11 +1,4 @@
-import { MoreVertical, User } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { User } from "lucide-react";
 import type { OverviewResponse } from "../type";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -54,21 +47,24 @@ export const ConversationList = ({
     };
 
     return (
-        <div className={cn(`bg-white rounded-lg shadow-sm border mt-3`, className)}>
+        <div
+            className={cn(
+                `bg-background rounded-lg shadow-sm border mt-3`,
+                className
+            )}
+        >
             {/* Header */}
             <div className="p-4 border-b">
-                <h2 className="text-lg font-semibold text-gray-900">
-                    Recent Conversations
-                </h2>
+                <h2 className="text-lg font-semibold ">Recent Conversations</h2>
             </div>
 
             {/* Conversation List */}
             <ScrollArea className="h-[300px] scroll-smooth w-sm">
-                <div className="divide-y divide-gray-100">
+                <div className="divide-y divide-border-100">
                     {conversations?.map((conversation) => (
                         <div
                             key={conversation.id}
-                            className="p-4 flex items-start space-x-3 hover:bg-gray-50 cursor-pointer transition-colors"
+                            className="p-4 flex items-start space-x-3 hover:bg-secondary cursor-pointer transition-colors"
                         >
                             {/* Avatar */}
                             <div className="flex-shrink-0">
@@ -88,7 +84,7 @@ export const ConversationList = ({
                             {/* Content */}
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-center justify-between mb-1">
-                                    <h3 className="text-sm font-medium text-gray-900 truncate">
+                                    <h3 className="text-sm font-medium truncate">
                                         {conversation.sender?.name ||
                                             "Unknown Sender"}
                                     </h3>
@@ -106,39 +102,13 @@ export const ConversationList = ({
                                     </div>
                                 </div>
 
-                                <p className="text-sm text-gray-600 mb-1 font-medium">
+                                <p className="text-sm text-gray-500 mb-1 font-medium">
                                     {conversation.title}
                                 </p>
 
                                 <p className="text-xs text-gray-500 line-clamp-2">
                                     {truncateText(conversation.body)}
                                 </p>
-                            </div>
-
-                            {/* Actions */}
-                            <div className="flex-shrink-0">
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            className="h-8 w-8 p-0"
-                                        >
-                                            <MoreVertical className="h-4 w-4 text-gray-400" />
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                        <DropdownMenuItem>
-                                            Mark as read
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem>
-                                            Archive
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem>
-                                            Delete
-                                        </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
                             </div>
                         </div>
                     ))}

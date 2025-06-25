@@ -78,7 +78,7 @@ export function EventCalender({
                             ? "bg-primary text-white font-semibold"
                             : hasEvent
                             ? "dark:bg-secondary bg-slate-200 font-medium hover:bg-primary-foreground"
-                            : "hover:bg-gray-100"
+                            : "hover:bg-secondary"
                     }`}
                 >
                     <CalenderTooltip
