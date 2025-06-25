@@ -139,3 +139,5 @@ export const Statistics = ({ data }: { data?: AppointmentStatistics }) => {
         </Card>
     );
 };
+
+export default Statistics;

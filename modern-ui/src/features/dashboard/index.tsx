@@ -1,10 +1,12 @@
 import { useDashboard } from "@/features/dashboard/use-dashboard";
 import { useUser } from "@/store/user-context";
 import { RecentlyAssigned } from "./overview/RecentlyAssigned";
-import { EventCalender } from "./overview/EventCalender";
-import { ConversationList } from "./overview/RecentConversations";
-import { Statistics } from "./overview/Statistics";
-import { PatientsStat } from "./overview/PatientsStat";
+import { lazy, Suspense } from "react";
+
+const EventCalendar = lazy(() => import("./overview/EventCalender"));
+const Statistics = lazy(() => import("./overview/Statistics"));
+const PatientsStat = lazy(() => import("./overview/PatientsStat"));
+const ConversationList = lazy(() => import("./overview/RecentConversations"));
 
 export function DashboardElements() {
     const { user } = useUser();
@@ -27,17 +29,24 @@ export function DashboardElements() {
                         isLoading={isLoading}
                         className="flex-1"
                     />
-                    <ConversationList
-                        conversations={data?.data?.messages ?? []}
-                        className="flex-1 max-w-[400px]"
-                    />
+                    <Suspense fallback={null}>
+                        <ConversationList
+                            conversations={data?.data?.messages ?? []}
+                            className="flex-1 max-w-[400px]"
+                        />
+                    </Suspense>
                 </div>
-
-                <div className="flex gap-4 flex-wrap mt-4">
-                    <EventCalender events={data?.data?.calendar_events || []} />
-                    <Statistics data={data?.data?.statistics.data.statistics} />
-                    <PatientsStat data={data?.data?.patient_stats} />
-                </div>
+                <Suspense fallback={null}>
+                    <div className="flex gap-4 flex-wrap mt-4">
+                        <EventCalendar
+                            events={data?.data?.calendar_events || []}
+                        />
+                        <Statistics
+                            data={data?.data?.statistics.data.statistics}
+                        />
+                        <PatientsStat data={data?.data?.patient_stats} />
+                    </div>
+                </Suspense>
             </section>
         </>
     );

@@ -37,3 +37,5 @@ export const PatientsStat = ({ data }: { data?: PatientStats }) => {
         </div>
     );
 };
+
+export default PatientsStat;

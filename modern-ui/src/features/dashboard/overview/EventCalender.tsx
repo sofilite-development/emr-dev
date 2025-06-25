@@ -212,3 +212,5 @@ function CalenderTooltip({
         </HoverCard>
     );
 }
+
+export default EventCalender;
