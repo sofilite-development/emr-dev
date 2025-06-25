@@ -3,6 +3,8 @@ import { useUser } from "@/store/user-context";
 import { RecentlyAssigned } from "./overview/RecentlyAssigned";
 import { EventCalender } from "./overview/EventCalender";
 import { ConversationList } from "./overview/RecentConversations";
+import { Statistics } from "./overview/Statistics";
+import { PatientsStat } from "./overview/PatientsStat";
 
 export function DashboardElements() {
     const { user } = useUser();
@@ -31,8 +33,10 @@ export function DashboardElements() {
                     />
                 </div>
 
-                <div className="flex gap-12 flex-wrap mt-4">
+                <div className="flex gap-4 flex-wrap mt-4">
                     <EventCalender events={data?.data?.calendar_events || []} />
+                    <Statistics data={data?.data?.statistics.data.statistics} />
+                    <PatientsStat data={data?.data?.patient_stats} />
                 </div>
             </section>
         </>

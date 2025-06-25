@@ -19,10 +19,205 @@ if (empty($_SESSION['authUser'])) {
     exit;
 }
 
-function getMessages ($provider_id) {
-    // Get latest messages
-$messagesQuery = sqlStatement(
-    "SELECT 
+function getStatistics($provider_id)
+{
+    global $sqlconf;
+    $statistics = [
+        'today' => [
+            'total' => 0,
+            'scheduled' => 0,
+            'checked_in' => 0,
+            'completed' => 0,
+            'no_show' => 0,
+            'cancelled' => 0
+        ],
+        'week' => [
+            'total' => 0,
+            'scheduled' => 0,
+            'checked_in' => 0,
+            'completed' => 0,
+            'no_show' => 0,
+            'cancelled' => 0
+        ],
+        'month' => [
+            'total' => 0,
+            'scheduled' => 0,
+            'checked_in' => 0,
+            'completed' => 0,
+            'no_show' => 0,
+            'cancelled' => 0
+        ]
+    ];
+
+    try {
+        $today = date('Y-m-d');
+        $week_start = date('Y-m-d', strtotime('monday this week'));
+        $month_start = date('Y-m-01');
+
+        // Query for today's stats
+        $query = "SELECT 
+                    COUNT(*) as total,
+                    SUM(CASE WHEN pc_apptstatus = 'Scheduled' THEN 1 ELSE 0 END) as scheduled,
+                    SUM(CASE WHEN pc_apptstatus = 'Checked In' THEN 1 ELSE 0 END) as checked_in,
+                    SUM(CASE WHEN pc_apptstatus = 'Completed' THEN 1 ELSE 0 END) as completed,
+                    SUM(CASE WHEN pc_apptstatus = 'No Show' THEN 1 ELSE 0 END) as no_show,
+                    SUM(CASE WHEN pc_apptstatus = 'Cancelled' THEN 1 ELSE 0 END) as cancelled
+                  FROM openemr_postcalendar_events 
+                  WHERE pc_eventDate = ? 
+                  AND pc_aid = ?";
+
+        $result = sqlQueryNoLog($query, array($today, $provider_id));
+        if ($result) {
+            $statistics['today'] = [
+                'total' => (int) $result['total'],
+                'scheduled' => (int) $result['scheduled'],
+                'checked_in' => (int) $result['checked_in'],
+                'completed' => (int) $result['completed'],
+                'no_show' => (int) $result['no_show'],
+                'cancelled' => (int) $result['cancelled']
+            ];
+        }
+
+        // Query for this week's stats
+        $query = "SELECT 
+                    COUNT(*) as total,
+                    SUM(CASE WHEN pc_apptstatus = 'Scheduled' THEN 1 ELSE 0 END) as scheduled,
+                    SUM(CASE WHEN pc_apptstatus = 'Checked In' THEN 1 ELSE 0 END) as checked_in,
+                    SUM(CASE WHEN pc_apptstatus = 'Completed' THEN 1 ELSE 0 END) as completed,
+                    SUM(CASE WHEN pc_apptstatus = 'No Show' THEN 1 ELSE 0 END) as no_show,
+                    SUM(CASE WHEN pc_apptstatus = 'Cancelled' THEN 1 ELSE 0 END) as cancelled
+                  FROM openemr_postcalendar_events 
+                  WHERE pc_eventDate BETWEEN ? AND ?
+                  AND pc_aid = ?";
+
+        $result = sqlQueryNoLog($query, array($week_start, $today, $provider_id));
+        if ($result) {
+            $statistics['week'] = [
+                'total' => (int) $result['total'],
+                'scheduled' => (int) $result['scheduled'],
+                'checked_in' => (int) $result['checked_in'],
+                'completed' => (int) $result['completed'],
+                'no_show' => (int) $result['no_show'],
+                'cancelled' => (int) $result['cancelled']
+            ];
+        }
+
+        // Query for this month's stats
+        $query = "SELECT 
+                    COUNT(*) as total,
+                    SUM(CASE WHEN pc_apptstatus = 'Scheduled' THEN 1 ELSE 0 END) as scheduled,
+                    SUM(CASE WHEN pc_apptstatus = 'Checked In' THEN 1 ELSE 0 END) as checked_in,
+                    SUM(CASE WHEN pc_apptstatus = 'Completed' THEN 1 ELSE 0 END) as completed,
+                    SUM(CASE WHEN pc_apptstatus = 'No Show' THEN 1 ELSE 0 END) as no_show,
+                    SUM(CASE WHEN pc_apptstatus = 'Cancelled' THEN 1 ELSE 0 END) as cancelled
+                  FROM openemr_postcalendar_events 
+                  WHERE pc_eventDate BETWEEN ? AND ?
+                  AND pc_aid = ?";
+
+        $result = sqlQueryNoLog($query, array($month_start, $today, $provider_id));
+        if ($result) {
+            $statistics['month'] = [
+                'total' => (int) $result['total'],
+                'scheduled' => (int) $result['scheduled'],
+                'checked_in' => (int) $result['checked_in'],
+                'completed' => (int) $result['completed'],
+                'no_show' => (int) $result['no_show'],
+                'cancelled' => (int) $result['cancelled']
+            ];
+        }
+
+        // Additional stats for appointments by status
+        $query = 'SELECT 
+                    pc_apptstatus as status,
+                    COUNT(*) as count
+                  FROM openemr_postcalendar_events 
+                  WHERE pc_eventDate >= ?
+                  AND pc_aid = ?
+                  GROUP BY pc_apptstatus';
+
+        $result = sqlStatementNoLog($query, array(date('Y-m-d', strtotime('-30 days')), $provider_id));
+        $appointments_by_status = [];
+        while ($row = sqlFetchArray($result)) {
+            $appointments_by_status[strtolower(str_replace(' ', '_', $row['status']))] = (int) $row['count'];
+        }
+
+        // Recent appointments
+        $query = 'SELECT 
+                    p.fname, p.lname, p.pid,
+                    e.pc_eventDate, e.pc_startTime, e.pc_apptstatus, e.pc_eid
+                  FROM openemr_postcalendar_events e
+                  JOIN patient_data p ON e.pc_pid = p.pid
+                  WHERE e.pc_aid = ?
+                  ORDER BY e.pc_eventDate DESC, e.pc_startTime DESC
+                  LIMIT 5';
+
+        $recent_appointments = [];
+        $result = sqlStatementNoLog($query, array($provider_id));
+        while ($row = sqlFetchArray($result)) {
+            $recent_appointments[] = [
+                'id' => $row['pc_eid'],
+                'patient_name' => $row['fname'] . ' ' . $row['lname'],
+                'pid' => $row['pid'],
+                'date' => $row['pc_eventDate'],
+                'time' => $row['pc_startTime'],
+                'status' => $row['pc_apptstatus']
+            ];
+        }
+
+        return [
+            'success' => true,
+            'data' => [
+                'statistics' => $statistics,
+                'appointments_by_status' => $appointments_by_status,
+                'recent_appointments' => $recent_appointments
+            ]
+        ];
+    } catch (Exception $e) {
+        return [
+            'success' => false,
+            'error' => $e->getMessage()
+        ];
+    }
+}
+
+function getPatientStats($provider_id)
+{
+    $query = '
+        WITH first_visit AS (
+            SELECT pc_pid, MIN(pc_eventDate) AS first_seen
+            FROM openemr_postcalendar_events
+            WHERE pc_aid = ? AND pc_pid IS NOT NULL
+            GROUP BY pc_pid
+        )
+        SELECT
+            COALESCE(SUM(first_seen >= CURDATE() - INTERVAL 30 DAY), 0) AS new_patients,
+            COALESCE(SUM(first_seen < CURDATE() - INTERVAL 30 DAY), 0) AS repeat_patients
+        FROM first_visit
+    ';
+
+    $result = sqlQueryNoLog($query, array($provider_id));
+
+    if ($result) {
+        return [
+            'success' => true,
+            'data' => [
+                'new_patients' => (int) $result['new_patients'],
+                'repeat_patients' => (int) $result['repeat_patients'],
+                'total_patients' => (int) $result['new_patients'] + (int) $result['repeat_patients']
+            ]
+        ];
+    }
+
+    return [
+        'success' => false,
+        'error' => 'Failed to fetch patient statistics'
+    ];
+}
+
+function getMessages($provider_id)
+{
+    $messagesQuery = sqlStatement(
+        'SELECT 
         m.id as message_id,
         m.title,
         m.body,
@@ -42,29 +237,29 @@ $messagesQuery = sqlStatement(
     WHERE (m.sender_id = ? OR m.recipient_id = ?)
     AND m.deleted = 0
     ORDER BY m.date DESC
-    LIMIT 10",
-    array($provider_id, $provider_id)
-);
+    LIMIT 10',
+        array($provider_id, $provider_id)
+    );
 
-$messages = [];
-while ($row = sqlFetchArray($messagesQuery)) {
-    $messages[] = [
-        'id' => $row['message_id'],
-        'title' => $row['title'],
-        'body' => mb_strimwidth($row['body'], 0, 100, '...'), // Truncate long messages
-        'date' => $row['message_date'],
-        'status' => $row['message_status'],
-        'sender' => [
-            'id' => $row['sender_id'],
-            'name' => $row['sender_name'] ?: ($row['sender_fname'] . ' ' . $row['sender_lname'])
-        ],
-        'recipient' => [
-            'id' => $row['recipient_id'],
-            'name' => $row['recipient_name'] ?: ($row['recipient_fname'] . ' ' . $row['recipient_lname'])
-        ]
-    ];
-}
-return $messages;
+    $messages = [];
+    while ($row = sqlFetchArray($messagesQuery)) {
+        $messages[] = [
+            'id' => $row['message_id'],
+            'title' => $row['title'],
+            'body' => mb_strimwidth($row['body'], 0, 100, '...'),  // Truncate long messages
+            'date' => $row['message_date'],
+            'status' => $row['message_status'],
+            'sender' => [
+                'id' => $row['sender_id'],
+                'name' => $row['sender_name'] ?: ($row['sender_fname'] . ' ' . $row['sender_lname'])
+            ],
+            'recipient' => [
+                'id' => $row['recipient_id'],
+                'name' => $row['recipient_name'] ?: ($row['recipient_fname'] . ' ' . $row['recipient_lname'])
+            ]
+        ];
+    }
+    return $messages;
 }
 
 try {
@@ -162,14 +357,19 @@ LIMIT 20",
     }
 
     $messages = getMessages($provider_id);
+    $statistics = getStatistics($provider_id);
+    $patientStats = getPatientStats($provider_id);
 
     $data = [
         'patient_trackers' => $patientTrackers,
         'procedure_orders' => $procedureOrders,
         'calendar_events' => $calendarEvents,
+        'statistics' => $statistics,
         'messages' => $messages,
+        'patient_stats' => $patientStats['data'],
         'timestamp' => date('Y-m-d H:i:s'),
     ];
+
 
     // Return the data as JSON
     echo json_encode([

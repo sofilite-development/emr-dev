@@ -44,6 +44,56 @@ export interface CalendarEvent {
     dateTime: string;
 }
 
+interface AppointmentStatistics {
+    today: {
+        total: number;
+        scheduled: number;
+        checked_in: number;
+        completed: number;
+        no_show: number;
+        cancelled: number;
+    };
+    week: {
+        total: number;
+        scheduled: number;
+        checked_in: number;
+        completed: number;
+        no_show: number;
+        cancelled: number;
+    };
+    month: {
+        total: number;
+        scheduled: number;
+        checked_in: number;
+        completed: number;
+        no_show: number;
+        cancelled: number;
+    };
+}
+interface RecentAppointment {
+    id: number;
+    patient_name: string;
+    pid: string;
+    date: string;
+    time: string;
+    status: "Scheduled" | "Completed" | "No Show" | "Cancelled";
+}
+
+interface StatisticsResponse {
+    success: boolean;
+    data: {
+        statistics: AppointmentStatistics;
+        appointments_by_status: Record<string, number>;
+        recent_appointments: RecentAppointment[];
+    };
+}
+
+interface PatientStats {
+    new_patients: number;
+    repeat_patients: number;
+    total_patients: number;
+}
+
 export interface OverviewResponse {
     success: boolean;
     data: {
@@ -51,6 +101,8 @@ export interface OverviewResponse {
         procedure_orders: Order[];
         calendar_events: CalendarEvent[];
         messages: Message[];
-        timestamp: string; // ISO date string
+        statistics: StatisticsResponse;
+        timestamp: string;
+        patient_stats: PatientStats;
     };
 }
