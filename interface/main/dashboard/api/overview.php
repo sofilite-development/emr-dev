@@ -10,7 +10,7 @@ header('Content-Type: application/json');
 
 // Require necessary files
 require_once (__DIR__ . '/../../../globals.php');
-require_once 'cors.php';
+require_once 'helpers/cors.php';
 
 // Check if user is logged in
 if (empty($_SESSION['authUser'])) {

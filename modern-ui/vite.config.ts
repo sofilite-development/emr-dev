@@ -1,12 +1,20 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
+import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import tailwindcss from "@tailwindcss/vite";
 
 // https://vite.dev/config/
 export default defineConfig({
     base: "",
-    plugins: [react(), tailwindcss()],
+    plugins: [
+        tanstackRouter({
+            target: "react",
+            autoCodeSplitting: true,
+        }),
+        react(),
+        tailwindcss(),
+    ],
     resolve: {
         alias: {
             "@": path.resolve(__dirname, "./src"),
@@ -15,7 +23,7 @@ export default defineConfig({
     server: {
         proxy: {
             "/api": {
-                target: "http://localhost:8000", // Your PHP server address
+                target: "http://localhost:8000", // PHP server address
                 changeOrigin: true,
                 secure: false,
                 rewrite: (path) => path.replace(/^\/api/, ""),

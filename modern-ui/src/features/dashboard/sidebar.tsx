@@ -11,11 +11,13 @@ import {
     SidebarRail,
     useSidebar,
 } from "@/components/ui/sidebar";
-import { Settings, UserIcon } from "lucide-react";
+import { UserIcon } from "lucide-react";
 import { Logo } from "@/components/logo";
-import { CircleArrowUp, LayoutDashboard } from "lucide-react";
+import { LayoutDashboard } from "lucide-react";
 import { endpoints } from "@/constants/endpoints";
 import { cn } from "@/lib/utils";
+import { useRouteParams } from "@/hooks/use-route-params";
+import { Link } from "@tanstack/react-router";
 
 // interface Props {
 //     slug?: string;
@@ -27,22 +29,27 @@ const items = [
         icon: LayoutDashboard,
     },
     {
-        title: "Help",
-        url: endpoints.pages.calender,
-        icon: CircleArrowUp,
-    },
-
-    {
-        title: "profile",
-        url: endpoints.pages.profile,
+        title: "Patients",
+        url: endpoints.pages.patients,
         icon: UserIcon,
     },
-    {
-        title: "Settings",
-        url: endpoints.pages.settings,
-        icon: Settings,
-    },
-];
+
+    // {
+    //     title: "profile",
+    //     url: endpoints.pages.profile,
+    //     icon: UserIcon,
+    // },
+    // {
+    //     title: "Settings",
+    //     url: endpoints.pages.settings,
+    //     icon: Settings,
+    // },
+    // {
+    //     title: "Help",
+    //     url: endpoints.pages.calender,
+    //     icon: CircleArrowUp,
+    // },
+] as const;
 export const DashboardSidebar = () => {
     return (
         <Sidebar
@@ -76,7 +83,7 @@ function Header() {
     );
 }
 function Content() {
-    const url = "";
+    const { pathname: url } = useRouteParams();
     const { open } = useSidebar();
 
     return (
@@ -93,16 +100,16 @@ function Content() {
                                     open ? "mb-2" : "mb-1",
                                     open && url === item.url
                                         ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                                        : ""
+                                        : "",
                                 )}
                             >
-                                <a href={item.url}>
+                                <Link to={item.url}>
                                     <span
                                         className={cn(
                                             url === item.url
                                                 ? "logo-bg "
                                                 : "text-primary",
-                                            "rounded-md p-1"
+                                            "rounded-md p-1",
                                         )}
                                     >
                                         <item.icon size={open ? 20 : 22} />
@@ -112,12 +119,12 @@ function Content() {
                                             "ml-1",
                                             url === item.url
                                                 ? "logo-text font-bold"
-                                                : ""
+                                                : "",
                                         )}
                                     >
                                         {item.title}
                                     </span>
-                                </a>
+                                </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
                     ))}
