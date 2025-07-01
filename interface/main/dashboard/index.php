@@ -93,9 +93,31 @@ $esignApi = new Api();
 
 <body>
     <!-- <div id="root"></div> -->
-<iframe src="../../../modern-ui/dist/index.html" style="width:100%; height:100%; border:none;"></iframe>
-
-  
+<!-- <iframe src="../../../modern-ui/dist/index.html#/" style="width:100%; height:100%; border:none;"></iframe> -->
+<iframe 
+  id="react-app" 
+  src="/interface/modern-ui/dist/index.html" 
+  style="width:100%; height:100%; border:none;"
+></iframe>
+<script>
+ document.addEventListener('DOMContentLoaded', function() {
+    const iframe = document.getElementById('react-app');
+    const currentHash = window.location.hash;
+    const basePath = '/interface/modern-ui/index.html';
+    
+    if (currentHash) {
+        iframe.src = basePath + currentHash;
+    } else {
+        iframe.src = basePath + '#/';
+    }
+    
+    window.addEventListener('message', function(event) {
+        if (event.data && event.data.type === 'navigate') {
+            window.location.hash = event.data.path;
+        }
+    });
+});
+</script>
 </body>
 
 </html>

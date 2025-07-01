@@ -6,7 +6,12 @@ import tailwindcss from "@tailwindcss/vite";
 
 // https://vite.dev/config/
 export default defineConfig({
-    base: "",
+    // base: "#",
+    base:
+        process.env.NODE_ENV === "production"
+            ? "/interface/modern-ui/"
+            : "./",
+    // base: "./",
     plugins: [
         tanstackRouter({
             target: "react",
@@ -31,6 +36,7 @@ export default defineConfig({
         },
     },
     build: {
+        outDir: "../interface/modern-ui",
         rollupOptions: {
             output: {
                 entryFileNames: `assets/js/script.js`,

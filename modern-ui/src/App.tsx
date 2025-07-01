@@ -1,7 +1,18 @@
 import { ThemeProvider } from "@/components/theme-provider";
-import { RouterProvider, createRouter } from "@tanstack/react-router";
+import {
+    RouterProvider,
+    createRouter,
+    createHashHistory,
+} from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
-const router = createRouter({ routeTree });
+
+// Check if we're in an iframe
+const isInIframe = window.self !== window.top;
+
+const router = createRouter({
+    routeTree,
+    history: isInIframe ? createHashHistory() : undefined,
+});
 
 // Register the router instance for type safety
 declare module "@tanstack/react-router" {

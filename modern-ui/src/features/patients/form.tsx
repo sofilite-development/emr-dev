@@ -100,7 +100,6 @@ const formFields: FieldData<BaseFieldProps["type"]>[] = [
         placeholder: "Enter state code (optional)",
         autoComplete: "address-level1",
         pattern: "[A-Z]{2}",
-        maxLength: 2,
     },
     {
         type: "text",
@@ -116,7 +115,6 @@ const formFields: FieldData<BaseFieldProps["type"]>[] = [
         placeholder: "Enter country code",
         autoComplete: "country",
         pattern: "[A-Z]{2}",
-        maxLength: 2,
     },
     {
         type: "number",
@@ -150,6 +148,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
     defaultValues,
 }) => {
     const form = useForm<PatientFormData>({
+        // @ts-ignore
         resolver: zodResolver(patientBaseSchema),
         defaultValues: {
             firstName: "",
@@ -166,9 +165,10 @@ export const PatientForm: React.FC<PatientFormProps> = ({
             state: "",
             postalCode: "",
             country: "US",
-            providerId: undefined,
+            providerId: "",
             ...defaultValues,
         },
+        reValidateMode: "onBlur",
     });
 
     // Set form values helper function
@@ -238,6 +238,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
             <CardContent className="p-0">
                 <Form {...form}>
                     <form
+                        // @ts-ignore
                         onSubmit={form.handleSubmit(handleSubmit)}
                         className="space-y-6"
                     >

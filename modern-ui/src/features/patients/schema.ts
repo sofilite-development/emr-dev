@@ -1,13 +1,10 @@
 import { z } from "zod";
-const date = z
-    .string()
-    .or(z.date())
-    .pipe(
-        z.coerce.date({
-            required_error: "Date of birth is required",
-            invalid_type_error: "Invalid date format",
-        }),
-    );
+const date = z.union([z.string(), z.date()]).pipe(
+    z.coerce.date({
+        required_error: "Date of birth is required",
+        invalid_type_error: "Invalid date format",
+    }),
+);
 // Base patient schema with common fields
 export const patientBaseSchema = z.object({
     firstName: z
@@ -37,11 +34,7 @@ export const patientBaseSchema = z.object({
     state: z.string().max(2, "State code is too long").optional(),
     postalCode: z.string().max(15, "Postal code is too long").optional(),
     country: z.string().max(2, "Country code is too long").default("US"),
-    providerId: z
-        .number()
-        .int()
-        .positive("Provider ID must be a positive number")
-        .optional(),
+    providerId: z.string().min(1, "Provider ID is required").optional(),
 });
 
 // Schema for creating a new patient
